@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    hivedb:
+      username: unused
+      password: unused
+      url: jdbc:hive2://172.21.148.207:10000/default
+      driver-class-name: org.apache.hive.jdbc.HiveDriver
+      initial-size: 10
+      validation-query: SELECT 1
+      validation-query-timeout: 3
+      test-on-borrow: true
+      max-wait: 60000
