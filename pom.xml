@@ -12,7 +12,45 @@
   <version>0.0.1</version>
   <packaging>pom</packaging>
 
+  <properties>
+    <spotless.version>2.6.0</spotless.version>
+    <grpc.version>1.30.2</grpc.version>
+    <protobuf.version>3.14.0</protobuf.version>
+    <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
+  </properties>
+
+  <modules>
+    <module>core</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- gRPC -->
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-stub</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf</artifactId>
+      </dependency>
+      <!-- Java 9+ compatibility -->
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
+    <extensions>
+      <!-- gRPC -->
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+      </extension>
+    </extensions>
+
     <plugins>
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
@@ -24,22 +62,37 @@
               <content></content>
             </licenseHeader>
             <googleJavaFormat>
-              <version>1.7</version>
+              <version>1.8</version>
               <style>GOOGLE</style>
             </googleJavaFormat>
             <removeUnusedImports/>
           </java>
         </configuration>
       </plugin>
+      <!-- gRPC -->
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <version>${protobuf.maven.plugin.version}</version>
+        <configuration>
+          <protocArtifact>
+            com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
+          </protocArtifact>
+          <pluginId>grpc-java</pluginId>
+          <pluginArtifact>
+            io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
+          </pluginArtifact>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>compile-custom</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
-  <properties>
-    <spotless.version>1.26.1</spotless.version>
-  </properties>
-
-  <modules>
-    <module>core</module>
-  </modules>
 
 </project>
