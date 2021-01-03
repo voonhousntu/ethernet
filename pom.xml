@@ -13,7 +13,6 @@
   <packaging>pom</packaging>
 
   <properties>
-    <spotless.version>2.6.0</spotless.version>
     <grpc.version>1.30.2</grpc.version>
     <protobuf.version>3.14.0</protobuf.version>
     <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
@@ -52,23 +51,6 @@
     </extensions>
 
     <plugins>
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <version>${spotless.version}</version>
-        <configuration>
-          <java>
-            <licenseHeader>
-              <content></content>
-            </licenseHeader>
-            <googleJavaFormat>
-              <version>1.8</version>
-              <style>GOOGLE</style>
-            </googleJavaFormat>
-            <removeUnusedImports/>
-          </java>
-        </configuration>
-      </plugin>
       <!-- gRPC -->
       <plugin>
         <groupId>org.xolstice.maven.plugins</groupId>
