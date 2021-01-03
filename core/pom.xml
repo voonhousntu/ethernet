@@ -11,10 +11,10 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
-	<groupId>com.vsu001</groupId>
-  <artifactId>ethernet-core</artifactId>
+	<groupId>com.vsu001.ethernet</groupId>
+  <artifactId>core</artifactId>
   <version>0.0.1</version>
-  <name>ethernet-core</name>
+  <name>core</name>
   <description></description>
 
   <properties>

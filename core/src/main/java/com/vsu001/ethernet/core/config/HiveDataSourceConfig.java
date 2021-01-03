@@ -1,4 +1,4 @@
-package com.vsu001.ethernet.config;
+package com.vsu001.ethernet.core.config;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Value;

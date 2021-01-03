@@ -1,4 +1,4 @@
-package com.vsu001.ethernet.controller;
+package com.vsu001.ethernet.core.controller;
 
 import java.util.List;
 import java.util.Map;
