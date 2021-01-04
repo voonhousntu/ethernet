@@ -5,17 +5,18 @@
   <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.5.0-SNAPSHOT</version>
-    <relativePath/> <!-- lookup parent from repository -->
+<!--    <groupId>org.springframework.boot</groupId>-->
+<!--    <artifactId>spring-boot-starter-parent</artifactId>-->
+<!--    <version>2.5.0-SNAPSHOT</version>-->
+<!--    <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+    <groupId>com.vsu001</groupId>
+    <artifactId>ethernet</artifactId>
+    <version>${revision}</version>
   </parent>
 
-	<groupId>com.vsu001.ethernet</groupId>
-  <artifactId>core</artifactId>
-  <version>0.0.1</version>
   <name>core</name>
-  <description></description>
+  <description>ethernet-core</description>
+  <artifactId>core</artifactId>
 
   <properties>
     <java.version>11</java.version>
@@ -25,32 +26,37 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jdbc</artifactId>
+      <version>${spring.boot.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+      <version>${spring.boot.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
+      <version>${spring.boot.version}</version>
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <version>${spring.boot.version}</version>
       <scope>test</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc -->
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-jdbc</artifactId>
-      <version>2.3.7</version>
+      <version>${hive.jdbc.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jetty.aggregate</groupId>
@@ -96,8 +102,9 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jdbc</artifactId>
-      <version>10.0.0</version>
+      <version>${tomcat.jdbc.version}</version>
     </dependency>
+
   </dependencies>
 
   <build>

@@ -9,13 +9,19 @@
 
   <groupId>com.vsu001</groupId>
   <artifactId>ethernet</artifactId>
-  <version>0.0.1</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
 
   <properties>
+    <revision>0.0.1-SNAPSHOT</revision>
     <grpc.version>1.30.2</grpc.version>
     <protobuf.version>3.14.0</protobuf.version>
     <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
+    <grpc.spring.boot.starter.version>2.10.1.RELEASE</grpc.spring.boot.starter.version>
+    <spring.boot.version>2.5.0-SNAPSHOT</spring.boot.version>
+    <lombok.version>1.18.16</lombok.version>
+    <hive.jdbc.version>2.3.7</hive.jdbc.version>
+    <tomcat.jdbc.version>10.0.0</tomcat.jdbc.version>
   </properties>
 
   <modules>
