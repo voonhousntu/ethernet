@@ -104,7 +104,11 @@
       <artifactId>tomcat-jdbc</artifactId>
       <version>${tomcat.jdbc.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>net.devh</groupId>
+      <artifactId>grpc-server-spring-boot-starter</artifactId>
+      <version>${grpc.spring.boot.starter.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -112,6 +116,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
         <configuration>
           <excludes>
             <exclude>
