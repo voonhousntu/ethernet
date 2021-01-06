@@ -3,11 +3,11 @@ syntax = "proto3";
 package com.vsu001.ethernet.core;
 
 option java_multiple_files = true;
-option java_package = "com.vsu001.ethernet.core";
+option java_package = "com.vsu001.ethernet.core.service";
 option java_outer_classname = "HelloWorldProto";
 
 // The greeting service definition.
-service MyService {
+service ExampleService {
     // Sends a greeting
     rpc SayHello (HelloRequest) returns (HelloReply) {
     }
