@@ -1,6 +1,7 @@
 from typing import Dict, Optional
 
 from ethernet.config import Config
+from example_pb2_grpc import ExampleServiceStub
 
 
 class Client:
@@ -28,5 +29,7 @@ class Client:
 
         if options is None:
             options = dict()
+
         self._config = Config(options={**options, **kwargs})
-        self._config = Config(options={**options, **kwargs})
+
+        self._core_service_stub: Optional[ExampleServiceStub] = None
