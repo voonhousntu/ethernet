@@ -21,5 +21,5 @@ compile-protos-python:
 			--python_out=../../../../sdk/python/ethernet/core \
 			--grpc_python_out=../../../../sdk/python/ethernet/core \
 			*.proto; \
-    cd ../../../../; \
-    python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
+	cd ../../../../; \
+	python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
