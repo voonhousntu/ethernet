@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.contracts
+CREATE TABLE ethernet.traces
 (
     `transaction_hash`  string,
     `transaction_index` int,
@@ -16,8 +16,6 @@ CREATE TABLE ethernet.contracts
     `trace_address`     string,
     `error`             string,
     `status`            int,
-    `block_timestamp`   timestamp,
-    `block_number`      bigint,
     `block_hash`        string,
     `trace_id`          string
 )

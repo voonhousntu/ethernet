@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.contracts
+CREATE TABLE ethernet.token_transfers
 (
     `token_adress`     string,
     `from_address`     string,
@@ -6,8 +6,6 @@ CREATE TABLE ethernet.contracts
     `value`            string,
     `transaction_hash` string,
     `log_index`        int,
-    `block_timestamp`  timestamp,
-    `block_number`     bigint,
     `block_hash`       string
 
 )

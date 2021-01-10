@@ -1,12 +1,10 @@
-CREATE TABLE ethernet.contracts
+CREATE TABLE ethernet.tokens
 (
     `address`         string,
     `symbol`          string,
     `name`            string,
     `decimals`        string,
     `total_supply`    string,
-    `block_timestamp` timestamp,
-    `block_number`    bigint,
     `block_hash`      string
 
 )

@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.contracts
+CREATE TABLE ethernet.transactions
 (
     `hash`                        string,
     `nonce`                       int,
@@ -14,8 +14,6 @@ CREATE TABLE ethernet.contracts
     `receipt_contract_address`    string,
     `receipt_root`                string,
     `receipt_status`              int,
-    `block_timestamp`             timestamp,
-    `block_number`                bigint,
     `block_hash`                  string
 
 )
