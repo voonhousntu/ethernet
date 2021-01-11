@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package com.vsu001.ethernet.core;
+
+option java_multiple_files = true;
+option java_package = "com.vsu001.ethernet.core.model";
+option java_outer_classname = "Token";
+
+import "google/protobuf/timestamp.proto";
+
+message Token {
+  // The address of the ERC20 token
+  string address = 1;
+
+  // The symbol of the ERC20 token
+  string symbol = 2;
+
+  // The name of the ERC20 token
+  string name = 3;
+
+  // The number of decimals the token uses
+  // Requires user to cast to NUMERIC or FLOAT64
+  string decimals = 4;
+
+  // The total token supply
+  // Requires user to cast to NUMERIC or FLOAT64
+  string totalSupply = 5;
+
+  // Timestamp of the block where this token was created
+  google.protobuf.Timestamp blockTimestamp = 6;
+
+  // Block number where this token was created
+  int64 blockNumber = 7;
+
+  // Hash of the block where this token was created
+  string blockHash = 8;
+}
