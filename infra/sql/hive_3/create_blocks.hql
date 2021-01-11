@@ -11,11 +11,11 @@ CREATE TABLE ethernet.blocks
     `miner`             string,
     `difficulty`        numeric,
     `total_difficulty`  numeric,
-    `size`              int,
+    `size`              bigint,
     `extra_data`        string,
-    `gas_limit`         int,
-    `gas_used`          int,
-    `transaction_count` int
+    `gas_limit`         bigint,
+    `gas_used`          bigint,
+    `transaction_count` bigint
 
 )
     PARTITIONED BY

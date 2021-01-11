@@ -1,8 +1,8 @@
 CREATE TABLE ethernet.logs
 (
-    `log_index`         int,
+    `log_index`         bigint,
     `transaction_hash`  string,
-    `transaction_index` int,
+    `transaction_index` bigint,
     `address`           string,
     `data`              string,
     `topics`            string,

@@ -1,19 +1,19 @@
 CREATE TABLE ethernet.transactions
 (
     `hash`                        string,
-    `nonce`                       int,
-    `transaction_index`           int,
+    `nonce`                       bigint,
+    `transaction_index`           bigint,
     `from_address`                string,
     `to_address`                  string,
-    `value`                       numeric,
-    `gas`                         int,
-    `gas_price`                   int,
+    `value`                       bigint,
+    `gas`                         bigint,
+    `gas_price`                   bigint,
     `input`                       string,
-    `receipt_cumulative_gas_used` int,
-    `receipt_gas_used`            int,
+    `receipt_cumulative_gas_used` bigint,
+    `receipt_gas_used`            bigint,
     `receipt_contract_address`    string,
     `receipt_root`                string,
-    `receipt_status`              int,
+    `receipt_status`              bigint,
     `block_hash`                  string
 
 )

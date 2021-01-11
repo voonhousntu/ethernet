@@ -5,7 +5,7 @@ CREATE TABLE ethernet.token_transfers
     `to_address`       string,
     `value`            string,
     `transaction_hash` string,
-    `log_index`        int,
+    `log_index`        bigint,
     `block_hash`       string
 
 )
