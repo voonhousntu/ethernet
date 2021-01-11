@@ -4,7 +4,7 @@ package com.vsu001.ethernet.core;
 
 option java_multiple_files = true;
 option java_package = "com.vsu001.ethernet.core.model";
-option java_outer_classname = "Transaction";
+option java_outer_classname = "TransactionProto";
 
 import "google/protobuf/timestamp.proto";
 
@@ -54,11 +54,11 @@ message Transaction {
   int64 receiptStatus = 14;
 
   // Timestamp of the block where this transaction was in
-  google.protobuf.Timestamp blockTimestamp = 7;
+  google.protobuf.Timestamp blockTimestamp = 15;
 
   // Block number where this transaction was in
-  int64 blockNumber = 8;
+  int64 blockNumber = 16;
 
   // Hash of the block where this transaction was in
-  string blockHash = 9;
+  string blockHash = 17;
 }
