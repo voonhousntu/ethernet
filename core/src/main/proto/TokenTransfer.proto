@@ -10,30 +10,30 @@ import "google/protobuf/timestamp.proto";
 
 message TokenTransfer {
   // ERC20 token address
-  string tokenAddress = 1;
+  string token_address = 1;
 
   // Address of the sender
-  string fromAddress = 2;
+  string from_address = 2;
 
   // Address of the receiver
-  string toAddress = 3;
+  string to_address = 3;
 
   // Amount of tokens transferred (ERC20) / id of the token transferred (ERC721)
   // Requires user to cast to NUMERIC or FLOAT64
   string value = 4;
 
   // Transaction hash
-  string transactionHash = 5;
+  string transaction_hash = 5;
 
   // Log index in the transaction receipt
-  int64 logIndex = 6;
+  int64 log_index = 6;
 
   // Timestamp of the block where this transfer was in
-  google.protobuf.Timestamp blockTimestamp = 7;
+  google.protobuf.Timestamp block_timestamp = 7;
 
   // Block number where this transfer was in
-  int64 blockNumber = 8;
+  int64 block_number = 8;
 
   // Hash of the block where this transfer was in
-  string blockHash = 9;
+  string block_hash = 9;
 }

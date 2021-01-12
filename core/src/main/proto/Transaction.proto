@@ -16,14 +16,14 @@ message Transaction {
   int64 nonce = 2;
 
   // Integer of the transactions index position in the block
-  int64 transactionIndex = 3;
+  int64 transaction_index = 3;
 
   // Address of the sender
-  string fromAddress = 4;
+  string from_address = 4;
 
   // Address of the receiver
   // Null when its a contract creation transaction
-  string toAddress = 5;
+  string to_address = 5;
 
   // Value transferred in Wei
   int64 value = 6;
@@ -32,33 +32,33 @@ message Transaction {
   int64 gas = 7;
 
   // Gas price provided by the sender in Wei
-  int64 gasPrice = 8;
+  int64 gas_price = 8;
 
   // The data sent along with the transaction
   string input = 9;
 
 
   // The total amount of gas used when this transaction was executed in the block
-  int64 receiptCumulativeGasUsed = 10;
+  int64 receipt_cumulative_gas_used = 10;
 
   // The amount of gas used by this specific transaction alone
-  int64 receiptGasUsed = 11;
+  int64 receipt_gas_used = 11;
 
   // The contract address created, if the transaction was a contract creation, otherwise null
-  string receiptContractAddress = 12;
+  string receipt_contract_address = 12;
 
   // 32 bytes of post-transaction stateroot (pre Byzantium)
-  string receiptRoot = 13;
+  string receipt_root = 13;
 
   // Either 1 (success) or 0 (failure) (post Byzantium)
-  int64 receiptStatus = 14;
+  int64 receipt_status = 14;
 
   // Timestamp of the block where this transaction was in
-  google.protobuf.Timestamp blockTimestamp = 15;
+  google.protobuf.Timestamp block_timestamp = 15;
 
   // Block number where this transaction was in
-  int64 blockNumber = 16;
+  int64 block_number = 16;
 
   // Hash of the block where this transaction was in
-  string blockHash = 17;
+  string block_hash = 17;
 }

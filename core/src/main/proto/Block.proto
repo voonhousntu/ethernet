@@ -19,25 +19,25 @@ message Block {
   string hash = 3;
 
   // Hash of the parent block
-  string parentHash = 4;
+  string parent_hash = 4;
 
   // Hash of the generated proof-of-work
   string nonce = 5;
 
   // SHA3 of the uncles data in the block
-  string sha3Uncles = 6;
+  string sha3_uncles = 6;
 
   // The bloom filter for the logs of the block
-  string logsBloom = 7;
+  string logs_bloom = 7;
 
   // The root of the transaction trie of the block
-  string transactionsRoot = 8;
+  string transactions_root = 8;
 
   // The root of the final state trie of the block
-  string stateRoot = 9;
+  string state_root = 9;
 
   // The root of the receipts trie of the block
-  string receiptsRoot = 10;
+  string receipts_root = 10;
 
   // The address of the beneficiary to whom the mining rewards were given
   string miner = 11;
@@ -46,20 +46,20 @@ message Block {
   int64 difficulty = 12;
 
   // Integer of the total difficulty of the chain until this block
-  int64 totalDifficulty = 13;
+  int64 total_difficulty = 13;
 
   // The size of this block in bytes
   int64 size = 14;
 
   // The extra data field of this block
-  string extraData = 15;
+  string extra_data = 15;
 
   // The maximum gas allowed in this block
-  int64 gasLimit = 16;
+  int64 gas_limit = 16;
 
   // The total used gas by all transactions in this block
-  int64 gasUsed = 17;
+  int64 gas_used = 17;
 
   // The number of transactions in the block
-  int64 transactionCount = 18;
+  int64 transaction_count = 18;
 }

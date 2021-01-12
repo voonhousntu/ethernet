@@ -10,13 +10,13 @@ import "google/protobuf/timestamp.proto";
 
 message Log {
   // Integer of the log index position in the block
-  int64 logIndex = 1;
+  int64 log_index = 1;
 
   // Hash of the transactions this log was created from
-  string transactionHash = 2;
+  string transaction_hash = 2;
 
   // Integer of the transactions index position log was created from
-  int64 transactionIndex = 3;
+  int64 transaction_index = 3;
 
   // Address from which this log originated
   string address = 4;
@@ -32,11 +32,11 @@ message Log {
   string topics = 6;
 
   // Timestamp of the block where this log was in
-  google.protobuf.Timestamp blockTimestamp = 7;
+  google.protobuf.Timestamp block_timestamp = 7;
 
   // The block number where this log was in
-  int64 blockNumber = 8;
+  int64 block_number = 8;
 
   // Hash of the block where this log was in
-  string blockHash = 9;
+  string block_hash = 9;
 }

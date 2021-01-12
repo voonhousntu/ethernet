@@ -24,14 +24,14 @@ message Token {
 
   // The total token supply
   // Requires user to cast to NUMERIC or FLOAT64
-  string totalSupply = 5;
+  string total_supply = 5;
 
   // Timestamp of the block where this token was created
-  google.protobuf.Timestamp blockTimestamp = 6;
+  google.protobuf.Timestamp block_timestamp = 6;
 
   // Block number where this token was created
-  int64 blockNumber = 7;
+  int64 block_number = 7;
 
   // Hash of the block where this token was created
-  string blockHash = 8;
+  string block_hash = 8;
 }
