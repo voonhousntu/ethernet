@@ -1,24 +1,25 @@
 package com.vsu001.ethernet.core.service;
 
-import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Timestamp;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
+import com.vsu001.ethernet.core.util.OrcFileWriter;
 import io.grpc.stub.StreamObserver;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @Slf4j
 @GrpcService
 public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
+  private static final String TMP_BLOCK_TS_MAPPING_TABLE = "block_timestamp_mapping_tmp";
+  private static final String BLOCK_TS_MAPPING_TABLE = "block_timestamp_mapping";
   private final JdbcTemplate jdbcTemplate;
 
   public CoreServiceImpl(JdbcTemplate jdbcTemplate) {
@@ -48,61 +49,70 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       long rowsFetched = tableResult.getTotalRows();
       log.info("Rows fetched: [{}]", rowsFetched);
 
+      // Fetch all the rows
+      List<Map<String, Object>> data = BigQueryUtil.formatTableResult(
+          BlockTimestampMapping.getDescriptor(),
+          tableResult
+      );
+
+      // Write results to an ORC file
+      String outputPath = "/user/hive/warehouse/orc_tmp/";
+      String fileName = "orc_output.orc";
+      String struct = "struct<number:bigint,timestamp:timestamp>";
+
+      OrcFileWriter.write(outputPath + fileName, struct, data);
+
+      Instant time = Instant.now();
       BlockTsMappingUpdateResponse reply = BlockTsMappingUpdateResponse.newBuilder()
           .setNumber(-1L)
-          .setTimestamp(Timestamp.newBuilder().build())
+          .setTimestamp(
+              Timestamp.newBuilder()
+                  .setSeconds(time.getEpochSecond())
+                  .setNanos(time.getNano())
+                  .build()
+          )
           .build();
 
-      // Write to hive table
-      saveBatch(tableResult);
+      // Create temporary Hive table
+      createTmpTable(outputPath);
 
+      // Insert data from temporary Hive table
+      populateHiveTable();
+
+      // Remove temporary Hive table
+      // Will remove temporary file too
+      dropTmpTable();
+
+      // Return request response
       responseObserver.onNext(reply);
       responseObserver.onCompleted();
-    } catch (InterruptedException e) {
+    } catch (InterruptedException | IOException e) {
       responseObserver.onError(e.getCause());
       e.printStackTrace();
     }
-
   }
 
-  private void saveBatch(TableResult tableResult) {
-    final String query =
-        "INSERT INTO ethernet.block_timestamp_mapping partition(`number`) VALUES (?, ?)";
-    final String nonStrictPartition =
-        "SET hive.exec.dynamic.partition.mode=nonstrict";
+  private void createTmpTable(String orcFilePath) {
+    // Use non-external table so that temporary file can be removed with table drop
+    String sql =
+        "CREATE TABLE %s (`number` bigint, `timestamp` timestamp)"
+            + " STORED AS ORC LOCATION '%s' TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
+    String query = String.format(sql, TMP_BLOCK_TS_MAPPING_TABLE, orcFilePath);
+    jdbcTemplate.execute(query);
+  }
 
-    // Enable dynamic partition in non-strict mode
-    jdbcTemplate.execute(nonStrictPartition);
+  private void populateHiveTable() {
+    String sql =
+        "INSERT INTO ethernet.%s "
+            + "SELECT * FROM %s";
+    String query = String.format(sql, BLOCK_TS_MAPPING_TABLE, TMP_BLOCK_TS_MAPPING_TABLE);
+    jdbcTemplate.execute(query);
+  }
 
-    boolean isFirstPage = true;
-    do {
-      if (!isFirstPage) {
-        tableResult = tableResult.getNextPage();
-      }
-
-      List<FieldValueList> rowList = new ArrayList<>();
-      Iterable<FieldValueList> rowIterable = tableResult.getValues();
-      rowIterable.forEach(rowList::add);
-
-      jdbcTemplate.batchUpdate(
-          query,
-          new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i)
-                throws SQLException {
-              FieldValueList tableRow = rowList.get(i);
-              ps.setString(1, tableRow.get("timestamp").getStringValue());
-              ps.setString(2, tableRow.get("number").getStringValue());
-            }
-
-            @Override
-            public int getBatchSize() {
-              return rowList.size();
-            }
-          }
-      );
-      isFirstPage = false;
-    } while (tableResult.hasNextPage());
+  private void dropTmpTable() {
+    String sql = "DROP TABLE %s";
+    String query = String.format(sql, TMP_BLOCK_TS_MAPPING_TABLE);
+    jdbcTemplate.execute(query);
   }
 
 }

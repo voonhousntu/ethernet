@@ -127,6 +127,70 @@
       <artifactId>grpc-server-spring-boot-starter</artifactId>
       <version>${grpc.spring.boot.starter.version}</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.orc/orc-core -->
+    <dependency>
+      <groupId>org.apache.orc</groupId>
+      <artifactId>orc-core</artifactId>
+      <version>${orc.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty.aggregate</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <!-- To fix warning: `SLF4J: Class path contains multiple SLF4J bindings.` -->
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <!-- To fix error: `Cannot resolve jdk.tools:jdk.tools:1.7` -->
+        <exclusion>
+          <groupId>jdk.tools</groupId>
+          <artifactId>jdk.tools</artifactId>
+        </exclusion>
+        <!-- To fix error: `com.google.gson.GsonBuilder.setLenient() does not exist` -->
+        <!-- This error is caused by gson version mismatch -->
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.orc/orc-tools -->
+    <dependency>
+      <groupId>org.apache.orc</groupId>
+      <artifactId>orc-tools</artifactId>
+      <version>${orc.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty.aggregate</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <!-- To fix warning: `SLF4J: Class path contains multiple SLF4J bindings.` -->
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <!-- To fix error: `Cannot resolve jdk.tools:jdk.tools:1.7` -->
+        <exclusion>
+          <groupId>jdk.tools</groupId>
+          <artifactId>jdk.tools</artifactId>
+        </exclusion>
+        <!-- To fix error: `com.google.gson.GsonBuilder.setLenient() does not exist` -->
+        <!-- This error is caused by gson version mismatch -->
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>

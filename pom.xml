@@ -24,6 +24,7 @@
     <grpc.spring.boot.starter.version>2.10.1.RELEASE</grpc.spring.boot.starter.version>
     <grpc.version>1.31.1</grpc.version>
     <junit.jupiter.version>5.7.0</junit.jupiter.version>
+    <orc.version>1.6.6</orc.version>
   </properties>
 
   <modules>
