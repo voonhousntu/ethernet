@@ -17,12 +17,9 @@ CREATE TABLE ethernet.traces
     `error`             string,
     `status`            bigint,
     `block_hash`        string,
+    `block_number`      bigint,
+    `block_timestamp`   timestamp,
     `trace_id`          string
 )
-    PARTITIONED BY
-        (
-        `block_number` bigint,
-        `block_timestamp` timestamp
-        )
     STORED AS ORC
     TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB');

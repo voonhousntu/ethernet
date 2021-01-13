@@ -6,13 +6,9 @@ CREATE TABLE ethernet.logs
     `address`           string,
     `data`              string,
     `topics`            string,
-    `block_hash`        string
-
+    `block_hash`        string,
+    `block_number`      bigint,
+    `block_timestamp`   timestamp
 )
-    PARTITIONED BY
-        (
-        `block_number` bigint,
-        `block_timestamp` timestamp
-        )
     STORED AS ORC
     TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB');

@@ -1,5 +1,7 @@
 CREATE TABLE ethernet.blocks
 (
+    `number`            bigint,
+    `timestamp`         timestamp,
     `hash`              string,
     `parent_hash`       string,
     `nonce`             string,
@@ -18,10 +20,5 @@ CREATE TABLE ethernet.blocks
     `transaction_count` bigint
 
 )
-    PARTITIONED BY
-        (
-        `number` bigint,
-        `timestamp` timestamp
-        )
     STORED AS ORC
     TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB');

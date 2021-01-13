@@ -6,13 +6,9 @@ CREATE TABLE ethernet.token_transfers
     `value`            string,
     `transaction_hash` string,
     `log_index`        bigint,
-    `block_hash`       string
-
+    `block_hash`       string,
+    `block_number`     bigint,
+    `block_timestamp`  timestamp
 )
-    PARTITIONED BY
-        (
-        `block_number` bigint,
-        `block_timestamp` timestamp
-        )
     STORED AS ORC
     TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB');
