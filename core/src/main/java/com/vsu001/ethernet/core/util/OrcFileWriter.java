@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
@@ -209,12 +210,19 @@ public class OrcFileWriter {
         return "boolean";
       case "MESSAGE":
         if (fieldDescriptor.getName().contains("timestamp")) {
-         return "timestamp";
+          return "timestamp";
         }
         throw new RuntimeException(javaTypeName + "type not supported");
       default:
         throw new RuntimeException(javaTypeName + "type not supported");
     }
+  }
+
+  public static String protoToOrcStructStr(List<FieldDescriptor> fieldDescriptorList) {
+    String structStr = fieldDescriptorList.stream()
+        .map(s -> String.format("%s:%s", s.getName(), protoToOrcType(s)))
+        .collect(Collectors.joining(","));
+    return "struct<" + structStr + ">" ;
   }
 
 }
