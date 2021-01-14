@@ -36,7 +36,6 @@ public class BlockTsMappingServiceImpl implements GenericService {
     log.info("Rows fetched: [{}]", rowsFetched);
 
     return tableResult;
-
   }
 
   @Override

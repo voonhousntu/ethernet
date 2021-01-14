@@ -2,12 +2,13 @@ package com.vsu001.ethernet.core.util;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.Field;
+import com.google.cloud.bigquery.FieldList;
 import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,52 +56,66 @@ public class BigQueryUtil {
     return bigquery.query(queryConfig);
   }
 
-  private static Object getJavaType(FieldDescriptor fieldDescriptor, FieldValue fieldValue) {
-    switch (fieldDescriptor.getJavaType().name()) {
-      case "STRING":
-        return fieldValue.getStringValue();
-      case "BYTES":
-        return fieldValue.getBytesValue();
-      case "LONG":
-        return fieldValue.getLongValue();
-      case "DOUBLE":
-        return fieldValue.getDoubleValue();
-      case "BOOLEAN":
-        return fieldValue.getBooleanValue();
-      default:
-        if (fieldDescriptor.getName().contains("timestamp")) {
-          long timestamp = fieldValue.getTimestampValue() / 1000;
-          return new java.sql.Timestamp(timestamp);
-        }
-        return fieldValue.getValue();
-    }
-  }
-
-  public static List<Map<String, Object>> formatTableResult(Descriptor descriptor,
-      TableResult tableResult) {
+  public static List<Map<String, Object>> formatTableResult(TableResult tableResult) {
     List<Map<String, Object>> data = new LinkedList<>();
-    List<FieldDescriptor> fieldDescriptorList = descriptor.getFields();
+    FieldList fieldList = tableResult.getSchema().getFields();
 
     // Loop through every row
     for (FieldValueList fieldValueList : tableResult.iterateAll()) {
-      // Check if field descriptor and row are of same size
-      if (fieldDescriptorList.size() != fieldValueList.size()) {
-        throw new RuntimeException("Mismatch in size between descriptor and table row");
-      }
 
       // Loop through every field
       Map<String, Object> stringObjectMap = new HashMap<>();
       for (int i = 0; i < fieldValueList.size(); i++) {
-        FieldDescriptor fieldDescriptor = fieldDescriptorList.get(i);
+        Field field = fieldList.get(i);
         stringObjectMap.put(
-            fieldDescriptor.getName(),
-            getJavaType(fieldDescriptor, fieldValueList.get(i))
+            field.getName(),
+            getJavaValue(field, fieldValueList.get(i))
         );
       }
 
       data.add(stringObjectMap);
     }
     return data;
+  }
+
+  public static Object getJavaValue(Field field, FieldValue fieldValue) {
+    switch (field.getType().name()) {
+      case "STRING":
+        return fieldValue.getStringValue();
+      case "BYTES":
+        return fieldValue.getBytesValue();
+      case "INTEGER":
+        return fieldValue.getLongValue();
+      case "FLOAT":
+        return fieldValue.getDoubleValue();
+      case "BOOLEAN":
+        return fieldValue.getBooleanValue();
+      case "TIMESTAMP":
+        long timestamp = fieldValue.getTimestampValue() / 1000;
+        return new java.sql.Timestamp(timestamp);
+      default:
+        return fieldValue.getValue();
+    }
+  }
+
+  public static String getOrcType(Field field) {
+    String fieldTypeName = field.getType().name();
+    switch (fieldTypeName) {
+      case "STRING":
+        return "string";
+      case "BYTES":
+        throw new RuntimeException(fieldTypeName + "type not supported");
+      case "INTEGER":
+        return "bigint";
+      case "FLOAT":
+        return "double";
+      case "BOOLEAN":
+        return "boolean";
+      case "TIMESTAMP":
+        return "timestamp";
+      default:
+        throw new RuntimeException(fieldTypeName + "type not supported");
+    }
   }
 
 }

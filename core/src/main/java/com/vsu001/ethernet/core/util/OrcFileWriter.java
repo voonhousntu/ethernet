@@ -2,6 +2,7 @@ package com.vsu001.ethernet.core.util;
 
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.TableResult;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -100,54 +101,6 @@ public class OrcFileWriter {
     writeTableResults(config, path, struct, tableResult);
   }
 
-  public static void writeTableResults(
-      Configuration configuration,
-      String path,
-      String struct,
-      TableResult tableResult
-  ) throws IOException {
-    // Create the schemas and extract metadata from the schema
-    TypeDescription schema = TypeDescription.fromString(struct);
-    List<String> fieldNames = schema.getFieldNames();
-    List<TypeDescription> columnTypes = schema.getChildren();
-
-    // Create a row batch
-    VectorizedRowBatch batch = schema.createRowBatch();
-
-    // Get the column vector references
-    List<BiConsumer<Integer, Object>> consumers = new ArrayList<>(columnTypes.size());
-    for (int i = 0; i < columnTypes.size(); i++) {
-      TypeDescription type = columnTypes.get(i);
-      ColumnVector vector = batch.cols[i];
-      consumers.add(createColumnWriter(type, vector));
-    }
-
-    // Open a writer to write the data to an ORC fle
-    try (Writer writer = OrcFile
-        .createWriter(new Path(path), OrcFile.writerOptions(configuration).setSchema(schema))) {
-      for (FieldValueList fieldValueList: tableResult.iterateAll()) {
-        // batch.size should be increased externally
-        int rowNum = batch.size++;
-
-        // Write each column to the associated column vector
-        for (int i = 0; i < fieldNames.size(); i++) {
-          consumers.get(i).accept(rowNum, fieldValueList.get(fieldNames.get(i)));
-        }
-
-        // If the buffer is full, write it to disk
-        if (batch.size == batch.getMaxSize()) {
-          writer.addRowBatch(batch);
-          batch.reset();
-        }
-      }
-
-      // Check unwritten rows before closing
-      if (batch.size != 0) {
-        writer.addRowBatch(batch);
-      }
-    }
-  }
-
   private static BiConsumer<Integer, Object> createColumnWriter(
       TypeDescription description,
       ColumnVector columnVector
@@ -191,6 +144,77 @@ public class OrcFileWriter {
       throw new RuntimeException("Unsupported type " + type);
     }
     return consumer;
+  }
+
+  public static void writeTableResults(
+      Configuration configuration,
+      String path,
+      String struct,
+      TableResult tableResult
+  ) throws IOException {
+    // Create the schemas and extract metadata from the schema
+    TypeDescription schema = TypeDescription.fromString(struct);
+    List<String> fieldNames = schema.getFieldNames();
+    List<TypeDescription> columnTypes = schema.getChildren();
+
+    // Create a row batch
+    VectorizedRowBatch batch = schema.createRowBatch();
+
+    // Get the column vector references
+    List<BiConsumer<Integer, Object>> consumers = new ArrayList<>(columnTypes.size());
+    for (int i = 0; i < columnTypes.size(); i++) {
+      TypeDescription type = columnTypes.get(i);
+      ColumnVector vector = batch.cols[i];
+      consumers.add(createColumnWriter(type, vector));
+    }
+
+    // Open a writer to write the data to an ORC fle
+    try (Writer writer = OrcFile
+        .createWriter(new Path(path), OrcFile.writerOptions(configuration).setSchema(schema))) {
+      for (FieldValueList fieldValueList : tableResult.iterateAll()) {
+        // batch.size should be increased externally
+        int rowNum = batch.size++;
+
+        // Write each column to the associated column vector
+        for (int i = 0; i < fieldNames.size(); i++) {
+          consumers.get(i).accept(rowNum, fieldValueList.get(fieldNames.get(i)));
+        }
+
+        // If the buffer is full, write it to disk
+        if (batch.size == batch.getMaxSize()) {
+          writer.addRowBatch(batch);
+          batch.reset();
+        }
+      }
+
+      // Check unwritten rows before closing
+      if (batch.size != 0) {
+        writer.addRowBatch(batch);
+      }
+    }
+  }
+
+  public static String protoToOrcType(FieldDescriptor fieldDescriptor) {
+    String javaTypeName = fieldDescriptor.getJavaType().name();
+    switch (javaTypeName) {
+      case "STRING":
+        return "string";
+      case "BYTES":
+        throw new RuntimeException(javaTypeName + "type not supported");
+      case "LONG":
+        return "bigint";
+      case "DOUBLE":
+        return "double";
+      case "BOOLEAN":
+        return "boolean";
+      case "MESSAGE":
+        if (fieldDescriptor.getName().contains("timestamp")) {
+         return "timestamp";
+        }
+        throw new RuntimeException(javaTypeName + "type not supported");
+      default:
+        throw new RuntimeException(javaTypeName + "type not supported");
+    }
   }
 
 }
