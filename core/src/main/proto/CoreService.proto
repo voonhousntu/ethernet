@@ -11,7 +11,7 @@ import "google/protobuf/timestamp.proto";
 service CoreService {
   // Update the block number and timestamp mapping in the Hive table
   // The most recent block number and timestamp will be returned after the update
-  rpc UpdateBlockTsMapping (BlockTsMappingUpdateRequest) returns (BlockTsMappingUpdateResponse) {
+  rpc UpdateBlockTsMapping (UpdateRequest) returns (UpdateResponse) {
   }
 
   // Fetch the required blocks and push them into the `blocks` Hive table
