@@ -1,5 +1,7 @@
 package com.vsu001.ethernet.core.util;
 
+import com.google.cloud.bigquery.FieldValueList;
+import com.google.cloud.bigquery.TableResult;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -29,11 +31,12 @@ public class OrcFileWriter {
       String struct,
       List<Map<String, Object>> data
   ) throws IOException {
-    Configuration configuration = new Configuration();
-    configuration.set("fs.defaultFS", "hdfs://namenode:8020");
-    configuration.set("dfs.datanode.use.datanode.hostname", "true");
-    configuration.set("dfs.client.use.datanode.hostname", "true");
-    write(configuration, path, struct, data);
+    // Use default configurations
+    Configuration config = new Configuration();
+    config.set("fs.defaultFS", "hdfs://namenode:8020");
+    config.set("dfs.datanode.use.datanode.hostname", "true");
+    config.set("dfs.client.use.datanode.hostname", "true");
+    write(config, path, struct, data);
   }
 
   public static void write(
@@ -59,9 +62,8 @@ public class OrcFileWriter {
     }
 
     // Open a writer to write the data to an ORC fle
-    try (Writer writer = OrcFile.createWriter(new Path(path),
-        OrcFile.writerOptions(configuration)
-            .setSchema(schema))) {
+    try (Writer writer = OrcFile
+        .createWriter(new Path(path), OrcFile.writerOptions(configuration).setSchema(schema))) {
       for (Map<String, Object> row : data) {
         // batch.size should be increased externally
         int rowNum = batch.size++;
@@ -85,7 +87,68 @@ public class OrcFileWriter {
     }
   }
 
-  public static BiConsumer<Integer, Object> createColumnWriter(
+  public static void writeTableResults(
+      String path,
+      String struct,
+      TableResult tableResult
+  ) throws IOException {
+    // Use default configurations
+    Configuration config = new Configuration();
+    config.set("fs.defaultFS", "hdfs://namenode:8020");
+    config.set("dfs.datanode.use.datanode.hostname", "true");
+    config.set("dfs.client.use.datanode.hostname", "true");
+    writeTableResults(config, path, struct, tableResult);
+  }
+
+  public static void writeTableResults(
+      Configuration configuration,
+      String path,
+      String struct,
+      TableResult tableResult
+  ) throws IOException {
+    // Create the schemas and extract metadata from the schema
+    TypeDescription schema = TypeDescription.fromString(struct);
+    List<String> fieldNames = schema.getFieldNames();
+    List<TypeDescription> columnTypes = schema.getChildren();
+
+    // Create a row batch
+    VectorizedRowBatch batch = schema.createRowBatch();
+
+    // Get the column vector references
+    List<BiConsumer<Integer, Object>> consumers = new ArrayList<>(columnTypes.size());
+    for (int i = 0; i < columnTypes.size(); i++) {
+      TypeDescription type = columnTypes.get(i);
+      ColumnVector vector = batch.cols[i];
+      consumers.add(createColumnWriter(type, vector));
+    }
+
+    // Open a writer to write the data to an ORC fle
+    try (Writer writer = OrcFile
+        .createWriter(new Path(path), OrcFile.writerOptions(configuration).setSchema(schema))) {
+      for (FieldValueList fieldValueList: tableResult.iterateAll()) {
+        // batch.size should be increased externally
+        int rowNum = batch.size++;
+
+        // Write each column to the associated column vector
+        for (int i = 0; i < fieldNames.size(); i++) {
+          consumers.get(i).accept(rowNum, fieldValueList.get(fieldNames.get(i)));
+        }
+
+        // If the buffer is full, write it to disk
+        if (batch.size == batch.getMaxSize()) {
+          writer.addRowBatch(batch);
+          batch.reset();
+        }
+      }
+
+      // Check unwritten rows before closing
+      if (batch.size != 0) {
+        writer.addRowBatch(batch);
+      }
+    }
+  }
+
+  private static BiConsumer<Integer, Object> createColumnWriter(
       TypeDescription description,
       ColumnVector columnVector
   ) {
@@ -129,5 +192,6 @@ public class OrcFileWriter {
     }
     return consumer;
   }
+
 }
 

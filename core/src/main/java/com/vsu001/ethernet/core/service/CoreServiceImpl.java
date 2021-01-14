@@ -8,8 +8,7 @@ import com.vsu001.ethernet.core.util.OrcFileWriter;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,18 +48,12 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       long rowsFetched = tableResult.getTotalRows();
       log.info("Rows fetched: [{}]", rowsFetched);
 
-      // Fetch all the rows
-      List<Map<String, Object>> data = BigQueryUtil.formatTableResult(
-          BlockTimestampMapping.getDescriptor(),
-          tableResult
-      );
-
-      // Write results to an ORC file
+      // Write results to an ORC file with random (UUID) filename
       String outputPath = "/user/hive/warehouse/orc_tmp/";
-      String fileName = "orc_output.orc";
+      String fileName = UUID.randomUUID().toString() + ".orc";
       String struct = "struct<number:bigint,timestamp:timestamp>";
 
-      OrcFileWriter.write(outputPath + fileName, struct, data);
+      OrcFileWriter.writeTableResults(outputPath + fileName, struct, tableResult);
 
       Instant time = Instant.now();
       BlockTsMappingUpdateResponse reply = BlockTsMappingUpdateResponse.newBuilder()
