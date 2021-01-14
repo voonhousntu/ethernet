@@ -2,13 +2,10 @@ package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Timestamp;
-import com.vsu001.ethernet.core.model.BlockTimestampMapping;
-import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,46 +14,49 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @GrpcService
 public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
-  private static final String TMP_BLOCK_TS_MAPPING_TABLE = "block_timestamp_mapping_tmp";
-  private static final String BLOCK_TS_MAPPING_TABLE = "block_timestamp_mapping";
   private final JdbcTemplate jdbcTemplate;
+  private final BlockTsMappingServiceImpl blockTsMappingService;
 
-  public CoreServiceImpl(JdbcTemplate jdbcTemplate) {
+  public CoreServiceImpl(
+      JdbcTemplate jdbcTemplate,
+      BlockTsMappingServiceImpl blockTsMappingService
+  ) {
     this.jdbcTemplate = jdbcTemplate;
+    this.blockTsMappingService = blockTsMappingService;
   }
 
   @Override
   public void updateBlockTsMapping(
-      BlockTsMappingUpdateRequest request,
-      StreamObserver<BlockTsMappingUpdateResponse> responseObserver) {
+      UpdateRequest request,
+      StreamObserver<UpdateResponse> responseObserver
+  ) {
+    log.info("Updating `block_timestamp_mapping`");
 
     try {
-      log.info("Updating `block_timestamp_mapping`");
-      // For debugging
-      TableResult tableResult = BigQueryUtil.query(
-          BlockTimestampMapping.getDescriptor(),
-          "blocks",
-          "timestamp < '2015-07-30 15:46:52'"
-      );
+      String outputPath = blockTsMappingService.getOutputPath();
+      String filename = blockTsMappingService.getFilename();
+      String struct = blockTsMappingService.getStructStr();
+      String tableName = blockTsMappingService.getTableName();
+      String tmpTableName = blockTsMappingService.getTmpTableName();
+      String schema = blockTsMappingService.getSchemaStr();
 
-      // TODO: Fetch the largest timestamp from the table
-//      TableResult tableResult = BigQueryUtil.query(
-//          BlockTimestampMapping.getDescriptor(),
-//          "blocks".
-//              "timestamp > ''"
-//      );
-      long rowsFetched = tableResult.getTotalRows();
-      log.info("Rows fetched: [{}]", rowsFetched);
+      // Fetch results from BigQuery
+      TableResult tableResult = blockTsMappingService.fetchFromBq(request);
 
-      // Write results to an ORC file with random (UUID) filename
-      String outputPath = "/user/hive/warehouse/orc_tmp/";
-      String fileName = UUID.randomUUID().toString() + ".orc";
-      String struct = "struct<number:bigint,timestamp:timestamp>";
+      // Write query results to ORC file with random (UUID) filename in HDFS
+      writeTableResults(outputPath, filename, struct, tableResult);
 
-      OrcFileWriter.writeTableResults(outputPath + fileName, struct, tableResult);
+      // Create temporary Hive table
+      createTmpTable(schema, tmpTableName, outputPath);
+
+      // Insert data from temporary Hive table
+      populateHiveTable(tableName, tmpTableName);
+
+      // Remove temporary Hive table + temporary ORC file
+      dropTmpTable(tmpTableName);
 
       Instant time = Instant.now();
-      BlockTsMappingUpdateResponse reply = BlockTsMappingUpdateResponse.newBuilder()
+      UpdateResponse reply = UpdateResponse.newBuilder()
           .setNumber(-1L)
           .setTimestamp(
               Timestamp.newBuilder()
@@ -66,46 +66,82 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
           )
           .build();
 
-      // Create temporary Hive table
-      createTmpTable(outputPath);
-
-      // Insert data from temporary Hive table
-      populateHiveTable();
-
-      // Remove temporary Hive table
-      // Will remove temporary file too
-      dropTmpTable();
-
-      // Return request response
+      // Return response
       responseObserver.onNext(reply);
       responseObserver.onCompleted();
+
     } catch (InterruptedException | IOException e) {
-      responseObserver.onError(e.getCause());
       e.printStackTrace();
+      responseObserver.onError(e.fillInStackTrace());
     }
   }
 
-  private void createTmpTable(String orcFilePath) {
+  @Override
+  public void updateBlocks(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
+    super.updateBlocks(request, responseObserver);
+  }
+
+  @Override
+  public void updateContracts(UpdateRequest request,
+      StreamObserver<UpdateResponse> responseObserver) {
+    super.updateContracts(request, responseObserver);
+  }
+
+  @Override
+  public void updateLogs(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
+    super.updateLogs(request, responseObserver);
+  }
+
+  @Override
+  public void updateTokenTransfers(UpdateRequest request,
+      StreamObserver<UpdateResponse> responseObserver) {
+    super.updateTokenTransfers(request, responseObserver);
+  }
+
+  @Override
+  public void updateTokens(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
+    super.updateTokens(request, responseObserver);
+  }
+
+  @Override
+  public void updateTraces(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
+    super.updateTraces(request, responseObserver);
+  }
+
+  @Override
+  public void updateTransactions(UpdateRequest request,
+      StreamObserver<UpdateResponse> responseObserver) {
+    super.updateTransactions(request, responseObserver);
+  }
+
+  private void writeTableResults(
+      String outputPath,
+      String fileName,
+      String struct,
+      TableResult tableResult
+  ) throws IOException {
+    OrcFileWriter.writeTableResults(outputPath + fileName, struct, tableResult);
+  }
+
+  private void createTmpTable(String schema, String tmpTableName, String orcParentDir) {
     // Use non-external table so that temporary file can be removed with table drop
     String sql =
-        "CREATE TABLE %s (`number` bigint, `timestamp` timestamp)"
+        "CREATE TABLE %s (%s)"
             + " STORED AS ORC LOCATION '%s' TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
-    String query = String.format(sql, TMP_BLOCK_TS_MAPPING_TABLE, orcFilePath);
+    String query = String.format(sql, schema, tmpTableName, orcParentDir);
     jdbcTemplate.execute(query);
   }
 
-  private void populateHiveTable() {
+  private void populateHiveTable(String desTable, String srcTable) {
     String sql =
-        "INSERT INTO ethernet.%s "
-            + "SELECT * FROM %s";
-    String query = String.format(sql, BLOCK_TS_MAPPING_TABLE, TMP_BLOCK_TS_MAPPING_TABLE);
+        "INSERT INTO ethernet.%s SELECT * FROM %s";
+    String query = String.format(sql, desTable, srcTable);
     jdbcTemplate.execute(query);
   }
 
-  private void dropTmpTable() {
+  private void dropTmpTable(String tmpTableName) {
     String sql = "DROP TABLE %s";
-    String query = String.format(sql, TMP_BLOCK_TS_MAPPING_TABLE);
+    String query = String.format(sql, tmpTableName);
     jdbcTemplate.execute(query);
   }
-
 }
