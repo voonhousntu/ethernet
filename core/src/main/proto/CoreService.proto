@@ -43,25 +43,20 @@ service CoreService {
   }
 }
 
-// Block timestamp mapping update request
-message BlockTsMappingUpdateRequest {
-  // The block number
-  int64 number = 1;
+// Update request
+message UpdateRequest {
+  // The starting block number in the block number range
+  int64 start_block_number = 1;
+
+  // The ending block number in the block number range
+  int64 end_block_number = 2;
 }
 
-// Block timestamp mapping update response
-message BlockTsMappingUpdateResponse {
+// Update response
+message UpdateResponse {
   // The block number
   int64 number = 1;
 
   // Timestamp of the block where this token was created
   google.protobuf.Timestamp timestamp = 2;
-}
-
-message UpdateRequest {
-
-}
-
-message UpdateResponse {
-
 }
