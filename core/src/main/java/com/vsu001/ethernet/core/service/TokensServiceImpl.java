@@ -24,11 +24,6 @@ public class TokensServiceImpl implements GenericService {
   }
 
   @Override
-  public String getStructStr() {
-    return OrcFileWriter.protoToOrcStructStr(FIELD_DESCRIPTOR_LIST);
-  }
-
-  @Override
   public String getTableName() {
     return TABLE_NAME;
   }
@@ -43,6 +38,11 @@ public class TokensServiceImpl implements GenericService {
     return FIELD_DESCRIPTOR_LIST.stream()
         .map(s -> String.format("`%s` %s", s.getName(), OrcFileWriter.protoToOrcType(s)))
         .collect(Collectors.joining(","));
+  }
+
+  @Override
+  public String getStructStr() {
+    return OrcFileWriter.protoToOrcStructStr(FIELD_DESCRIPTOR_LIST);
   }
 
 }

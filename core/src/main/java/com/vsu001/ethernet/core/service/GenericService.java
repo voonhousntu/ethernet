@@ -15,12 +15,12 @@ public interface GenericService {
     return UUID.randomUUID().toString() + ".orc";
   }
 
-  String getStructStr();
-
   String getTableName();
 
   String getTmpTableName();
 
   String getSchemaStr();
+
+  String getStructStr();
 
 }
