@@ -78,40 +78,46 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
   @Override
   public void updateBlocks(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
-    super.updateBlocks(request, responseObserver);
+    // TODO: Implement this method
   }
 
   @Override
-  public void updateContracts(UpdateRequest request,
-      StreamObserver<UpdateResponse> responseObserver) {
-    super.updateContracts(request, responseObserver);
+  public void updateContracts(
+      UpdateRequest request,
+      StreamObserver<UpdateResponse> responseObserver
+  ) {
+    // TODO: Implement this method
   }
 
   @Override
   public void updateLogs(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
-    super.updateLogs(request, responseObserver);
+    // TODO: Implement this method
   }
 
   @Override
-  public void updateTokenTransfers(UpdateRequest request,
-      StreamObserver<UpdateResponse> responseObserver) {
-    super.updateTokenTransfers(request, responseObserver);
+  public void updateTokenTransfers(
+      UpdateRequest request,
+      StreamObserver<UpdateResponse> responseObserver
+  ) {
+    // TODO: Implement this method
   }
 
   @Override
   public void updateTokens(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
-    super.updateTokens(request, responseObserver);
+    // TODO: Implement this method
   }
 
   @Override
   public void updateTraces(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
-    super.updateTraces(request, responseObserver);
+    // TODO: Implement this method
   }
 
   @Override
-  public void updateTransactions(UpdateRequest request,
-      StreamObserver<UpdateResponse> responseObserver) {
-    super.updateTransactions(request, responseObserver);
+  public void updateTransactions(
+      UpdateRequest request,
+      StreamObserver<UpdateResponse> responseObserver
+  ) {
+    // TODO: Implement this method
   }
 
   private void writeTableResults(

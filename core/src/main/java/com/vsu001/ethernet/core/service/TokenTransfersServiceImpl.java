@@ -20,6 +20,7 @@ public class TokenTransfersServiceImpl implements GenericService {
 
   @Override
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
+    // TODO: Implement this method
     return null;
   }
 

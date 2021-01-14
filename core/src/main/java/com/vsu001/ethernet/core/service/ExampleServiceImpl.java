@@ -8,6 +8,8 @@ import net.devh.boot.grpc.server.service.GrpcService;
 @GrpcService
 public class ExampleServiceImpl extends ExampleServiceGrpc.ExampleServiceImplBase {
 
+  // TODO: This is just an example class, it can be removed later
+
   @Override
   public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
     log.info("Received HelloRequest with from [{}]", request.getName());

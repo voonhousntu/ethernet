@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/debug")
 public class SampleHiveController {
 
+  // TODO: This is just an example controller, it can be removed later
+
   private final JdbcTemplate jdbcTemplate;
 
   public SampleHiveController(JdbcTemplate jdbcTemplate) {
