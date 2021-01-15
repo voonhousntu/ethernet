@@ -44,16 +44,20 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       TableResult tableResult = blockTsMappingService.fetchFromBq(request);
 
       // Write query results to ORC file with random (UUID) filename in HDFS
-      writeTableResults(outputPath, filename, struct, tableResult);
+      writeTableResults(blockTsMappingService, tableResult);
+//      writeTableResults(outputPath, filename, struct, tableResult);
 
       // Create temporary Hive table
-      createTmpTable(schema, tmpTableName, outputPath);
+      createTmpTable(blockTsMappingService);
+//      createTmpTable(schema, tmpTableName, outputPath);
 
       // Insert data from temporary Hive table
-      populateHiveTable(tableName, tmpTableName);
+      populateHiveTable(blockTsMappingService);
+//      populateHiveTable(tableName, tmpTableName);
 
       // Remove temporary Hive table + temporary ORC file
-      dropTmpTable(tmpTableName);
+      dropTmpTable(blockTsMappingService);
+//      dropTmpTable(tmpTableName);
 
       Instant time = Instant.now();
       UpdateResponse reply = UpdateResponse.newBuilder()
@@ -78,6 +82,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
   @Override
   public void updateBlocks(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
+
     // TODO: Implement this method
   }
 
@@ -121,12 +126,37 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   }
 
   private void writeTableResults(
+      GenericService genericService,
+      TableResult tableResult
+  ) throws IOException {
+    OrcFileWriter.writeTableResults(
+        genericService.getOutputPath() + genericService.getFilename(),
+        genericService.getStructStr(),
+        tableResult
+    );
+  }
+
+  private void writeTableResults(
       String outputPath,
       String fileName,
       String struct,
       TableResult tableResult
   ) throws IOException {
     OrcFileWriter.writeTableResults(outputPath + fileName, struct, tableResult);
+  }
+
+  private void createTmpTable(GenericService genericService) {
+    // Use non-external table so that temporary file can be removed with table drop
+    String sql =
+        "CREATE TABLE %s (%s)"
+            + " STORED AS ORC LOCATION '%s' TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
+    String query = String.format(
+        sql,
+        genericService.getSchemaStr(),
+        genericService.getTmpTableName(),
+        genericService.getOutputPath()
+    );
+    jdbcTemplate.execute(query);
   }
 
   private void createTmpTable(String schema, String tmpTableName, String orcParentDir) {
@@ -138,10 +168,27 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     jdbcTemplate.execute(query);
   }
 
+  private void populateHiveTable(GenericService genericService) {
+    String sql =
+        "INSERT INTO ethernet.%s SELECT * FROM %s";
+    String query = String.format(
+        sql,
+        genericService.getTableName(),
+        genericService.getTmpTableName()
+    );
+    jdbcTemplate.execute(query);
+  }
+
   private void populateHiveTable(String desTable, String srcTable) {
     String sql =
         "INSERT INTO ethernet.%s SELECT * FROM %s";
     String query = String.format(sql, desTable, srcTable);
+    jdbcTemplate.execute(query);
+  }
+
+  private void dropTmpTable(GenericService genericService) {
+    String sql = "DROP TABLE %s";
+    String query = String.format(sql, genericService.getTableName());
     jdbcTemplate.execute(query);
   }
 
@@ -150,4 +197,5 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     String query = String.format(sql, tmpTableName);
     jdbcTemplate.execute(query);
   }
+
 }
