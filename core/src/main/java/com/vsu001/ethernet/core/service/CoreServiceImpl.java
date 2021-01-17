@@ -83,6 +83,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `blocks` table");
 
     try {
+      // Update `block_timestamp_mapping` table
+      fetchAndPopulateHiveTable(blockTsMappingService, request);
+
       // Fetch and populate `blocks` table
       fetchAndPopulateHiveTable(blocksService, request);
 
@@ -103,6 +106,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `contracts` table");
 
     try {
+      // Update `block_timestamp_mapping` table
+      fetchAndPopulateHiveTable(blockTsMappingService, request);
+
       // Fetch and populate `contracts` table
       fetchAndPopulateHiveTable(contractsService, request);
 
@@ -120,6 +126,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `logs` table");
 
     try {
+      // Update `block_timestamp_mapping` table
+      fetchAndPopulateHiveTable(blockTsMappingService, request);
+
       // Fetch and populate `logs` table
       fetchAndPopulateHiveTable(logsService, request);
 
@@ -140,6 +149,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `token_transfers` table");
 
     try {
+      // Update `block_timestamp_mapping` table
+      fetchAndPopulateHiveTable(blockTsMappingService, request);
+
       // Fetch and populate `token_transfers` table
       fetchAndPopulateHiveTable(tokenTransfersService, request);
 
@@ -157,6 +169,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `tokens` table");
 
     try {
+      // Update `block_timestamp_mapping` table
+      fetchAndPopulateHiveTable(blockTsMappingService, request);
+
       // Fetch and populate `tokens` table
       fetchAndPopulateHiveTable(tokensService, request);
 
@@ -174,6 +189,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `traces` table");
 
     try {
+      // Update `block_timestamp_mapping` table
+      fetchAndPopulateHiveTable(blockTsMappingService, request);
+
       // Fetch and populate `traces` table
       fetchAndPopulateHiveTable(tracesService, request);
 
@@ -194,6 +212,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `transactions` table");
 
     try {
+      // Update `block_timestamp_mapping` table
+      fetchAndPopulateHiveTable(blockTsMappingService, request);
+
       // Fetch and populate `transactions` table
       fetchAndPopulateHiveTable(transactionsService, request);
 

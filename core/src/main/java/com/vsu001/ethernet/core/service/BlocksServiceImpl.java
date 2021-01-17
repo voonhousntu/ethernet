@@ -3,6 +3,7 @@ package com.vsu001.ethernet.core.service;
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.model.Block;
+import com.vsu001.ethernet.core.repository.BlockRepository;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +18,20 @@ public class BlocksServiceImpl implements GenericService {
   private static final String TMP_TABLE_NAME = "tmp_" + TABLE_NAME;
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = Block.getDescriptor()
       .getFields();
+  private final BlockRepository blockRepository;
+
+  public BlocksServiceImpl(BlockRepository blockRepository) {
+    this.blockRepository = blockRepository;
+  }
 
   @Override
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
-    // TODO: Implement this method
+    // Find blocks that are already in Hive table
+    List<Long> blockNumbers = blockRepository.findByNumberRange(
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     return null;
   }
 

@@ -24,6 +24,4 @@ public class BlockTsMappingRepository {
     return jdbcTemplate.queryForObject(query, new BlockTsMappingMapper());
   }
 
-
-
 }
