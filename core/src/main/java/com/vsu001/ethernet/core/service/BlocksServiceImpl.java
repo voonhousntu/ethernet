@@ -3,7 +3,10 @@ package com.vsu001.ethernet.core.service;
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.model.Block;
+import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.repository.BlockRepository;
+import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
+import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +22,14 @@ public class BlocksServiceImpl implements GenericService {
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = Block.getDescriptor()
       .getFields();
   private final BlockRepository blockRepository;
+  private final BlockTsMappingRepository blockTsMappingRepository;
 
-  public BlocksServiceImpl(BlockRepository blockRepository) {
+  public BlocksServiceImpl(
+      BlockRepository blockRepository,
+      BlockTsMappingRepository blockTsMappingRepository
+  ) {
     this.blockRepository = blockRepository;
+    this.blockTsMappingRepository = blockTsMappingRepository;
   }
 
   @Override
@@ -32,7 +40,30 @@ public class BlocksServiceImpl implements GenericService {
         request.getEndBlockNumber()
     );
 
-    return null;
+    List<BlockTimestampMapping> blockTsMappings = blockTsMappingRepository.findByStartEndNumber(
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
+    // TODO: Implement a way to handle non-contiguous data
+    String queryCriteria = String.format(
+        "`timestamp` >= '%s' AND `timestamp` < '%s' "
+            + "AND number >= '%s' AND number < '%s' "
+            + "AND number NOT IN (%s)",
+        "", "",
+        blockTsMappings.get(0).getNumber(), blockTsMappings.get(1).getNumber(),
+        blockNumbers.stream().map(String::valueOf).collect(Collectors.joining(","))
+    );
+
+    TableResult tableResult = BigQueryUtil.query(
+        Block.getDescriptor(),
+        "blocks",
+        queryCriteria
+    );
+
+    log.info("Rows fetched: [{}]", tableResult.getTotalRows());
+
+    return tableResult;
   }
 
   @Override
