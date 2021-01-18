@@ -45,11 +45,15 @@ public class GenericHiveRepository {
 
   public void populateHiveTable(GenericService genericService) {
     String sql =
-        "INSERT INTO ethernet.%s SELECT * FROM %s";
+        "INSERT INTO ethernet.%s "
+            + "SELECT * FROM %s a "
+            + "LEFT OUTER JOIN %s b ON a.number = b.number "
+            + "WHERE b.number IS NULL";
     String query = String.format(
         sql,
         genericService.getTableName(),
-        genericService.getTmpTableName()
+        genericService.getTmpTableName(),
+        genericService.getTableName()
     );
     jdbcTemplate.execute(query);
   }
