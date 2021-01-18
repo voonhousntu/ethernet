@@ -42,12 +42,12 @@ public class ContractsServiceImpl implements GenericService {
         request.getEndBlockNumber()
     );
 
-    // Add start and end delimiters
-    blockNumbers.add(0, request.getStartBlockNumber() - 1);
-    blockNumbers.add(request.getEndBlockNumber() + 1);
-
     // Find contiguous block numbers that are missing from the Hive table
-    List<List<Long>> lLists = BlockUtil.findMissingContRange(blockNumbers);
+    List<List<Long>> lLists = BlockUtil.findMissingContRange(
+        blockNumbers,
+        request.getStartBlockNumber() - 1,
+        request.getEndBlockNumber() + 1
+    );
 
     StringBuilder timestampSB = new StringBuilder("1=1 ");
     for (List<Long> lList : lLists) {
