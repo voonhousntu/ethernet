@@ -19,9 +19,8 @@ public class TokensServiceImpl implements GenericService {
       .getFields();
 
   @Override
-  public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
-    // TODO: Implement this method
-    return null;
+  public TableResult fetchFromBq(UpdateRequest request) {
+    throw new RuntimeException("This method is not implemented");
   }
 
   @Override

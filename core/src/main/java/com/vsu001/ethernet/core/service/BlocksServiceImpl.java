@@ -76,6 +76,7 @@ public class BlocksServiceImpl implements GenericService {
         blockNumbers.stream().map(String::valueOf).collect(Collectors.joining(","))
     );
 
+    // Fetch results from BigQuery
     TableResult tableResult = BigQueryUtil.query(
         Block.getDescriptor(),
         "blocks",
