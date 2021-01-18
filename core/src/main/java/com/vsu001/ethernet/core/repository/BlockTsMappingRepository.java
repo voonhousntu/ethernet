@@ -20,8 +20,8 @@ public class BlockTsMappingRepository {
   public BlockTimestampMapping findMostRecent() {
     String query =
         "SELECT * FROM ethernet.block_timestamp_mapping "
-        + "ORDER BY `timestamp` DESC "
-        + "LIMIT 1";
+            + "ORDER BY `timestamp` DESC "
+            + "LIMIT 1";
     return jdbcTemplate.queryForObject(query, new BlockTsMappingMapper());
   }
 
@@ -33,12 +33,12 @@ public class BlockTsMappingRepository {
     return jdbcTemplate.queryForObject(query, new BlockTsMappingMapper());
   }
 
-  public List<BlockTimestampMapping> findByStartEndNumber(Long startNumber, Long endNumber) {
+  public List<BlockTimestampMapping> findByStartEndNumber(Long start, Long end) {
     String sql =
         "SELECT * FROM ethernet.block_timestamp_mapping "
             + "WHERE number = %s OR number = %s "
             + "ORDER BY number ASC";
-    String query = String.format(sql, startNumber, endNumber);
+    String query = String.format(sql, start, end);
     // Result should only have two rows
     return jdbcTemplate.query(query, new BlockTsMappingMapper());
   }

@@ -15,7 +15,7 @@ public class BlockRepository {
     this.jdbcTemplate = jdbcTemplate;
   }
 
-  public List<Long> findByNumberRange(long start, long end) {
+  public List<Long> findByNumberRange(Long start, Long end) {
     String sql =
         "SELECT number FROM ethernet.blocks "
             + "WHERE number BETWEEN %s AND %s";
