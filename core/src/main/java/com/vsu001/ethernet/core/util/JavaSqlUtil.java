@@ -21,8 +21,6 @@ public class JavaSqlUtil {
     switch (javaTypeName) {
       case "STRING":
         return resultSet.getString(fieldName);
-      case "BYTES":
-        throw new RuntimeException(javaTypeName + "type not supported");
       case "LONG":
         return resultSet.getLong(fieldName);
       case "DOUBLE":
