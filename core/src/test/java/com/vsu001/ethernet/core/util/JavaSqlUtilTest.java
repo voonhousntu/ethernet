@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 public class JavaSqlUtilTest {
 
   @Test
-  public void jSqlToProtoType() throws SQLException {
+  public void testJSqlToProtoType() throws SQLException {
     // Initialise ResultSet
     String dataString =
         "address,block_number,block_timestamp,is_erc20\n"

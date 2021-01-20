@@ -4,6 +4,7 @@ import com.google.protobuf.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BlockUtil {
 
@@ -14,27 +15,20 @@ public class BlockUtil {
    * This implementation is O(n).
    *
    * @param longList List of Long-type elements to check.
-   * @param start    Starting sentinel value that is 1 less than the inclusive range-start-number.
-   * @param end      Ending sentinel value that is 1 more than the inclusive range-end-number.
    * @return List of contiguous sequence(s) of Long-type elements that are missing from the range
-   * between `start` and `end` (non-inclusive).
+   * between the sorted `longList`'s first and last element.
    */
-  public static List<List<Long>> findMissingContRange(
-      List<Long> longList,
-      Long start,
-      Long end
-  ) {
-    // Add start and end sentinel values
-    longList.add(0, start);
-    longList.add(end);
+  public static List<List<Long>> findMissingContRange(List<Long> longList) {
+    // Sort the longList and collect the results into a new variable
+    List<Long> sortedList = longList.stream().sorted().collect(Collectors.toList());
 
     List<List<Long>> lList = new ArrayList<>();
     List<Long> sList = new ArrayList<>(2);
 
-    for (int i = 1; i < longList.size(); i++) {
-      if (longList.get(i - 1) + 1 != longList.get(i)) {
-        sList.add(longList.get(i - 1) + 1);
-        sList.add(longList.get(i) - 1);
+    for (int i = 1; i < sortedList.size(); i++) {
+      if (sortedList.get(i - 1) + 1 != longList.get(i)) {
+        sList.add(sortedList.get(i - 1) + 1);
+        sList.add(sortedList.get(i) - 1);
 
         lList.add(sList);
 
@@ -42,6 +36,33 @@ public class BlockUtil {
       }
     }
     return lList;
+  }
+
+  /**
+   * Find missing contiguous sequence(s) of Long-type elements that are not in the list of Long-type
+   * elements.
+   * <p>
+   * This implementation is O(n).
+   *
+   * @param longList List of Long-type elements to check.
+   * @param start    Starting sentinel value or range-start-number.
+   * @param end      Ending sentinel value that or inclusive range-end-number.
+   * @return List of contiguous sequence(s) of Long-type elements that are missing from the range
+   * between `start` and `end` (inclusive).
+   */
+  public static List<List<Long>> findMissingContRange(
+      List<Long> longList,
+      Long start,
+      Long end
+  ) {
+    // Create a copy of longList
+    List<Long> cloneList = new ArrayList<>(List.copyOf(longList));
+
+    // Add start and end sentinel values
+    cloneList.add(0, start - 1);
+    cloneList.add(end + 1);
+
+    return findMissingContRange(cloneList);
   }
 
   public static String protoTsToISO(Timestamp timestamp) {

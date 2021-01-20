@@ -45,8 +45,8 @@ public class ContractsServiceImpl implements GenericService {
     // Find contiguous block numbers that are missing from the Hive table
     List<List<Long>> lLists = BlockUtil.findMissingContRange(
         blockNumbers,
-        request.getStartBlockNumber() - 1,
-        request.getEndBlockNumber() + 1
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
     );
 
     StringBuilder timestampSB = new StringBuilder("1=1 ");
