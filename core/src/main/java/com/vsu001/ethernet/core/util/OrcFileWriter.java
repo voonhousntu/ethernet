@@ -200,8 +200,6 @@ public class OrcFileWriter {
     switch (javaTypeName) {
       case "STRING":
         return "string";
-      case "BYTES":
-        throw new RuntimeException(javaTypeName + "type not supported");
       case "LONG":
         return "bigint";
       case "DOUBLE":
