@@ -103,8 +103,6 @@ public class BigQueryUtil {
     switch (fieldTypeName) {
       case "STRING":
         return "string";
-      case "BYTES":
-        throw new RuntimeException(fieldTypeName + "type not supported");
       case "INTEGER":
         return "bigint";
       case "FLOAT":
