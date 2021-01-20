@@ -18,7 +18,7 @@ public class BlockTsMappingMapper implements RowMapper<BlockTimestampMapping> {
     List<FieldDescriptor> fieldDescriptors = BlockTimestampMapping.getDescriptor().getFields();
 
     for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-      builder.setField(fieldDescriptor, JavaSqlUtil.protoToJSqlType(fieldDescriptor, resultSet));
+      builder.setField(fieldDescriptor, JavaSqlUtil.jSqlToProtoType(fieldDescriptor, resultSet));
     }
 
     return builder.build();

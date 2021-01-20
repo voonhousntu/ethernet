@@ -6,7 +6,15 @@ import java.sql.SQLException;
 
 public class JavaSqlUtil {
 
-  public static Object protoToJSqlType(FieldDescriptor fieldDescriptor, ResultSet resultSet)
+  /**
+   * Convert native Java SQL types to protobuf types
+   *
+   * @param fieldDescriptor FieldDescriptor of field to convert in proto object.
+   * @param resultSet       ResultSet of interest to convert.
+   * @return Native Java type of result of interest.
+   * @throws SQLException
+   */
+  public static Object jSqlToProtoType(FieldDescriptor fieldDescriptor, ResultSet resultSet)
       throws SQLException {
     String javaTypeName = fieldDescriptor.getJavaType().name();
     String fieldName = fieldDescriptor.getName();
