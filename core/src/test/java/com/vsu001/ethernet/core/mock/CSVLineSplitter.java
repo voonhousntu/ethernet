@@ -1,8 +1,3 @@
-/*
- * Distributed under the terms of the MIT License.
- * Copyright (c) 2009, Marcelo Criscuolo.
- */
-
 package com.vsu001.ethernet.core.mock;
 
 import java.util.LinkedList;

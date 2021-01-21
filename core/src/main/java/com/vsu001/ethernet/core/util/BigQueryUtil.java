@@ -3,16 +3,10 @@ package com.vsu001.ethernet.core.util;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Field;
-import com.google.cloud.bigquery.FieldList;
 import com.google.cloud.bigquery.FieldValue;
-import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.Descriptor;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,28 +50,15 @@ public class BigQueryUtil {
     return bigquery.query(queryConfig);
   }
 
-  public static List<Map<String, Object>> formatTableResult(TableResult tableResult) {
-    List<Map<String, Object>> data = new LinkedList<>();
-    FieldList fieldList = tableResult.getSchema().getFields();
-
-    // Loop through every row
-    for (FieldValueList fieldValueList : tableResult.iterateAll()) {
-
-      // Loop through every field
-      Map<String, Object> stringObjectMap = new HashMap<>();
-      for (int i = 0; i < fieldValueList.size(); i++) {
-        Field field = fieldList.get(i);
-        stringObjectMap.put(
-            field.getName(),
-            getJavaValue(field, fieldValueList.get(i))
-        );
-      }
-
-      data.add(stringObjectMap);
-    }
-    return data;
-  }
-
+  /**
+   * Obtain the native Java value of a `FieldValue` object by providing the `Field` object
+   * definition.
+   *
+   * @param field      Field object definition containing the FieldValue specifications.
+   * @param fieldValue FieldValue object containing the value that should be "converted" to Java's
+   *                   native type.
+   * @return Native Java value of the `FieldValue` object.
+   */
   public static Object getJavaValue(Field field, FieldValue fieldValue) {
     switch (field.getType().name()) {
       case "STRING":
@@ -98,6 +79,18 @@ public class BigQueryUtil {
     }
   }
 
+  /**
+   * Obtain the ORC type string of a `Field` object specification.
+   * <p>
+   * This function is a degenerate HashMap containing the mapping between the BigQuery Field object
+   * specification types and the ORC types.
+   * <p>
+   * Only types that are required for the Ethernet project is represented here.
+   *
+   * @param field Field object definition containing the FieldValue specifications.
+   * @return The equivalent ORC type string that is of the equivalent type as the `Field` object
+   * specification.
+   */
   public static String getOrcType(Field field) {
     String fieldTypeName = field.getType().name();
     switch (fieldTypeName) {

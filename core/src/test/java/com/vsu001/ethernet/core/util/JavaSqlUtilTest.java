@@ -15,10 +15,11 @@ public class JavaSqlUtilTest {
   @Test
   public void testJSqlToProtoType() throws SQLException {
     // Initialise ResultSet
-    String dataString =
-        "address,block_number,block_timestamp,is_erc20\n"
-            + "address_str,99,2018-12-09 02:24:27,true";
-    ResultSet resultSet = new MockResultSet(dataString);
+    ResultSet resultSet = new MockResultSet(
+        "address,block_number,block_timestamp,is_erc20",
+        "address_str,99,2018-12-09 02:24:27,true"
+    );
+    // Ensure that cursor is pointing to the correct row
     resultSet.next();
 
     // Test STRING FieldDescriptor
