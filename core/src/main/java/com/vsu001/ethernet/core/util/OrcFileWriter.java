@@ -230,11 +230,11 @@ public class OrcFileWriter {
   }
 
   /**
-   * Generate the struct string required to determine the "schema" of an ORC file from a a
-   * protobuf's FieldDescriptors.
+   * Generate the struct string required to define the "schema" of an ORC file from protobuf's
+   * FieldDescriptors.
    *
    * @param fieldDescriptorList FieldDescriptors describing the fields of a protobuf.
-   * @return The ORC struct string describing the protobuf fields.
+   * @return ORC struct string describing the protobuf fields.
    */
   public static String protoToOrcStructStr(List<FieldDescriptor> fieldDescriptorList) {
     String structStr = fieldDescriptorList.stream()

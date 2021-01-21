@@ -18,21 +18,33 @@ public class LogsServiceImpl implements GenericService {
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = Log.getDescriptor()
       .getFields();
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TableResult fetchFromBq(UpdateRequest request) {
     throw new RuntimeException("This method is not implemented");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getTableName() {
     return TABLE_NAME;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getTmpTableName() {
     return TMP_TABLE_NAME;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getSchemaStr() {
     return FIELD_DESCRIPTOR_LIST.stream()
@@ -40,6 +52,9 @@ public class LogsServiceImpl implements GenericService {
         .collect(Collectors.joining(","));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getStructStr() {
     return OrcFileWriter.protoToOrcStructStr(FIELD_DESCRIPTOR_LIST);

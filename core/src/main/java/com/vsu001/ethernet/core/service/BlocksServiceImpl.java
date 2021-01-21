@@ -33,6 +33,9 @@ public class BlocksServiceImpl implements GenericService {
     this.blockTsMappingRepository = blockTsMappingRepository;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
     // Find blocks that are already in Hive table
@@ -88,16 +91,25 @@ public class BlocksServiceImpl implements GenericService {
     return tableResult;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getTableName() {
     return TABLE_NAME;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getTmpTableName() {
     return TMP_TABLE_NAME;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getSchemaStr() {
     return FIELD_DESCRIPTOR_LIST.stream()
@@ -105,6 +117,9 @@ public class BlocksServiceImpl implements GenericService {
         .collect(Collectors.joining(","));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getStructStr() {
     return OrcFileWriter.protoToOrcStructStr(FIELD_DESCRIPTOR_LIST);
