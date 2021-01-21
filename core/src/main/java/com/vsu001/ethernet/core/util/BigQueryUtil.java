@@ -82,10 +82,10 @@ public class BigQueryUtil {
   /**
    * Obtain the ORC type string of a `Field` object specification.
    * <p>
-   * This function is a degenerate HashMap containing the mapping between the BigQuery Field object
+   * This function is a degenerate HashMap containing the mappings between the BigQuery Field object
    * specification types and the ORC types.
    * <p>
-   * Only types that are required for the Ethernet project is represented here.
+   * Only types that are required for the Ethernet project is implemented in this method.
    *
    * @param field Field object definition containing the FieldValue specifications.
    * @return The equivalent ORC type string that is of the equivalent type as the `Field` object

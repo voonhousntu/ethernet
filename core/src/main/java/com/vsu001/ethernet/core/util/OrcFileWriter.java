@@ -102,51 +102,6 @@ public class OrcFileWriter {
     writeTableResults(config, path, struct, tableResult);
   }
 
-  private static BiConsumer<Integer, Object> createColumnWriter(
-      TypeDescription description,
-      ColumnVector columnVector
-  ) {
-    // Reference: https://orc.apache.org/docs/core-java.html
-    String type = description.getCategory().getName();
-    BiConsumer<Integer, Object> consumer;
-    if ("tinyint".equals(type)) {
-      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] = ((Number) val)
-          .longValue();
-    } else if ("smallint".equals(type)) {
-      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] = ((Number) val)
-          .longValue();
-    } else if ("int".equals(type) || "date".equals(type)) {
-      // Date is represented as int epoch days
-      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] = ((Number) val)
-          .longValue();
-    } else if ("bigint".equals(type)) {
-      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] = ((Number) val)
-          .longValue();
-    } else if ("boolean".equals(type)) {
-      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] =
-          (Boolean) val ? 1 : 0;
-    } else if ("float".equals(type)) {
-      consumer = (row, val) -> ((DoubleColumnVector) columnVector).vector[row] = ((Number) val)
-          .floatValue();
-    } else if ("double".equals(type)) {
-      consumer = (row, val) -> ((DoubleColumnVector) columnVector).vector[row] = ((Number) val)
-          .doubleValue();
-    } else if ("decimal".equals(type)) {
-      consumer = (row, val) -> ((DecimalColumnVector) columnVector).vector[row]
-          .set(HiveDecimal.create((BigDecimal) val));
-    } else if ("string".equals(type) || type.startsWith("varchar") || "char".equals(type)) {
-      consumer = (row, val) -> {
-        byte[] buffer = val.toString().getBytes(StandardCharsets.UTF_8);
-        ((BytesColumnVector) columnVector).setRef(row, buffer, 0, buffer.length);
-      };
-    } else if ("timestamp".equals(type)) {
-      consumer = (row, val) -> ((TimestampColumnVector) columnVector).set(row, (Timestamp) val);
-    } else {
-      throw new RuntimeException("Unsupported type " + type);
-    }
-    return consumer;
-  }
-
   public static void writeTableResults(
       Configuration configuration,
       String path,
@@ -195,6 +150,64 @@ public class OrcFileWriter {
     }
   }
 
+  private static BiConsumer<Integer, Object> createColumnWriter(
+      TypeDescription description,
+      ColumnVector columnVector
+  ) {
+    // Reference: https://orc.apache.org/docs/core-java.html
+    String type = description.getCategory().getName();
+    BiConsumer<Integer, Object> consumer;
+    if ("tinyint".equals(type)) {
+      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] = ((Number) val)
+          .longValue();
+    } else if ("smallint".equals(type)) {
+      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] = ((Number) val)
+          .longValue();
+    } else if ("int".equals(type) || "date".equals(type)) {
+      // Date is represented as int epoch days
+      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] = ((Number) val)
+          .longValue();
+    } else if ("bigint".equals(type)) {
+      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] = ((Number) val)
+          .longValue();
+    } else if ("boolean".equals(type)) {
+      consumer = (row, val) -> ((LongColumnVector) columnVector).vector[row] =
+          (Boolean) val ? 1 : 0;
+    } else if ("float".equals(type)) {
+      consumer = (row, val) -> ((DoubleColumnVector) columnVector).vector[row] = ((Number) val)
+          .floatValue();
+    } else if ("double".equals(type)) {
+      consumer = (row, val) -> ((DoubleColumnVector) columnVector).vector[row] = ((Number) val)
+          .doubleValue();
+    } else if ("decimal".equals(type)) {
+      consumer = (row, val) -> ((DecimalColumnVector) columnVector).vector[row]
+          .set(HiveDecimal.create((BigDecimal) val));
+    } else if ("string".equals(type) || type.startsWith("varchar") || "char".equals(type)) {
+      consumer = (row, val) -> {
+        byte[] buffer = val.toString().getBytes(StandardCharsets.UTF_8);
+        ((BytesColumnVector) columnVector).setRef(row, buffer, 0, buffer.length);
+      };
+    } else if ("timestamp".equals(type)) {
+      consumer = (row, val) -> ((TimestampColumnVector) columnVector).set(row, (Timestamp) val);
+    } else {
+      throw new RuntimeException("Unsupported type " + type);
+    }
+    return consumer;
+  }
+
+  /**
+   * Obtain the ORC type string of a `FieldDescriptor` object specification of a protobuf field.
+   * <p>
+   * This function is a degenerate HashMap containing the mappings between the protobuf field's
+   * FieldDescriptor and the ORC types.
+   * <p>
+   * Only types that are required for the Ethernet project is implemented in this method.
+   *
+   * @param fieldDescriptor FieldDescriptor object definition containing the protobuf's field
+   *                        specifications.
+   * @return The equivalent ORC type string that is of the equivalent type as the `FieldDescriptor`
+   * specification.
+   */
   public static String protoToOrcType(FieldDescriptor fieldDescriptor) {
     String javaTypeName = fieldDescriptor.getJavaType().name();
     switch (javaTypeName) {
@@ -210,17 +223,24 @@ public class OrcFileWriter {
         if (fieldDescriptor.getName().contains("timestamp")) {
           return "timestamp";
         }
-        throw new RuntimeException(javaTypeName + "type not supported");
+        throw new RuntimeException(javaTypeName + " type not supported");
       default:
-        throw new RuntimeException(javaTypeName + "type not supported");
+        throw new RuntimeException(javaTypeName + " type not supported");
     }
   }
 
+  /**
+   * Generate the struct string required to determine the "schema" of an ORC file from a a
+   * protobuf's FieldDescriptors.
+   *
+   * @param fieldDescriptorList FieldDescriptors describing the fields of a protobuf.
+   * @return The ORC struct string describing the protobuf fields.
+   */
   public static String protoToOrcStructStr(List<FieldDescriptor> fieldDescriptorList) {
     String structStr = fieldDescriptorList.stream()
         .map(s -> String.format("%s:%s", s.getName(), protoToOrcType(s)))
         .collect(Collectors.joining(","));
-    return "struct<" + structStr + ">" ;
+    return "struct<" + structStr + ">";
   }
 
 }
