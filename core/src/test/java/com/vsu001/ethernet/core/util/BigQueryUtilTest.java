@@ -8,28 +8,28 @@ import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.FieldValue.Attribute;
 import com.google.cloud.bigquery.LegacySQLTypeName;
 import java.sql.Timestamp;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class BigQueryUtilTest {
 
-  private Field strField;
-  private Field bytesField;
-  private Field intField;
-  private Field floatField;
-  private Field boolField;
-  private Field tsField;
-  private Field defaultField;
-  private FieldValue strFieldValue;
-  private FieldValue bytesFieldValue;
-  private FieldValue intFieldValue;
-  private FieldValue floatFieldValue;
-  private FieldValue boolFieldValue;
-  private FieldValue tsFieldValue;
-  private FieldValue defaultFieldValue;
+  private static Field strField;
+  private static Field bytesField;
+  private static Field intField;
+  private static Field floatField;
+  private static Field boolField;
+  private static Field tsField;
+  private static Field defaultField;
+  private static FieldValue strFieldValue;
+  private static FieldValue bytesFieldValue;
+  private static FieldValue intFieldValue;
+  private static FieldValue floatFieldValue;
+  private static FieldValue boolFieldValue;
+  private static FieldValue tsFieldValue;
+  private static FieldValue defaultFieldValue;
 
-  @BeforeEach
-  public void init() {
+  @BeforeAll
+  public static void init() {
     strField = Field.newBuilder("string_field", LegacySQLTypeName.STRING).build();
     bytesField = Field.newBuilder("bytes_field", LegacySQLTypeName.BYTES).build();
     intField = Field.newBuilder("integer_field", LegacySQLTypeName.INTEGER).build();
