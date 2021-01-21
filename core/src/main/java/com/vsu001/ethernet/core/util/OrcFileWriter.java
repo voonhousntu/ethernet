@@ -230,7 +230,7 @@ public class OrcFileWriter {
   }
 
   /**
-   * Generate the struct string required to define the "schema" of an ORC file from protobuf's
+   * Generate the struct string required to define the "schema" of an ORC file from a protobuf's
    * FieldDescriptors.
    *
    * @param fieldDescriptorList FieldDescriptors describing the fields of a protobuf.
