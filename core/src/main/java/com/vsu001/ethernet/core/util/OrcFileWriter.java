@@ -196,17 +196,18 @@ public class OrcFileWriter {
   }
 
   /**
-   * Obtain the ORC type string of a `FieldDescriptor` object specification of a protobuf field.
+   * Obtain the ORC type string of a <code>FieldDescriptor</code> object specification of a protobuf
+   * field.
    * <p>
-   * This function is a degenerate HashMap containing the mappings between the protobuf field's
-   * FieldDescriptor and the ORC types.
+   * This function is a degenerate <code>HashMap</code> containing the mappings between the protobuf
+   * field's <code>FieldDescriptor</code> and the ORC types.
    * <p>
    * Only types that are required for the Ethernet project is implemented in this method.
    *
-   * @param fieldDescriptor FieldDescriptor object definition containing the protobuf's field
-   *                        specifications.
-   * @return The equivalent ORC type string that is of the equivalent type as the `FieldDescriptor`
-   * specification.
+   * @param fieldDescriptor <code>FieldDescriptor</code> object definition containing the
+   *                        protobuf's field specifications.
+   * @return The equivalent ORC type string that is of the equivalent type as the
+   * <code>FieldDescriptor</code> specification.
    */
   public static String protoToOrcType(FieldDescriptor fieldDescriptor) {
     String javaTypeName = fieldDescriptor.getJavaType().name();
@@ -231,9 +232,9 @@ public class OrcFileWriter {
 
   /**
    * Generate the struct string required to define the "schema" of an ORC file from a protobuf's
-   * FieldDescriptors.
+   * <code>FieldDescriptor</code>s.
    *
-   * @param fieldDescriptorList FieldDescriptors describing the fields of a protobuf.
+   * @param fieldDescriptorList <code>FieldDescriptor</code>s describing the fields of a protobuf.
    * @return ORC struct string describing the protobuf fields.
    */
   public static String protoToOrcStructStr(List<FieldDescriptor> fieldDescriptorList) {

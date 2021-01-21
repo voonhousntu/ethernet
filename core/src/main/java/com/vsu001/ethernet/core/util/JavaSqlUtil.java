@@ -9,8 +9,8 @@ public class JavaSqlUtil {
   /**
    * Convert native Java SQL types to protobuf types
    *
-   * @param fieldDescriptor FieldDescriptor of field to convert in proto object.
-   * @param resultSet       ResultSet of interest to convert.
+   * @param fieldDescriptor <code>FieldDescriptor</code> of field to convert in proto object.
+   * @param resultSet       <code>ResultSet</code> of interest to convert.
    * @return Protobuf type of the field of interest.
    * @throws SQLException
    */

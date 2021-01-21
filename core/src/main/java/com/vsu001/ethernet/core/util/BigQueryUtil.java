@@ -51,13 +51,14 @@ public class BigQueryUtil {
   }
 
   /**
-   * Obtain the native Java value of a `FieldValue` object by providing the `Field` object
-   * definition.
+   * Obtain the native Java value of a <code>FieldValue</code> object by providing the
+   * <code>Field</code> object definition.
    *
-   * @param field      Field object definition containing the FieldValue specifications.
-   * @param fieldValue FieldValue object containing the value that should be "converted" to Java's
-   *                   native type.
-   * @return Native Java value of the `FieldValue` object.
+   * @param field      <code>Field</code> object definition containing the FieldValue
+   *                   specifications.
+   * @param fieldValue <code>FieldValue</code> object containing the value that should be
+   *                   "converted" to Java's native type.
+   * @return Native Java value of the <code>FieldValue</code> object.
    */
   public static Object getJavaValue(Field field, FieldValue fieldValue) {
     switch (field.getType().name()) {
@@ -80,16 +81,17 @@ public class BigQueryUtil {
   }
 
   /**
-   * Obtain the ORC type string of a `Field` object specification.
+   * Obtain the ORC type string of a <code>Field</code> object specification.
    * <p>
-   * This function is a degenerate HashMap containing the mappings between the BigQuery Field object
-   * specification types and the ORC types.
+   * This function is a degenerate HashMap containing the mappings between the BigQuery
+   * <code>Field</code> object specification types and the ORC types.
    * <p>
    * Only types that are required for the Ethernet project is implemented in this method.
    *
-   * @param field Field object definition containing the FieldValue specifications.
-   * @return The equivalent ORC type string that is of the equivalent type as the `Field` object
-   * specification.
+   * @param field <code>Field</code> object definition containing the <code>FieldValue</code>
+   *              specifications.
+   * @return The equivalent ORC type string that is of the equivalent type as the <code>Field</code>
+   * object specification.
    */
   public static String getOrcType(Field field) {
     String fieldTypeName = field.getType().name();

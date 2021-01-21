@@ -15,6 +15,15 @@ public class BlockRepository {
     this.jdbcTemplate = jdbcTemplate;
   }
 
+  /**
+   * Retrieve all <code>Block</code> numbers within the range of start (inclusive) and end
+   * (inclusive).
+   *
+   * @param start Start <code>Block</code> number.
+   * @param end   End <code>Block</code> number.
+   * @return The <code>List</code> of <code>Block</code> numbers within the start (inclusive) and
+   * end (inclusive) range.
+   */
   public List<Long> findByNumberRange(Long start, Long end) {
     String sql =
         "SELECT number FROM ethernet.blocks "
