@@ -24,6 +24,17 @@ public class BigQueryUtil {
     return query(descriptor, tableName, "1=1");
   }
 
+  /**
+   * Helper function to submit a BigQuery job to execute a query on a table.
+   *
+   * @param descriptor    The object's field specification defined/wrapped in a protobuf's
+   *                      <code>Descriptor</code>.
+   * @param tableName     Name of the BigQuery table of interest in the `crypto_ethereum`</code>`
+   *                      dataset.
+   * @param queryCriteria The query constraints to use in the `WHERE` block of the query.
+   * @return The <code>TableResult</code> of the BigQuery job.
+   * @throws InterruptedException
+   */
   public static TableResult query(
       Descriptor descriptor,
       String tableName,

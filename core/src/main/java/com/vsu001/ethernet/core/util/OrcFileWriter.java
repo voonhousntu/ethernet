@@ -28,11 +28,23 @@ import org.apache.orc.Writer;
 
 public class OrcFileWriter {
 
+  /**
+   * Write rows defined in a <code>List</code> of <code>Map</code> with column name as the key with
+   * its respective object value into an ORC file.
+   *
+   * @param path   The HDFS directory to write the file to.
+   * @param struct The struct string defining the "schema" of an ORC file.
+   * @param data   The rows to be written into the ORC file defined in a <code>List</code> of
+   *               <code>Map</code> with column name as the key with * its respective object
+   *               value.
+   * @throws IOException
+   */
   public static void write(
       String path,
       String struct,
       List<Map<String, Object>> data
   ) throws IOException {
+    // TODO: Move these constants into the application configuration file
     // Use default configurations
     Configuration config = new Configuration();
     config.set("fs.defaultFS", "hdfs://namenode:8020");
@@ -41,6 +53,20 @@ public class OrcFileWriter {
     write(config, path, struct, data);
   }
 
+  /**
+   * Write rows defined in a <code>List</code> of <code>Map</code> with column name as the key with
+   * its respective object value into an ORC file.
+   *
+   * @param configuration Hadoop client configuration to use when executing Hadoop client related
+   *                      routines.
+   * @param path          The HDFS directory to write the file to.
+   * @param struct        The struct string defining the "schema" of an ORC file.
+   * @param data          The rows to be written into the ORC file defined in a <code>List</code>
+   *                      of
+   *                      <code>Map</code> with column name as the key with * its respective object
+   *                      value.
+   * @throws IOException
+   */
   public static void write(
       Configuration configuration,
       String path,
@@ -89,11 +115,22 @@ public class OrcFileWriter {
     }
   }
 
+  /**
+   * Write the <code>TableResult</code> obtained from a BigQuery job into HDFS directory as an ORC
+   * file.
+   *
+   * @param path        The HDFS directory to write the file to.
+   * @param struct      The struct string defining the "schema" of an ORC file.
+   * @param tableResult The <code>TableResult</code> of a BigQuery job to be written into a HDFS
+   *                    directory as an ORC file.
+   * @throws IOException
+   */
   public static void writeTableResults(
       String path,
       String struct,
       TableResult tableResult
   ) throws IOException {
+    // TODO: Move these constants into the application configuration file
     // Use default configurations
     Configuration config = new Configuration();
     config.set("fs.defaultFS", "hdfs://namenode:8020");
@@ -102,6 +139,18 @@ public class OrcFileWriter {
     writeTableResults(config, path, struct, tableResult);
   }
 
+  /**
+   * Write the <code>TableResult</code> obtained from a BigQuery job into HDFS directory as an ORC
+   * file.
+   *
+   * @param configuration Hadoop client configuration to use when executing Hadoop client related
+   *                      routines.
+   * @param path          The HDFS directory to write the file to.
+   * @param struct        The struct string defining the "schema" of an ORC file.
+   * @param tableResult   The <code>TableResult</code> of a BigQuery job to be written into a HDFS
+   *                      directory as an ORC file.
+   * @throws IOException
+   */
   public static void writeTableResults(
       Configuration configuration,
       String path,
@@ -150,6 +199,18 @@ public class OrcFileWriter {
     }
   }
 
+  /**
+   * Helper function to create a column writer.
+   * <p>
+   * The resulting <code>BiConsumer</code> represents a function which takes in two arguments and
+   * produces a result. However it does not return any value.
+   *
+   * @param description  The <code>TypeDescription</code> object containing the type specification
+   *                     of the column.
+   * @param columnVector The <code>ColumnVector</code> object containing a batch of values of a
+   *                     specific column.
+   * @return BiConsumer that accepts a row number and ORC values.
+   */
   private static BiConsumer<Integer, Object> createColumnWriter(
       TypeDescription description,
       ColumnVector columnVector

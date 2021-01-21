@@ -19,7 +19,7 @@ public class GenericHiveRepository {
   }
 
   /**
-   * Write the <code>TableResult</code> obtained from a BigQuery job into HDFS directory as a ORC
+   * Write the <code>TableResult</code> obtained from a BigQuery job into HDFS directory as an ORC
    * file.
    *
    * @param genericService The interface containing the implementation of a
