@@ -1,7 +1,6 @@
 package com.vsu001.ethernet.core.util;
 
-import static com.vsu001.ethernet.core.util.BlockUtil.findMissingContRange;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +18,7 @@ public class BlockUtilTest {
 
     List<List<Long>> expected = new ArrayList<>();
     expected.add(new ArrayList<>(Arrays.asList(0L, 99L)));
-    assertEquals(expected, findMissingContRange(longList, start, end));
+    assertEquals(expected, BlockUtil.findMissingContRange(longList, start, end));
 
     longList = new ArrayList<>(Arrays.asList(4L, 5L, 8L, 10L, 11L, 12L, 15L, 16L, 17L, 19L, 25L));
     expected = new ArrayList<>(
@@ -31,7 +30,7 @@ public class BlockUtilTest {
             new ArrayList<>(Arrays.asList(20L, 24L))
         )
     );
-    assertEquals(expected, findMissingContRange(longList));
+    assertEquals(expected, BlockUtil.findMissingContRange(longList));
   }
 
 }

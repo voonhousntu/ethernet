@@ -1,7 +1,7 @@
 package com.vsu001.ethernet.core.util;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.protobuf.Timestamp;
 import com.vsu001.ethernet.core.mock.MockResultSet;
@@ -23,39 +23,39 @@ public class JavaSqlUtilTest {
     resultSet.next();
 
     // Test STRING FieldDescriptor
-    assertThat(
+    assertEquals(
+        String.class,
         JavaSqlUtil.jSqlToProtoType(
             Contract.getDescriptor().findFieldByName("address"),
             resultSet
-        ),
-        instanceOf(String.class)
+        ).getClass()
     );
 
     // Test LONG FieldDescriptor
-    assertThat(
+    assertEquals(
+        Long.class,
         JavaSqlUtil.jSqlToProtoType(
             Contract.getDescriptor().findFieldByName("block_number"),
             resultSet
-        ),
-        instanceOf(long.class)
+        ).getClass()
     );
 
     // Test MESSAGE FieldDescriptor
-    assertThat(
+    assertEquals(
+        Timestamp.class,
         JavaSqlUtil.jSqlToProtoType(
             Contract.getDescriptor().findFieldByName("block_timestamp"),
             resultSet
-        ),
-        instanceOf(Timestamp.class)
+        ).getClass()
     );
 
     // Test BOOLEAN FieldDescriptor
-    assertThat(
+    assertEquals(
+        Boolean.class,
         JavaSqlUtil.jSqlToProtoType(
             Contract.getDescriptor().findFieldByName("is_erc20"),
             resultSet
-        ),
-        instanceOf(boolean.class)
+        ).getClass()
     );
 
     // Defined protobufs do not support other types, no further tests on other types

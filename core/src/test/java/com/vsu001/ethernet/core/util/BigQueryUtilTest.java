@@ -50,27 +50,27 @@ public class BigQueryUtilTest {
   @Test
   public void testGetJavaValue() {
     // Test STRING Field type
-    assertEquals(BigQueryUtil.getJavaValue(strField, strFieldValue).getClass(), String.class);
+    assertEquals(String.class, BigQueryUtil.getJavaValue(strField, strFieldValue).getClass());
 
     // Test BYTES Field type
-    assertEquals(BigQueryUtil.getJavaValue(bytesField, bytesFieldValue).getClass(), byte[].class);
+    assertEquals(byte[].class, BigQueryUtil.getJavaValue(bytesField, bytesFieldValue).getClass());
 
     // Test INTEGER Field type
-    assertEquals(BigQueryUtil.getJavaValue(intField, intFieldValue).getClass(), Long.class);
+    assertEquals(Long.class, BigQueryUtil.getJavaValue(intField, intFieldValue).getClass());
 
     // Test FLOAT Field type
-    assertEquals(BigQueryUtil.getJavaValue(floatField, floatFieldValue).getClass(), Double.class);
+    assertEquals(Double.class, BigQueryUtil.getJavaValue(floatField, floatFieldValue).getClass());
 
     // Test BOOLEAN Field type
-    assertEquals(BigQueryUtil.getJavaValue(boolField, boolFieldValue).getClass(), Boolean.class);
+    assertEquals(Boolean.class, BigQueryUtil.getJavaValue(boolField, boolFieldValue).getClass());
 
     // Test TIMESTAMP Field type
-    assertEquals(BigQueryUtil.getJavaValue(tsField, tsFieldValue).getClass(), Timestamp.class);
+    assertEquals(Timestamp.class, BigQueryUtil.getJavaValue(tsField, tsFieldValue).getClass());
 
     // Test `default` switch case
     assertEquals(
-        BigQueryUtil.getJavaValue(defaultField, defaultFieldValue).getClass(),
-        String.class
+        String.class,
+        BigQueryUtil.getJavaValue(defaultField, defaultFieldValue).getClass()
     );
   }
 
