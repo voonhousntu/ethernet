@@ -7,6 +7,8 @@ import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.FieldValue.Attribute;
 import com.google.cloud.bigquery.LegacySQLTypeName;
+import com.google.cloud.bigquery.TableResult;
+import com.vsu001.ethernet.core.model.Block;
 import java.sql.Timestamp;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -104,6 +106,13 @@ public class BigQueryUtilTest {
         () -> BigQueryUtil.getOrcType(defaultField),
         "NUMERIC type not supported"
     );
+  }
+
+  @Test
+  public void testQuery() throws InterruptedException {
+    TableResult mTableResult = BigQueryUtil
+        .query(Block.getDescriptor(), "blocks", "timestamp < \"2015-01-01\"");
+    assertEquals(1L, mTableResult.getTotalRows());
   }
 
 }
