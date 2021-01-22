@@ -5,6 +5,7 @@ import com.vsu001.ethernet.core.service.GenericService;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Repository;
 public class GenericHiveRepository {
 
   private final JdbcTemplate jdbcTemplate;
+
+  @Value("${spring.datasource.hivedb.schema}")
+  private String schema;
 
   public GenericHiveRepository(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -70,12 +74,13 @@ public class GenericHiveRepository {
    */
   public void populateHiveTable(GenericService genericService) {
     String sql =
-        "INSERT INTO ethernet.%s "
+        "INSERT INTO %s.%s "
             + "SELECT * FROM %s a "
             + "LEFT OUTER JOIN %s b ON a.number = b.number "
             + "WHERE b.number IS NULL";
     String query = String.format(
         sql,
+        schema,
         genericService.getTableName(),
         genericService.getTmpTableName(),
         genericService.getTableName()
@@ -96,6 +101,18 @@ public class GenericHiveRepository {
     String sql = "DROP TABLE %s";
     String query = String.format(sql, genericService.getTableName());
     jdbcTemplate.execute(query);
+  }
+
+  /**
+   * Obtain the schema of which the repository will be using.
+   * <p>
+   * The Hive tables will be stored in this schema, which will be defined in the application's
+   * property file under: `spring.datasource.hivedb.schema`.
+   *
+   * @return The schema which the repository will be using.
+   */
+  public String getSchema() {
+    return schema;
   }
 
 }

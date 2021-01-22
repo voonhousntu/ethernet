@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.FieldValue.Attribute;
+import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.LegacySQLTypeName;
 import com.google.cloud.bigquery.TableResult;
 import com.vsu001.ethernet.core.model.Block;
@@ -112,7 +113,15 @@ public class BigQueryUtilTest {
   public void testQuery() throws InterruptedException {
     TableResult mTableResult = BigQueryUtil
         .query(Block.getDescriptor(), "blocks", "timestamp < \"2015-01-01\"");
+
+    // Should only have 1 row
     assertEquals(1L, mTableResult.getTotalRows());
+
+    for (FieldValueList row : mTableResult.getValues()) {
+      assertEquals("0", row.get("number").getValue());
+      assertEquals("0.0", row.get("timestamp").getValue());
+    }
+
   }
 
 }

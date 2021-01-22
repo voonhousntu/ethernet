@@ -10,4 +10,4 @@ spring:
       validation-query-timeout: 3
       test-on-borrow: true
       max-wait: 60000
-      schema: ethernet
+      schema: ethernet_test
