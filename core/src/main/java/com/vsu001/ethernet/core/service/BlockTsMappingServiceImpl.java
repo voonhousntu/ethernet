@@ -8,24 +8,30 @@ import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 public class BlockTsMappingServiceImpl implements GenericService {
 
-  private final BlockTsMappingRepository blockTsMappingRepository;
-
   private static final String TABLE_NAME = "block_timestamp_mapping";
   private static final String TMP_TABLE_NAME = "tmp_" + TABLE_NAME;
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = BlockTimestampMapping
       .getDescriptor().getFields();
+  private final BlockTsMappingRepository blockTsMappingRepository;
+  private final Environment environment;
 
-  public BlockTsMappingServiceImpl(BlockTsMappingRepository blockTsMappingRepository) {
+  public BlockTsMappingServiceImpl(
+      BlockTsMappingRepository blockTsMappingRepository,
+      Environment environment
+  ) {
     this.blockTsMappingRepository = blockTsMappingRepository;
+    this.environment = environment;
   }
 
   /**
@@ -44,15 +50,37 @@ public class BlockTsMappingServiceImpl implements GenericService {
     // Find the most recent BlockTimestampMapping in Hive
     BlockTimestampMapping blockTimestampMapping = blockTsMappingRepository.findMostRecent();
 
-    // Convert to instant so we can get the ISO8601 timestamp format
-    Timestamp ts = blockTimestampMapping.getTimestamp();
-    Instant instantTs = Instant.ofEpochSecond(ts.getSeconds(), ts.getNanos());
+    String iso8601Str;
+    long blockNumber = -1L;
+    if (blockTimestampMapping != null) {
+      // Convert to instant so we can get the ISO8601 timestamp format
+      Timestamp ts = blockTimestampMapping.getTimestamp();
+      Instant instantTs = Instant.ofEpochSecond(ts.getSeconds(), ts.getNanos());
+      blockNumber = blockTimestampMapping.getNumber();
+      iso8601Str = instantTs.toString();
+    } else {
+      // Handle for case where no most recent block is found
+      iso8601Str = "1970-01-01 00:00:00";
+    }
+
+    String query = "`number` > %s AND `timestamp` >= '%s'";
+    //Check if Active profiles contains "local" or "test"
+    if (Arrays.stream(environment.getActiveProfiles()).anyMatch(
+        env -> (
+            env.equalsIgnoreCase("test")
+                || env.equalsIgnoreCase("local")
+        )
+    )) {
+      // Ensure that we are not querying the full table during tests
+      // Set the max timestamp to the 500th block
+      query += " AND `timestamp` <= '2015-07-30 15:46:51'";
+    }
 
     // Build query
     String queryCriteria = String.format(
-        "`number` > '%s' AND `timestamp` >= '%s'",
-        blockTimestampMapping.getNumber(),
-        instantTs.toString()
+        query,
+        blockNumber,
+        iso8601Str
     );
 
     // Get results from BigQuery
