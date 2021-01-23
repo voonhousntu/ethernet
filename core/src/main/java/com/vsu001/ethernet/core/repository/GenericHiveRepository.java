@@ -58,8 +58,8 @@ public class GenericHiveRepository {
             + " STORED AS ORC LOCATION '%s' TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     String query = String.format(
         sql,
-        genericService.getSchemaStr(),
         genericService.getTmpTableName(),
+        genericService.getSchemaStr(),
         genericService.getOutputPath()
     );
     jdbcTemplate.execute(query);
@@ -75,14 +75,15 @@ public class GenericHiveRepository {
   public void populateHiveTable(GenericService genericService) {
     String sql =
         "INSERT INTO %s.%s "
-            + "SELECT * FROM %s a "
-            + "LEFT OUTER JOIN %s b ON a.number = b.number "
+            + "SELECT a.`number`, a.`timestamp` FROM %s a "
+            + "LEFT OUTER JOIN %s.%s b ON a.number = b.number "
             + "WHERE b.number IS NULL";
     String query = String.format(
         sql,
         schema,
         genericService.getTableName(),
         genericService.getTmpTableName(),
+        schema,
         genericService.getTableName()
     );
     jdbcTemplate.execute(query);
@@ -99,7 +100,7 @@ public class GenericHiveRepository {
    */
   public void dropTmpTable(GenericService genericService) {
     String sql = "DROP TABLE %s";
-    String query = String.format(sql, genericService.getTableName());
+    String query = String.format(sql, genericService.getTmpTableName());
     jdbcTemplate.execute(query);
   }
 

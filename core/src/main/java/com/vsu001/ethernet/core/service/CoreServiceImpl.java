@@ -228,7 +228,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
   }
 
-  private void fetchAndPopulateHiveTable(
+  public void fetchAndPopulateHiveTable(
       GenericService genericService,
       UpdateRequest updateRequest
   ) throws InterruptedException, IOException {

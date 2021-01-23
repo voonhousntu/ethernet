@@ -67,7 +67,7 @@ public class BlockUtil {
 
   public static String protoTsToISO(Timestamp timestamp) {
     // Convert to instant so we can get the ISO8601 timestamp format
-    Instant instantTs = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+    Instant instantTs = Instant.ofEpochSecond(timestamp.getSeconds() / 1000, timestamp.getNanos());
     return instantTs.toString();
   }
 

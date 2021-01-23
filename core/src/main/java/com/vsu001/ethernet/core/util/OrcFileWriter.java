@@ -1,5 +1,8 @@
 package com.vsu001.ethernet.core.util;
 
+import com.google.cloud.bigquery.Field;
+import com.google.cloud.bigquery.FieldList;
+import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -161,6 +164,7 @@ public class OrcFileWriter {
     TypeDescription schema = TypeDescription.fromString(struct);
     List<String> fieldNames = schema.getFieldNames();
     List<TypeDescription> columnTypes = schema.getChildren();
+    FieldList fieldList = tableResult.getSchema().getFields();
 
     // Create a row batch
     VectorizedRowBatch batch = schema.createRowBatch();
@@ -182,7 +186,12 @@ public class OrcFileWriter {
 
         // Write each column to the associated column vector
         for (int i = 0; i < fieldNames.size(); i++) {
-          consumers.get(i).accept(rowNum, fieldValueList.get(fieldNames.get(i)));
+          String fieldName = fieldNames.get(i);
+          Field field = fieldList.get(fieldName);
+          FieldValue fieldValue = fieldValueList.get(fieldName);
+          Object javaVal = BigQueryUtil.getJavaValue(field, fieldValue);
+
+          consumers.get(i).accept(rowNum, javaVal);
         }
 
         // If the buffer is full, write it to disk

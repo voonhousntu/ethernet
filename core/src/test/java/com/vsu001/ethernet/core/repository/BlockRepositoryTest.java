@@ -33,7 +33,7 @@ public class BlockRepositoryTest {
     jdbcTemplate.execute(createSchema);
 
     // Initialise the required tables
-    // Create `block_timestamp_mapping`
+    // Create `blocks`
     String createTable =
         "CREATE TABLE %s.blocks "
             + "(`number` bigint,"

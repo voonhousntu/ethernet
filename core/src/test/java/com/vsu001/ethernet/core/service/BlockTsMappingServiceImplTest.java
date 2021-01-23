@@ -53,32 +53,38 @@ class BlockTsMappingServiceImplTest {
   @Test
   public void testFetchFromBq() {
     UpdateRequest updateRequest = UpdateRequest.getDefaultInstance();
+
+    TableResult tableResult = null;
     try {
-      TableResult tableResult = blockTsMappingService.fetchFromBq(updateRequest);
-      assertEquals(500L, tableResult.getTotalRows());
+      tableResult = blockTsMappingService.fetchFromBq(updateRequest);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
+    assertEquals(500L, tableResult.getTotalRows());
   }
 
   @Test
   public void testGetTableName() {
-    assertEquals("block_timestamp_mapping", blockTsMappingService.getTableName());
+    String expected = "block_timestamp_mapping";
+    assertEquals(expected, blockTsMappingService.getTableName());
   }
 
   @Test
   public void testGetTmpTableName() {
-    assertEquals("tmp_block_timestamp_mapping", blockTsMappingService.getTmpTableName());
+    String expected = "tmp_block_timestamp_mapping";
+    assertEquals(expected, blockTsMappingService.getTmpTableName());
   }
 
   @Test
   public void testGetSchemaStr() {
-    assertEquals("`timestamp` timestamp,`number` bigint", blockTsMappingService.getSchemaStr());
+    String expected = "`timestamp` timestamp,`number` bigint";
+    assertEquals(expected, blockTsMappingService.getSchemaStr());
   }
 
   @Test
   public void testGetStructStr() {
-    assertEquals("struct<timestamp:timestamp,number:bigint>", blockTsMappingService.getStructStr());
+    String expected = "struct<timestamp:timestamp,number:bigint>";
+    assertEquals(expected, blockTsMappingService.getStructStr());
   }
 
 }

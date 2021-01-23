@@ -38,6 +38,8 @@ public class BlocksServiceImpl implements GenericService {
    */
   @Override
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
+
+
     // Find blocks that are already in Hive table
     List<Long> blockNumbers = blockRepository.findByNumberRange(
         request.getStartBlockNumber(),
@@ -63,13 +65,13 @@ public class BlocksServiceImpl implements GenericService {
       } else {
         BlockTimestampMapping startBTM = blockTsMappingRepository.findByNumber(lList.get(0));
         BlockTimestampMapping endBTM = blockTsMappingRepository.findByNumber(lList.get(1));
-        timestampSB.append("AND `timestamp` >= ");
+        timestampSB.append("AND `timestamp` >= '");
         timestampSB.append(
-            String.format("'%s", BlockUtil.protoTsToISO(startBTM.getTimestamp()))
+            String.format("%s' ", BlockUtil.protoTsToISO(startBTM.getTimestamp()))
         );
-        timestampSB.append("AND `timestamp` <= ");
+        timestampSB.append("AND `timestamp` <= '");
         timestampSB.append(
-            String.format("'%s", BlockUtil.protoTsToISO(endBTM.getTimestamp()))
+            String.format("%s' ", BlockUtil.protoTsToISO(endBTM.getTimestamp()))
         );
       }
     }
