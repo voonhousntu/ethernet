@@ -2,6 +2,7 @@ package com.vsu001.ethernet.core.repository;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Repository;
 public class BlockRepository {
 
   private final JdbcTemplate jdbcTemplate;
+
+  @Value("${spring.datasource.hivedb.schema}")
+  private String schema;
 
   public BlockRepository(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -26,9 +30,9 @@ public class BlockRepository {
    */
   public List<Long> findByNumberRange(Long start, Long end) {
     String sql =
-        "SELECT number FROM ethernet.blocks "
+        "SELECT number FROM %s.blocks "
             + "WHERE number BETWEEN %s AND %s";
-    String query = String.format(sql, start, end);
+    String query = String.format(sql, schema, start, end);
     return jdbcTemplate.query(query, (resultSet, i) -> resultSet.getLong("number"));
   }
 

@@ -1,11 +1,11 @@
 package com.vsu001.ethernet.core.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -13,21 +13,37 @@ import org.springframework.test.context.ActiveProfiles;
 class BlockTsMappingServiceImplTest {
 
   @Autowired
-  private BlockTsMappingServiceImpl blockTsMappingService;
+  private JdbcTemplate jdbcTemplate;
 
   @Autowired
   private GenericHiveRepository hiveRepository;
 
-  @Test
-  public void testFetchfromBq() throws InterruptedException {
-    // Ensure we are using the test-schema
-    assertEquals("ethernet_test", hiveRepository.getSchema());
+  @Autowired
+  private BlockTsMappingServiceImpl blockTsMappingService;
 
-    // Initialise the `UpdateRequest` object
-    // `start` and `end` numbers are not used
-    UpdateRequest updateRequest = UpdateRequest.newBuilder().build();
+  @BeforeEach
+  public void init() {
+    // Initialise the required schema
+    String createSchema = "CREATE SCHEMA %s";
+    createSchema = String.format(createSchema, hiveRepository.getSchema());
+    jdbcTemplate.execute(createSchema);
 
-//    TableResult tableResult = blockTsMappingService.fetchFromBq(updateRequest);
+    // Initialise the required tables
+    // Create `block_timestamp_mapping`
+    String createTable =
+        "CREATE TABLE %s.block_timestamp_mapping "
+            + "( `number` bigint, `timestamp` timestamp ) "
+            + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
+    createTable = String.format(createTable, hiveRepository.getSchema());
+    jdbcTemplate.execute(createTable);
+  }
+
+  @AfterEach
+  public void teardown() {
+    // Remove schema that have been initialised
+    String dropSchema = "DROP SCHEMA IF EXISTS %s CASCADE";
+    dropSchema = String.format(dropSchema, hiveRepository.getSchema());
+    jdbcTemplate.execute(dropSchema);
   }
 
 }

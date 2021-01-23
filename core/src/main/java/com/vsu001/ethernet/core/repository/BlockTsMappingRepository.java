@@ -5,6 +5,8 @@ import com.vsu001.ethernet.core.repository.mapper.BlockTsMappingMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Repository;
 public class BlockTsMappingRepository {
 
   private final JdbcTemplate jdbcTemplate;
+
+  @Value("${spring.datasource.hivedb.schema}")
+  private String schema;
 
   public BlockTsMappingRepository(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -26,11 +31,21 @@ public class BlockTsMappingRepository {
    * object.
    */
   public BlockTimestampMapping findMostRecent() {
-    String query =
-        "SELECT * FROM ethernet.block_timestamp_mapping "
+    String sql =
+        "SELECT * FROM %s.block_timestamp_mapping "
             + "ORDER BY `timestamp` DESC "
             + "LIMIT 1";
-    return jdbcTemplate.queryForObject(query, new BlockTsMappingMapper());
+    String query = String.format(sql, schema);
+    try {
+      return jdbcTemplate.queryForObject(query, new BlockTsMappingMapper());
+    } catch(EmptyResultDataAccessException e) {
+      String methodName = new Object() {}
+          .getClass()
+          .getEnclosingMethod()
+          .getName();
+      log.error("{}: No results returned", methodName);
+      return null;
+    }
   }
 
   /**
@@ -43,10 +58,20 @@ public class BlockTsMappingRepository {
    */
   public BlockTimestampMapping findByNumber(Long number) {
     String sql =
-        "SELECT * FROM ethernet.block_timestamp_mapping "
+        "SELECT * FROM %s.block_timestamp_mapping "
             + "WHERE number = %s";
-    String query = String.format(sql, number);
-    return jdbcTemplate.queryForObject(query, new BlockTsMappingMapper());
+    String query = String.format(sql, schema, number);
+
+    try {
+      return jdbcTemplate.queryForObject(query, new BlockTsMappingMapper());
+    } catch(EmptyResultDataAccessException e) {
+      String methodName = new Object() {}
+          .getClass()
+          .getEnclosingMethod()
+          .getName();
+      log.error("{}: No results returned", methodName);
+      return null;
+    }
   }
 
   /**
@@ -58,12 +83,13 @@ public class BlockTsMappingRepository {
    */
   public List<BlockTimestampMapping> findByNumbers(List<Long> numbers) {
     String sql =
-        "SELECT * FROM ethernet.block_timestamp_mapping "
+        "SELECT * FROM %s.block_timestamp_mapping "
             + "WHERE number IN (%s) "
             + "ORDER BY number ASC";
     String query = String
         .format(
             sql,
+            schema,
             numbers.stream().map(String::valueOf).collect(Collectors.joining(","))
         );
     return jdbcTemplate.query(query, new BlockTsMappingMapper());

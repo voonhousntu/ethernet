@@ -31,7 +31,7 @@ public class JavaSqlUtil {
         if (fieldDescriptor.getName().contains("timestamp")) {
           java.sql.Timestamp ts = resultSet.getTimestamp(fieldName);
           return com.google.protobuf.Timestamp.newBuilder()
-              .setSeconds(ts.getNanos())
+              .setSeconds(ts.getTime())
               .setNanos(ts.getNanos())
               .build();
         }
