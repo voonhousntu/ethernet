@@ -39,14 +39,6 @@ public class BlockTsMappingServiceImpl implements GenericService {
    */
   @Override
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
-
-    // For debugging
-//    TableResult tableResult = BigQueryUtil.query(
-//        BlockTimestampMapping.getDescriptor(),
-//        "blocks",
-//        "`timestamp` < '2015-07-30 15:46:52'"
-//    );
-
     // Find the most recent BlockTimestampMapping in Hive
     BlockTimestampMapping blockTimestampMapping = blockTsMappingRepository.findMostRecent();
 
@@ -72,8 +64,8 @@ public class BlockTsMappingServiceImpl implements GenericService {
         )
     )) {
       // Ensure that we are not querying the full table during tests
-      // Set the max timestamp to the 47205th block
-      query += " AND `timestamp` <= '2015-08-07 08:26:34'";
+      // Set the max timestamp to the 447768th block (0 - 447767)
+      query += " AND `timestamp` <= '2015-10-27 12:57:26'";
     }
 
     // Build query

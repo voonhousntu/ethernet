@@ -100,6 +100,11 @@ public class ContractsServiceImplTest {
     jdbcTemplate.execute(dropSchema);
   }
 
+  /**
+   * Inserts dummy rows into the `blocks` table
+   *
+   * @param rows Number of rows to insert
+   */
   private void insertDataIntoBlocks(int rows) {
     String insertQuery = "INSERT INTO %s.blocks VALUES %s";
     String rowData = "(%s,'2018-12-09 00:00:00','','','','','','','','','',"
@@ -123,7 +128,7 @@ public class ContractsServiceImplTest {
     // Create an update request
     UpdateRequest updateRequest = UpdateRequest.newBuilder()
         .setStartBlockNumber(0L)
-        .setEndBlockNumber(47205L)
+        .setEndBlockNumber(447767L)
         .build();
 
     TableResult tableResult = null;
@@ -139,7 +144,7 @@ public class ContractsServiceImplTest {
       e.printStackTrace();
     }
 
-    assertEquals(1L, tableResult.getTotalRows());
+    assertEquals(3053L, tableResult.getTotalRows());
   }
 
   @Test

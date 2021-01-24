@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BlockServiceImplTest {
+public class TokenTransfersServiceImplTest {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
@@ -26,7 +26,7 @@ public class BlockServiceImplTest {
   private GenericHiveRepository hiveRepository;
 
   @Autowired
-  private BlocksServiceImpl blocksService;
+  private TokenTransfersServiceImpl tokenTransfersService;
 
   @Autowired
   private BlockTsMappingServiceImpl blockTsMappingService;
@@ -66,6 +66,22 @@ public class BlockServiceImplTest {
             + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     createBlocksTable = String.format(createBlocksTable, hiveRepository.getSchema());
 
+    // Create `token_transfers`
+    String createTokenTransfersTable =
+        "CREATE TABLE %s.token_transfers "
+            + "(`token_adress` string,"
+            + "`from_address` string,"
+            + "`to_address` string,"
+            + "`value` string,"
+            + "`transaction_hash` string,"
+            + "`log_index` bigint,"
+            + "`block_hash` string,"
+            + "`block_number` bigint,"
+            + "`block_timestamp` timestamp) "
+            + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
+    createTokenTransfersTable = String
+        .format(createTokenTransfersTable, hiveRepository.getSchema());
+
     // Create `block_timestamp_mapping`
     String createBlockTsMapTable =
         "CREATE TABLE %s.block_timestamp_mapping "
@@ -74,15 +90,8 @@ public class BlockServiceImplTest {
     createBlockTsMapTable = String.format(createBlockTsMapTable, hiveRepository.getSchema());
 
     jdbcTemplate.execute(createBlocksTable);
+    jdbcTemplate.execute(createTokenTransfersTable);
     jdbcTemplate.execute(createBlockTsMapTable);
-  }
-
-  @AfterEach
-  public void teardown() {
-    // Remove schema that have been initialised
-    String dropSchema = "DROP SCHEMA IF EXISTS %s CASCADE";
-    dropSchema = String.format(dropSchema, hiveRepository.getSchema());
-    jdbcTemplate.execute(dropSchema);
   }
 
   /**
@@ -108,12 +117,20 @@ public class BlockServiceImplTest {
     jdbcTemplate.execute(insertSql);
   }
 
+  @AfterEach
+  public void teardown() {
+    // Remove schema that have been initialised
+    String dropSchema = "DROP SCHEMA IF EXISTS %s CASCADE";
+    dropSchema = String.format(dropSchema, hiveRepository.getSchema());
+    jdbcTemplate.execute(dropSchema);
+  }
+
   @Test
   public void testFetchFromBq() {
     // Create an update request
     UpdateRequest updateRequest = UpdateRequest.newBuilder()
         .setStartBlockNumber(0L)
-        .setEndBlockNumber(499L)
+        .setEndBlockNumber(447767L)
         .build();
 
     TableResult tableResult = null;
@@ -124,55 +141,47 @@ public class BlockServiceImplTest {
       // Insert two rows into the required table
       insertDataIntoBlocks(2);
 
-      tableResult = blocksService.fetchFromBq(updateRequest);
+      tableResult = tokenTransfersService.fetchFromBq(updateRequest);
     } catch (InterruptedException | IOException e) {
       e.printStackTrace();
     }
 
-    assertEquals(498L, tableResult.getTotalRows());
+    assertEquals(1L, tableResult.getTotalRows());
   }
 
   @Test
   public void testGetTableName() {
-    String expected = "blocks";
-    assertEquals(expected, blocksService.getTableName());
+    String expected = "token_transfers";
+    assertEquals(expected, tokenTransfersService.getTableName());
   }
 
   @Test
   public void testGetTmpTableName() {
-    String expected = "tmp_blocks";
-    assertEquals(expected, blocksService.getTmpTableName());
+    String expected = "tmp_token_transfers";
+    assertEquals(expected, tokenTransfersService.getTmpTableName());
   }
 
   @Test
   public void testGetSchemaStr() {
     String expected =
-        "`timestamp` timestamp,`number` bigint,"
-            + "`hash` string,`parent_hash` string,"
-            + "`nonce` string,`sha3_uncles` string,"
-            + "`logs_bloom` string,`transactions_root` string,"
-            + "`state_root` string,`receipts_root` string,"
-            + "`miner` string,`difficulty` bigint,"
-            + "`total_difficulty` bigint,`size` bigint,"
-            + "`extra_data` string,`gas_limit` bigint,"
-            + "`gas_used` bigint,`transaction_count` bigint";
-    assertEquals(expected, blocksService.getSchemaStr());
+        "`token_address` string,`from_address` string,"
+            + "`to_address` string,`value` string,"
+            + "`transaction_hash` string,`log_index` bigint,"
+            + "`block_timestamp` timestamp,`block_number` bigint,"
+            + "`block_hash` string";
+    assertEquals(expected, tokenTransfersService.getSchemaStr());
   }
 
   @Test
   public void testGetStructStr() {
     String expected =
         "struct<"
-            + "timestamp:timestamp,number:bigint,"
-            + "hash:string,parent_hash:string,"
-            + "nonce:string,sha3_uncles:string,"
-            + "logs_bloom:string,transactions_root:string,"
-            + "state_root:string,receipts_root:string,"
-            + "miner:string,difficulty:bigint,"
-            + "total_difficulty:bigint,size:bigint,"
-            + "extra_data:string,gas_limit:bigint,"
-            + "gas_used:bigint,transaction_count:bigint>";
-    assertEquals(expected, blocksService.getStructStr());
+            + "token_address:string,from_address:string,"
+            + "to_address:string,value:string,"
+            + "transaction_hash:string,log_index:bigint,"
+            + "block_timestamp:timestamp,block_number:bigint,"
+            + "block_hash:string>";
+    assertEquals(expected, tokenTransfersService.getStructStr());
   }
 
 }

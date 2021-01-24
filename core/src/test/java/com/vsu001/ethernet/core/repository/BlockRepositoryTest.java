@@ -67,7 +67,12 @@ public class BlockRepositoryTest {
     jdbcTemplate.execute(dropSchema);
   }
 
-  private void insertData(int rows) {
+  /**
+   * Inserts dummy rows into the `blocks` table
+   *
+   * @param rows Number of rows to insert
+   */
+  private void insertDataIntoBlocks(int rows) {
     String insertQuery = "INSERT INTO %s.blocks VALUES %s";
     String rowData = "(%s,'2018-12-09 00:00:00','','','','','','','','','',"
         + "2318831663517954,8199845831287802706171,20485,'0x',7992222,7977738,129)";
@@ -96,7 +101,7 @@ public class BlockRepositoryTest {
     assertEquals(0, longList.size());
 
     // Insert a few rows
-    insertData(5);
+    insertDataIntoBlocks(5);
 
     longList = blockRepository.findByNumberRange(0L, 1L);
     assertEquals(2, longList.size());
