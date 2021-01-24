@@ -1,148 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.0-SNAPSHOT</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.vsu001</groupId>
-	<artifactId>ethernet</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>ethernet</name>
-	<description>Demo project for Spring Boot</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<properties>
-		<java.version>11</java.version>
-	</properties>
+  <modelVersion>4.0.0</modelVersion>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc -->
-		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-jdbc</artifactId>
-			<version>2.3.7</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.eclipse.jetty.aggregate</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<!-- To fix warning: `SLF4J: Class path contains multiple SLF4J bindings.` -->
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-slf4j-impl</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-				<!-- To fix error: `Cannot resolve jdk.tools:jdk.tools:1.7` -->
-				<exclusion>
-					<groupId>jdk.tools</groupId>
-					<artifactId>jdk.tools</artifactId>
-				</exclusion>
-<!--				<exclusion>-->
-<!--					<groupId>log4j</groupId>-->
-<!--					<artifactId>log4j</artifactId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.logging.log4j</groupId>-->
-<!--					<artifactId>log4j-1.2-api</artifactId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.logging.log4j</groupId>-->
-<!--					<artifactId>log4j-api</artifactId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.logging.log4j</groupId>-->
-<!--					<artifactId>log4j-core</artifactId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.logging.log4j</groupId>-->
-<!--					<artifactId>log4j-web</artifactId>-->
-<!--				</exclusion>-->
-			</exclusions>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jdbc -->
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jdbc</artifactId>
-			<version>10.0.0</version>
-		</dependency>
-	</dependencies>
+  <name>ethernet</name>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <groupId>com.vsu001</groupId>
+  <artifactId>ethernet</artifactId>
+  <version>${revision}</version>
+  <packaging>pom</packaging>
 
-	<repositories>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</repository>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+  <properties>
+    <revision>0.0.1-SNAPSHOT</revision>
+    <grpc.version>1.30.2</grpc.version>
+    <protobuf.version>3.14.0</protobuf.version>
+    <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
+    <spring.boot.version>2.3.7.RELEASE</spring.boot.version>
+    <lombok.version>1.18.16</lombok.version>
+    <hive.jdbc.version>2.3.7</hive.jdbc.version>
+    <tomcat.jdbc.version>10.0.0</tomcat.jdbc.version>
+    <grpc.spring.boot.starter.version>2.10.1.RELEASE</grpc.spring.boot.starter.version>
+    <grpc.version>1.31.1</grpc.version>
+    <junit.jupiter.version>5.7.0</junit.jupiter.version>
+    <orc.version>1.6.6</orc.version>
+  </properties>
+
+  <modules>
+    <module>core</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- gRPC -->
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-stub</artifactId>
+        <version>${grpc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf</artifactId>
+        <version>${grpc.version}</version>
+      </dependency>
+      <!-- Grpc-Test-Support -->
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-testing</artifactId>
+        <version>${grpc.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- Java 9+ compatibility -->
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+      </dependency>
+      <!-- com.google.protobuf depdenencies -->
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${protobuf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java-util</artifactId>
+        <version>${protobuf.version}</version>
+      </dependency>
+      <!--  Using libraries-bom to manage versions.
+      See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>16.2.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <extensions>
+      <!-- gRPC -->
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+      </extension>
+    </extensions>
+
+    <plugins>
+      <!-- gRPC -->
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <version>${protobuf.maven.plugin.version}</version>
+        <configuration>
+          <protocArtifact>
+            com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
+          </protocArtifact>
+          <pluginId>grpc-java</pluginId>
+          <pluginArtifact>
+            io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
+          </pluginArtifact>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>compile-custom</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
+        <version>3.0.0-M5</version>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

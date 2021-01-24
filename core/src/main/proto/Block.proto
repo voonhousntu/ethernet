@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package com.vsu001.ethernet.core;
+
+option java_multiple_files = true;
+option java_package = "com.vsu001.ethernet.core.model";
+option java_outer_classname = "BlockProto";
+
+import "google/protobuf/timestamp.proto";
+
+message Block {
+  // The timestamp for when the block was collated
+  google.protobuf.Timestamp timestamp = 1;
+
+  // The block number
+  int64 number = 2;
+
+  // Hash of the block
+  string hash = 3;
+
+  // Hash of the parent block
+  string parent_hash = 4;
+
+  // Hash of the generated proof-of-work
+  string nonce = 5;
+
+  // SHA3 of the uncles data in the block
+  string sha3_uncles = 6;
+
+  // The bloom filter for the logs of the block
+  string logs_bloom = 7;
+
+  // The root of the transaction trie of the block
+  string transactions_root = 8;
+
+  // The root of the final state trie of the block
+  string state_root = 9;
+
+  // The root of the receipts trie of the block
+  string receipts_root = 10;
+
+  // The address of the beneficiary to whom the mining rewards were given
+  string miner = 11;
+
+  // Integer of the difficulty for this block
+  int64 difficulty = 12;
+
+  // Integer of the total difficulty of the chain until this block
+  int64 total_difficulty = 13;
+
+  // The size of this block in bytes
+  int64 size = 14;
+
+  // The extra data field of this block
+  string extra_data = 15;
+
+  // The maximum gas allowed in this block
+  int64 gas_limit = 16;
+
+  // The total used gas by all transactions in this block
+  int64 gas_used = 17;
+
+  // The number of transactions in the block
+  int64 transaction_count = 18;
+}

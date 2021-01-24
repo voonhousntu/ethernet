@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package com.vsu001.ethernet.core;
+
+option java_multiple_files = true;
+option java_package = "com.vsu001.ethernet.core.model";
+option java_outer_classname = "ContractProto";
+
+import "google/protobuf/timestamp.proto";
+
+message Contract {
+  // Address of the contract
+  string address = 1;
+
+  // Bytecode of the contract
+  string bytecode = 2;
+
+  // 4-byte function signature hashes
+  string function_sighashes = 3;
+
+  // Whether this contract is an ERC20 contract
+  bool is_erc20 = 4;
+
+  // Whether this contract is an ERC721 contract
+  bool is_erc721 = 5;
+
+  // Timestamp of the block where this contract was created
+  google.protobuf.Timestamp block_timestamp = 6;
+
+  // Block number where this contract was created
+  int64 block_number = 7;
+
+  // Hash of the block where this contract was created
+  string block_hash = 8;
+}

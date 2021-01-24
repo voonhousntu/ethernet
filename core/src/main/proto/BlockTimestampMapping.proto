@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.vsu001.ethernet.core;
+
+option java_multiple_files = true;
+option java_package = "com.vsu001.ethernet.core.model";
+option java_outer_classname = "BlockTimestampMappingProto";
+
+import "google/protobuf/timestamp.proto";
+
+message BlockTimestampMapping {
+  // The timestamp for when the block was collated
+  google.protobuf.Timestamp timestamp = 1;
+
+  // The block number
+  int64 number = 2;
+}

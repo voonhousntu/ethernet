@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package com.vsu001.ethernet.core;
+
+option java_multiple_files = true;
+option java_package = "com.vsu001.ethernet.core.service";
+option java_outer_classname = "CoreServiceProto";
+
+import "google/protobuf/timestamp.proto";
+
+service CoreService {
+  // Update the block number and timestamp mapping in the Hive table
+  // The most recent block number and timestamp will be returned after the update
+  rpc UpdateBlockTsMapping (UpdateRequest) returns (UpdateResponse) {
+  }
+
+  // Fetch the required blocks and push them into the `blocks` Hive table
+  rpc UpdateBlocks (UpdateRequest) returns (UpdateResponse) {
+  }
+
+  // Fetch the required contracts and push them into the `contracts` Hive table
+  rpc UpdateContracts (UpdateRequest) returns (UpdateResponse) {
+  }
+
+  // Fetch the required logs and push them into the `logs` Hive table
+  rpc UpdateLogs (UpdateRequest) returns (UpdateResponse) {
+  }
+
+  // Fetch the required token transfers and push them into the `token_transfers` Hive table
+  rpc UpdateTokenTransfers (UpdateRequest) returns (UpdateResponse) {
+  }
+
+  // Fetch the required tokens and push them into the `tokens` Hive table
+  rpc UpdateTokens (UpdateRequest) returns (UpdateResponse) {
+  }
+
+  // Fetch the required traces and push them into the `traces` Hive table
+  rpc UpdateTraces (UpdateRequest) returns (UpdateResponse) {
+  }
+
+  // Fetch the required transactions and push them into the `transactions` Hive table
+  rpc UpdateTransactions (UpdateRequest) returns (UpdateResponse) {
+  }
+}
+
+// Update request
+message UpdateRequest {
+  // The starting block number in the block number range
+  int64 start_block_number = 1;
+
+  // The ending block number in the block number range
+  int64 end_block_number = 2;
+}
+
+// Update response
+message UpdateResponse {
+  // The block number
+  int64 number = 1;
+
+  // Timestamp of the block where this token was created
+  google.protobuf.Timestamp timestamp = 2;
+}

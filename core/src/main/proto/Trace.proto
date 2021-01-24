@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package com.vsu001.ethernet.core;
+
+option java_multiple_files = true;
+option java_package = "com.vsu001.ethernet.core.model";
+option java_outer_classname = "TraceProto";
+
+import "google/protobuf/timestamp.proto";
+
+message Trace {
+  // Transaction hash where this trace was in
+  string transaction_hash = 1;
+
+  // Integer of the transactions index position in the block
+  int64 transaction_index = 2;
+
+  // Address of the sender, null when trace_type is genesis or reward
+  string from_address = 3;
+
+  // Address of the receiver if trace_type is call
+  // Address of new contract or null if trace_type is create
+  // Beneficiary address if trace_type is suicide
+  // Miner address if trace_type is reward
+  // Shareholder address if trace_type is genesis
+  // WithdrawDAO address if trace_type is daofork
+  string to_address = 4;
+
+  // Value transferred in Wei
+  double value = 5;
+
+  // The data sent along with the message call
+  string input = 6;
+
+  // The output of the message call, bytecode of contract when trace_type is create
+  string output = 7;
+
+  // One of call, create, suicide, reward, genesis, daofork
+  string trace_type = 8;
+
+  // One of call, callcode, delegatecall, staticcall
+  string call_type = 9;
+
+  // One of block, uncle
+  string reward_type = 10;
+
+  // Gas provided with the message call
+  int64 gas = 11;
+
+  // Gas used by the message call
+  int64 gas_used = 12;
+
+  // Number of subtraces
+  int64 subtraces = 13;
+
+  // Comma separated list of trace address in call tree
+  string trace_address = 14;
+
+  // Error if message call failed
+  // This field doesn't contain top-level trace errors
+  string error = 15;
+
+  // Either 1 (success) or
+  // 0 (failure, due to any operation that can cause the call itself or any top-level call to
+  // revert)
+  int64 status = 16;
+
+  // Timestamp of the block where this trace was in
+  google.protobuf.Timestamp block_timestamp = 17;
+
+  // Block number where this trace was in
+  int64 block_number = 18;
+
+  // Hash of the block where this trace was in
+  string block_hash = 19;
+
+  // Unique string that identifies the trace
+  // For transaction-scoped traces it is {trace_type}_{transaction_hash}_{trace_address}
+  // For block-scoped traces it is {trace_type}_{block_number}_{index_within_block}
+  string trace_id = 20;
+}

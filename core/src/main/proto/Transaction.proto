@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package com.vsu001.ethernet.core;
+
+option java_multiple_files = true;
+option java_package = "com.vsu001.ethernet.core.model";
+option java_outer_classname = "TransactionProto";
+
+import "google/protobuf/timestamp.proto";
+
+message Transaction {
+  // Hash of the transaction
+  string hash = 1;
+
+  // The number of transactions made by the sender prior to this one
+  int64 nonce = 2;
+
+  // Integer of the transactions index position in the block
+  int64 transaction_index = 3;
+
+  // Address of the sender
+  string from_address = 4;
+
+  // Address of the receiver
+  // Null when its a contract creation transaction
+  string to_address = 5;
+
+  // Value transferred in Wei
+  int64 value = 6;
+
+  // Gas provided by the sender
+  int64 gas = 7;
+
+  // Gas price provided by the sender in Wei
+  int64 gas_price = 8;
+
+  // The data sent along with the transaction
+  string input = 9;
+
+
+  // The total amount of gas used when this transaction was executed in the block
+  int64 receipt_cumulative_gas_used = 10;
+
+  // The amount of gas used by this specific transaction alone
+  int64 receipt_gas_used = 11;
+
+  // The contract address created, if the transaction was a contract creation, otherwise null
+  string receipt_contract_address = 12;
+
+  // 32 bytes of post-transaction stateroot (pre Byzantium)
+  string receipt_root = 13;
+
+  // Either 1 (success) or 0 (failure) (post Byzantium)
+  int64 receipt_status = 14;
+
+  // Timestamp of the block where this transaction was in
+  google.protobuf.Timestamp block_timestamp = 15;
+
+  // Block number where this transaction was in
+  int64 block_number = 16;
+
+  // Hash of the block where this transaction was in
+  string block_hash = 17;
+}
