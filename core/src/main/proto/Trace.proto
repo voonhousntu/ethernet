@@ -77,5 +77,5 @@ message Trace {
   // Unique string that identifies the trace
   // For transaction-scoped traces it is {trace_type}_{transaction_hash}_{trace_address}
   // For block-scoped traces it is {trace_type}_{block_number}_{index_within_block}
-  string trade_id = 20;
+  string trace_id = 20;
 }
