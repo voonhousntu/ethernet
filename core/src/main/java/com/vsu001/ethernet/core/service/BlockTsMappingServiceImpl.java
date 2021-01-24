@@ -72,8 +72,8 @@ public class BlockTsMappingServiceImpl implements GenericService {
         )
     )) {
       // Ensure that we are not querying the full table during tests
-      // Set the max timestamp to the 500th block
-      query += " AND `timestamp` <= '2015-07-30 15:46:51'";
+      // Set the max timestamp to the 47205th block
+      query += " AND `timestamp` <= '2015-08-07 08:26:34'";
     }
 
     // Build query

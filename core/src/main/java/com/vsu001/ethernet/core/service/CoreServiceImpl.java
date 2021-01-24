@@ -13,6 +13,8 @@ import net.devh.boot.grpc.server.service.GrpcService;
 @GrpcService
 public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
+  // TODO: Update all tables if any of the tables are queried for?
+
   private final GenericHiveRepository genericHiveRepository;
   private final BlocksServiceImpl blocksService;
   private final BlockTsMappingServiceImpl blockTsMappingService;

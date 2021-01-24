@@ -2,7 +2,6 @@ package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.vsu001.ethernet.core.model.Block;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.Contract;
 import com.vsu001.ethernet.core.repository.BlockRepository;
@@ -64,25 +63,23 @@ public class ContractsServiceImpl implements GenericService {
       } else {
         BlockTimestampMapping startBTM = blockTsMappingRepository.findByNumber(lList.get(0));
         BlockTimestampMapping endBTM = blockTsMappingRepository.findByNumber(lList.get(1));
-        timestampSB.append("AND `block_timestamp` >= ");
-        timestampSB.append(
-            String.format("'%s", BlockUtil.protoTsToISO(startBTM.getTimestamp()))
-        );
-        timestampSB.append("AND `block_timestamp` <= ");
-        timestampSB.append(
-            String.format("'%s", BlockUtil.protoTsToISO(endBTM.getTimestamp()))
+        // TODO: What happens if user specifies a block that has not been mined yet?
+        timestampSB.append("AND `block_timestamp` >= '");
+        timestampSB.append(String.format("%s' ", BlockUtil.protoTsToISO(startBTM.getTimestamp())));
+        timestampSB.append("AND `block_timestamp` <= '");
+        timestampSB.append(String.format("%s' ", BlockUtil.protoTsToISO(endBTM.getTimestamp()))
         );
       }
     }
 
     String queryCriteria = String.format(
-        timestampSB.toString() + " AND block_number NOT IN (%s)",
+        timestampSB.toString() + " AND `block_number` NOT IN (%s)",
         blockNumbers.stream().map(String::valueOf).collect(Collectors.joining(","))
     );
 
     // Fetch results from BigQuery
     TableResult tableResult = BigQueryUtil.query(
-        Block.getDescriptor(),
+        Contract.getDescriptor(),
         "contracts",
         queryCriteria
     );

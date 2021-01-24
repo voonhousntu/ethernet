@@ -77,7 +77,7 @@ public class BlocksServiceImpl implements GenericService {
     }
 
     String queryCriteria = String.format(
-        timestampSB.toString() + " AND number NOT IN (%s)",
+        timestampSB.toString() + " AND `number` NOT IN (%s)",
         blockNumbers.stream().map(String::valueOf).collect(Collectors.joining(","))
     );
 
