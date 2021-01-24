@@ -2,11 +2,11 @@ package com.vsu001.ethernet.core.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import io.grpc.internal.testing.StreamRecorder;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ public class ExampleServiceTest {
     StreamRecorder<HelloReply> responseObserver = StreamRecorder.create();
     exampleService.sayHello(request, responseObserver);
     if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
-      Assertions.fail("The call did not terminate in time");
+      fail("The call did not terminate in time");
     }
     assertNull(responseObserver.getError());
     List<HelloReply> results = responseObserver.getValues();
