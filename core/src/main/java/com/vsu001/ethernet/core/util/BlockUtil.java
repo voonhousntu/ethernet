@@ -65,6 +65,12 @@ public class BlockUtil {
     return findMissingContRange(cloneList);
   }
 
+  /**
+   * Convert a Google protobuf timestamp object to a ISO8601 timestamp string.
+   *
+   * @param timestamp Google protobuf timestamp.
+   * @return The ISO8601 string format of the Google protobuf timestamp.
+   */
   public static String protoTsToISO(Timestamp timestamp) {
     // Convert to instant so we can get the ISO8601 timestamp format
     Instant instantTs = Instant.ofEpochSecond(timestamp.getSeconds() / 1000, timestamp.getNanos());
