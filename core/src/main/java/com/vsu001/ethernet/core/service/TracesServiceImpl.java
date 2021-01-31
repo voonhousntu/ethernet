@@ -4,8 +4,8 @@ import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.Trace;
-import com.vsu001.ethernet.core.repository.BlockRepository;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
+import com.vsu001.ethernet.core.repository.GenericHiveRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
@@ -22,14 +22,14 @@ public class TracesServiceImpl implements GenericService {
   private static final String TMP_TABLE_NAME = "tmp_" + TABLE_NAME;
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = Trace.getDescriptor()
       .getFields();
-  private final BlockRepository blockRepository;
+  private final GenericHiveRepository genericHiveRepository;
   private final BlockTsMappingRepository blockTsMappingRepository;
 
   public TracesServiceImpl(
-      BlockRepository blockRepository,
+      GenericHiveRepository genericHiveRepository,
       BlockTsMappingRepository blockTsMappingRepository
   ) {
-    this.blockRepository = blockRepository;
+    this.genericHiveRepository = genericHiveRepository;
     this.blockTsMappingRepository = blockTsMappingRepository;
   }
 
@@ -39,7 +39,8 @@ public class TracesServiceImpl implements GenericService {
   @Override
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
     // Find blocks that are already in Hive table
-    List<Long> blockNumbers = blockRepository.findByNumberRange(
+    List<Long> blockNumbers = genericHiveRepository.findByNumberRange(
+        TABLE_NAME,
         request.getStartBlockNumber(),
         request.getEndBlockNumber()
     );
