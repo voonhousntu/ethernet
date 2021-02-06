@@ -2,7 +2,9 @@ package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Timestamp;
+import com.vsu001.ethernet.core.exception.InvalidRequestException;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
+import com.vsu001.ethernet.core.util.BlockUtil;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.time.Instant;
@@ -68,13 +70,18 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `block_timestamp_mapping` table");
 
     try {
+      // Validate UpdateRequest
+      if (!BlockUtil.validateRequest(request)) {
+        throw new InvalidRequestException("Invalid [start] and [end] range in request");
+      }
+
       // Fetch and populate `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Return response
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -85,6 +92,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `blocks` table");
 
     try {
+      // Validate UpdateRequest
+      if (!BlockUtil.validateRequest(request)) {
+        throw new InvalidRequestException("Invalid [start] and [end] range in request");
+      }
+
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -94,7 +106,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Return response
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -108,6 +120,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `contracts` table");
 
     try {
+      // Validate UpdateRequest
+      if (!BlockUtil.validateRequest(request)) {
+        throw new InvalidRequestException("Invalid [start] and [end] range in request");
+      }
+
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -117,7 +134,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Return response
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -128,6 +145,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `logs` table");
 
     try {
+      // Validate UpdateRequest
+      if (!BlockUtil.validateRequest(request)) {
+        throw new InvalidRequestException("Invalid [start] and [end] range in request");
+      }
+
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -137,7 +159,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Return response
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -151,6 +173,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `token_transfers` table");
 
     try {
+      // Validate UpdateRequest
+      if (!BlockUtil.validateRequest(request)) {
+        throw new InvalidRequestException("Invalid [start] and [end] range in request");
+      }
+
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -160,7 +187,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Return response
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -171,6 +198,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `tokens` table");
 
     try {
+      // Validate UpdateRequest
+      if (!BlockUtil.validateRequest(request)) {
+        throw new InvalidRequestException("Invalid [start] and [end] range in request");
+      }
+
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -180,7 +212,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Return response
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -191,6 +223,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `traces` table");
 
     try {
+      // Validate UpdateRequest
+      if (!BlockUtil.validateRequest(request)) {
+        throw new InvalidRequestException("Invalid [start] and [end] range in request");
+      }
+
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -200,7 +237,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Return response
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -214,6 +251,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `transactions` table");
 
     try {
+      // Validate UpdateRequest
+      if (!BlockUtil.validateRequest(request)) {
+        throw new InvalidRequestException("Invalid [start] and [end] range in request");
+      }
+
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -223,13 +265,27 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Return response
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
 
   }
 
+  /**
+   * Helper method to call fetch the required data from BigQuery using a degenerate/simplified
+   * Strategy pattern implementation.
+   * <p>
+   * The data is then staged and pushed to the relevant Hive tables.
+   *
+   * @param genericService The specific service (strategy) to use to query for BigQuery data.
+   * @param updateRequest  The block-number range to query for is defined and wrapped in the
+   *                       UpdateRequest object. The user defined `start` and `end` object are
+   *                       inclusive when translated to the BigQuery legacy SQL query constraints
+   *                       equivalent.
+   * @throws InterruptedException
+   * @throws IOException
+   */
   public void fetchAndPopulateHiveTable(
       GenericService genericService,
       UpdateRequest updateRequest

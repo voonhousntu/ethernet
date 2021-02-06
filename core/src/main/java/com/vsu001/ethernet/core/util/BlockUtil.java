@@ -1,12 +1,28 @@
 package com.vsu001.ethernet.core.util;
 
 import com.google.protobuf.Timestamp;
+import com.vsu001.ethernet.core.service.UpdateRequest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BlockUtil {
+
+  /**
+   * Ensure that the UpdateRequest object is a valid request.
+   * <p>
+   * Validation is performed to ensure that the provided start index is smaller than the end index.
+   *
+   * @param updateRequest The block-number range to query for is defined and wrapped in the
+   *                      UpdateRequest object. The user defined `start` and `end` object are
+   *                      inclusive when translated to the BigQuery legacy SQL query constraints
+   *                      equivalent.
+   * @return Boolean flag to check if the start index is smaller than the end index
+   */
+  public static boolean validateRequest(UpdateRequest updateRequest) {
+    return updateRequest.getStartBlockNumber() < updateRequest.getEndBlockNumber();
+  }
 
   /**
    * Find missing contiguous sequence(s) of Long-type elements that are not in the list of Long-type
