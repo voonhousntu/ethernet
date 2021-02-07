@@ -64,7 +64,6 @@ public class TokenTransfersServiceImpl implements GenericService {
       } else {
         BlockTimestampMapping startBTM = blockTsMappingRepository.findByNumber(lList.get(0));
         BlockTimestampMapping endBTM = blockTsMappingRepository.findByNumber(lList.get(1));
-        // TODO: What happens if user specifies a block that has not been mined yet?
         timestampSB.append("AND `block_timestamp` >= ");
         timestampSB.append(String.format("'%s' ", BlockUtil.protoTsToISO(startBTM.getTimestamp())));
         timestampSB.append("AND `block_timestamp` <= ");
@@ -85,6 +84,8 @@ public class TokenTransfersServiceImpl implements GenericService {
         queryCriteria
     );
 
+    // Table results should not be null
+    assert tableResult != null;
     log.info("Rows fetched: [{}]", tableResult.getTotalRows());
 
     return tableResult;
