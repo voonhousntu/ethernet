@@ -1,13 +1,37 @@
 package com.vsu001.ethernet.core.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.vsu001.ethernet.core.service.UpdateRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class BlockUtilTest {
+
+  @Test
+  public void testValidateRequest() {
+    UpdateRequest request = UpdateRequest.newBuilder()
+        .setStartBlockNumber(1)
+        .setEndBlockNumber(1)
+        .build();
+    assertFalse(BlockUtil.validateRequest(request));
+
+    request = UpdateRequest.newBuilder()
+        .setStartBlockNumber(2)
+        .setEndBlockNumber(1)
+        .build();
+    assertFalse(BlockUtil.validateRequest(request));
+
+    request = UpdateRequest.newBuilder()
+        .setStartBlockNumber(1)
+        .setEndBlockNumber(2)
+        .build();
+    assertTrue(BlockUtil.validateRequest(request));
+  }
 
   @Test
   public void testFindMissingContRange() {
