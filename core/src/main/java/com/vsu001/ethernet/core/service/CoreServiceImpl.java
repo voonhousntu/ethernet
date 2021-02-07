@@ -70,11 +70,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `block_timestamp_mapping` table");
 
     try {
-      // Validate UpdateRequest
-      if (!BlockUtil.validateRequest(request)) {
-        throw new InvalidRequestException("Invalid [start] and [end] range in request");
-      }
-
       // Fetch and populate `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -92,11 +87,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `blocks` table");
 
     try {
-      // Validate UpdateRequest
-      if (!BlockUtil.validateRequest(request)) {
-        throw new InvalidRequestException("Invalid [start] and [end] range in request");
-      }
-
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -120,11 +110,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `contracts` table");
 
     try {
-      // Validate UpdateRequest
-      if (!BlockUtil.validateRequest(request)) {
-        throw new InvalidRequestException("Invalid [start] and [end] range in request");
-      }
-
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -145,11 +130,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `logs` table");
 
     try {
-      // Validate UpdateRequest
-      if (!BlockUtil.validateRequest(request)) {
-        throw new InvalidRequestException("Invalid [start] and [end] range in request");
-      }
-
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -173,11 +153,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `token_transfers` table");
 
     try {
-      // Validate UpdateRequest
-      if (!BlockUtil.validateRequest(request)) {
-        throw new InvalidRequestException("Invalid [start] and [end] range in request");
-      }
-
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -198,11 +173,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `tokens` table");
 
     try {
-      // Validate UpdateRequest
-      if (!BlockUtil.validateRequest(request)) {
-        throw new InvalidRequestException("Invalid [start] and [end] range in request");
-      }
-
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -223,11 +193,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `traces` table");
 
     try {
-      // Validate UpdateRequest
-      if (!BlockUtil.validateRequest(request)) {
-        throw new InvalidRequestException("Invalid [start] and [end] range in request");
-      }
-
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -251,11 +216,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `transactions` table");
 
     try {
-      // Validate UpdateRequest
-      if (!BlockUtil.validateRequest(request)) {
-        throw new InvalidRequestException("Invalid [start] and [end] range in request");
-      }
-
       // Update `block_timestamp_mapping` table
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
@@ -289,7 +249,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   public void fetchAndPopulateHiveTable(
       GenericService genericService,
       UpdateRequest updateRequest
-  ) throws InterruptedException, IOException {
+  ) throws InterruptedException, IOException, InvalidRequestException {
+    if (!BlockUtil.validateRequest(updateRequest)) {
+      throw new InvalidRequestException("Invalid [start] and [end] range in request");
+    }
+
     // Fetch results from BigQuery
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
 
