@@ -245,6 +245,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
    *                       equivalent.
    * @throws InterruptedException
    * @throws IOException
+   * @throws InvalidRequestException
    */
   public void fetchAndPopulateHiveTable(
       GenericService genericService,
