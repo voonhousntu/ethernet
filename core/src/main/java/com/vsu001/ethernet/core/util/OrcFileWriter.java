@@ -35,24 +35,36 @@ public class OrcFileWriter {
    * Write rows defined in a <code>List</code> of <code>Map</code> with column name as the key with
    * its respective object value into an ORC file.
    *
-   * @param path   The HDFS directory to write the file to.
-   * @param struct The struct string defining the "schema" of an ORC file.
-   * @param data   The rows to be written into the ORC file defined in a <code>List</code> of
-   *               <code>Map</code> with column name as the key with * its respective object
-   *               value.
+   * @param path                The HDFS directory to write the file to.
+   * @param struct              The struct string defining the "schema" of an ORC file.
+   * @param data                The rows to be written into the ORC file defined in a
+   *                            <code>List</code> of
+   *                            <code>Map</code> with column name as the key with * its respective
+   *                            object value.
+   * @param defaultFs           The name of the default file system. A URI whose scheme and
+   *                            authority determine the FileSystem implementation. The uri's scheme
+   *                            determines the config property (fs.SCHEME.impl) naming the
+   *                            FileSystem implementation class. The uri's authority is used to
+   *                            determine the host, port, etc. for a filesystem.
+   * @param datanodeUseHostname Whether datanodes should use datanode hostnames when connecting to
+   *                            other datanodes for data transfer.
+   * @param clientUseHostname   Whether clients should use datanode hostnames when connecting to
+   *                            datanodes.
    * @throws IOException
    */
   public static void write(
       String path,
       String struct,
-      List<Map<String, Object>> data
+      List<Map<String, Object>> data,
+      String defaultFs,
+      boolean datanodeUseHostname,
+      boolean clientUseHostname
   ) throws IOException {
-    // TODO: Move these constants into the application configuration file
     // Use default configurations
     Configuration config = new Configuration();
-    config.set("fs.defaultFS", "hdfs://namenode:8020");
-    config.set("dfs.datanode.use.datanode.hostname", "true");
-    config.set("dfs.client.use.datanode.hostname", "true");
+    config.set("fs.defaultFS", defaultFs);
+    config.set("dfs.datanode.use.datanode.hostname", Boolean.toString(datanodeUseHostname));
+    config.set("dfs.client.use.datanode.hostname", Boolean.toString(clientUseHostname));
     write(config, path, struct, data);
   }
 
@@ -122,23 +134,34 @@ public class OrcFileWriter {
    * Write the <code>TableResult</code> obtained from a BigQuery job into HDFS directory as an ORC
    * file.
    *
-   * @param path        The HDFS directory to write the file to.
-   * @param struct      The struct string defining the "schema" of an ORC file.
-   * @param tableResult The <code>TableResult</code> of a BigQuery job to be written into a HDFS
-   *                    directory as an ORC file.
+   * @param path                The HDFS directory to write the file to.
+   * @param struct              The struct string defining the "schema" of an ORC file.
+   * @param tableResult         The <code>TableResult</code> of a BigQuery job to be written into a
+   *                            HDFS directory as an ORC file.
+   * @param defaultFs           The name of the default file system. A URI whose scheme and
+   *                            authority determine the FileSystem implementation. The uri's scheme
+   *                            determines the config property (fs.SCHEME.impl) naming the
+   *                            FileSystem implementation class. The uri's authority is used to
+   *                            determine the host, port, etc. for a filesystem.
+   * @param datanodeUseHostname Whether datanodes should use datanode hostnames when connecting to
+   *                            other datanodes for data transfer.
+   * @param clientUseHostname   Whether clients should use datanode hostnames when connecting to
+   *                            datanodes.
    * @throws IOException
    */
   public static void writeTableResults(
       String path,
       String struct,
-      TableResult tableResult
+      TableResult tableResult,
+      String defaultFs,
+      boolean datanodeUseHostname,
+      boolean clientUseHostname
   ) throws IOException {
-    // TODO: Move these constants into the application configuration file
     // Use default configurations
     Configuration config = new Configuration();
-    config.set("fs.defaultFS", "hdfs://namenode:8020");
-    config.set("dfs.datanode.use.datanode.hostname", "true");
-    config.set("dfs.client.use.datanode.hostname", "true");
+    config.set("fs.defaultFS", defaultFs);
+    config.set("dfs.datanode.use.datanode.hostname", Boolean.toString(datanodeUseHostname));
+    config.set("dfs.client.use.datanode.hostname", Boolean.toString(clientUseHostname));
     writeTableResults(config, path, struct, tableResult);
   }
 

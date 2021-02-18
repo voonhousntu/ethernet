@@ -19,6 +19,15 @@ public class GenericHiveRepository {
   @Value("${spring.datasource.hivedb.schema}")
   private String schema;
 
+  @Value("${hadoop.fs.default-fs}")
+  private String defaultFs;
+
+  @Value("${hadoop.dfs.datanose-use-hostname}")
+  private boolean datanodeUseHostname;
+
+  @Value("${hadoop.dfs.client-use-hostname}")
+  private boolean clientUseHostname;
+
   public GenericHiveRepository(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
@@ -40,7 +49,10 @@ public class GenericHiveRepository {
     OrcFileWriter.writeTableResults(
         genericService.getOutputPath() + genericService.getFilename(),
         genericService.getStructStr(),
-        tableResult
+        tableResult,
+        defaultFs,
+        datanodeUseHostname,
+        clientUseHostname
     );
   }
 

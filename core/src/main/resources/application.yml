@@ -11,3 +11,11 @@ spring:
       test-on-borrow: true
       max-wait: 60000
       schema: ethernet
+
+hadoop:
+  fs:
+    default-fs: hdfs://namenode:8020
+  dfs:
+    datanode-use-hostname: true
+    client-use-hostname: true
+
