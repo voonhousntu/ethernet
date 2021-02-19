@@ -18,7 +18,7 @@ public class BlockUtil {
    *                      UpdateRequest object. The user defined `start` and `end` object are
    *                      inclusive when translated to the BigQuery legacy SQL query constraints
    *                      equivalent.
-   * @return Boolean flag to check if the start index is smaller than the end index
+   * @return Boolean flag to check if the start index is smaller than the end index.
    */
   public static boolean validateRequest(UpdateRequest updateRequest) {
     return updateRequest.getStartBlockNumber() < updateRequest.getEndBlockNumber();
