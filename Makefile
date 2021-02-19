@@ -3,7 +3,7 @@ PROJECT_ROOT 	:= $(shell git rev-parse --show-toplevel)
 # General
 
 protos:
-	compile-protos-python
+	compile-protos-java compile-protos-python
 
 build:
 	protos build-java
@@ -13,6 +13,9 @@ build:
 build-java:
 	mvn clean verify
 
+compile-protos-java:
+	protobuf:compile
+
 # Python
 
 compile-protos-python:
@@ -20,7 +23,7 @@ compile-protos-python:
 	python3 -m grpc_tools.protoc -I . \
 			--python_out=../../../../sdk/python/ethernet/core \
 			*.proto; \
-    python3 -m grpc_tools.protoc -I . \
+		python3 -m grpc_tools.protoc -I . \
 			--grpc_python_out=../../../../sdk/python/ethernet/core \
 			*Service.proto; \
 	cd ../../../../; \
