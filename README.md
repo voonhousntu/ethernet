@@ -62,11 +62,8 @@ docker run \
     neo4j:latest
 ```
 
-## Note
+## Using hostnames
 
-### Using hostnames
-
-#### Introduction
 As docker will create its own set of private internet protocol (IP) address for the images that are being executed, hostnames are required to be able to connect to these images.
 
 As such, users are required to modify their `/etc/hosts` file. (A super user account is required for this to be done)
@@ -79,7 +76,7 @@ The hostnames that are used to connect to the hadoop **namenode** and **datanode
 | ddatanode | Hostname to connect to the Hadoop datanode. Please note that there are 2 `d`s. |
 
 
-#### How to modify etc/hosts file
+### How to modify etc/hosts file
 1. To modify the `etc/hosts` file, please execute the following commands:
 
 ```shell
@@ -96,6 +93,8 @@ sudo nano /etc/hosts
 Note that hostnames referenced in the `docker-compose.yml` configuration as referenced above corresponds to the hostname that are being added and mapped in the `/etc/hosts` file. 
 
 3. Save the file.
+
+## Note
 
 
 ## TODOs:
