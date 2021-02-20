@@ -14,7 +14,7 @@ build-java:
 	mvn clean verify
 
 compile-protos-java:
-	protobuf:compile
+	mvn protobuf:compile; mvn protobuf:compile-custom
 
 # Python
 
