@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/debug")
-public class SampleHiveController {
+public class HiveDebugController {
 
   // TODO: This is just an example controller, it can be removed later
 
   private final JdbcTemplate jdbcTemplate;
 
-  public SampleHiveController(JdbcTemplate jdbcTemplate) {
+  public HiveDebugController(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
 

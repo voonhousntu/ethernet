@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class JavaSqlUtil {
 
   /**
-   * Convert native Java SQL types to protobuf types
+   * Convert native Java SQL types to protobuf types.
    *
    * @param fieldDescriptor <code>FieldDescriptor</code> of field to convert in proto object.
    * @param resultSet       <code>ResultSet</code> of interest to convert.

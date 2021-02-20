@@ -11,3 +11,18 @@ spring:
       test-on-borrow: true
       max-wait: 60000
       schema: ethernet_test
+  neo4j:
+    uri: bolt://172.21.148.207:7687
+    data:
+      neo4j:
+        username: neo4j
+        password: test
+
+hadoop:
+  fs:
+    default-fs: hdfs://namenode:8020
+  dfs:
+    datanode-use-hostname: true
+    client-use-hostname: true
+
+neo4j:

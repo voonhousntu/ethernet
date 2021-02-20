@@ -4,6 +4,7 @@ import com.google.cloud.bigquery.TableResult;
 import com.vsu001.ethernet.core.service.GenericService;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.io.IOException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,6 +18,15 @@ public class GenericHiveRepository {
 
   @Value("${spring.datasource.hivedb.schema}")
   private String schema;
+
+  @Value("${hadoop.fs.default-fs}")
+  private String defaultFs;
+
+  @Value("${hadoop.dfs.datanose-use-hostname}")
+  private boolean datanodeUseHostname;
+
+  @Value("${hadoop.dfs.client-use-hostname}")
+  private boolean clientUseHostname;
 
   public GenericHiveRepository(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -39,7 +49,10 @@ public class GenericHiveRepository {
     OrcFileWriter.writeTableResults(
         genericService.getOutputPath() + genericService.getFilename(),
         genericService.getStructStr(),
-        tableResult
+        tableResult,
+        defaultFs,
+        datanodeUseHostname,
+        clientUseHostname
     );
   }
 
@@ -102,6 +115,31 @@ public class GenericHiveRepository {
     String sql = "DROP TABLE %s";
     String query = String.format(sql, genericService.getTmpTableName());
     jdbcTemplate.execute(query);
+  }
+
+  /**
+   * Retrieve all <code>Block</code> numbers within the range of start (inclusive) and end
+   * (inclusive).
+   *
+   * @param tableName The table name to run the search the block number range from.
+   * @param start     Start <code>Block</code> number.
+   * @param end       End <code>Block</code> number.
+   * @return The <code>List</code> of <code>Block</code> numbers within the start (inclusive) and
+   * end (inclusive) range.
+   */
+  public List<Long> findByNumberRange(String tableName, Long start, Long end) {
+    String numberColName = "number";
+    if (!tableName.equals("blocks")) {
+      numberColName = "block_number";
+    }
+
+    String sql =
+        "SELECT %s FROM %s.blocks "
+            + "WHERE %s BETWEEN %s AND %s";
+    String query = String.format(sql, numberColName, schema, numberColName, start, end);
+    // String used in lambda expressions need to be final or effectively final
+    String _numberColName = numberColName;
+    return jdbcTemplate.query(query, (resultSet, i) -> resultSet.getLong(_numberColName));
   }
 
   /**

@@ -2,7 +2,11 @@ package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Timestamp;
+import com.vsu001.ethernet.core.exception.InvalidRequestException;
+import com.vsu001.ethernet.core.model.BlockTimestampMapping;
+import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
+import com.vsu001.ethernet.core.util.BlockUtil;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.time.Instant;
@@ -16,6 +20,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   // TODO: Update all tables if any of the tables are queried for?
 
   private final GenericHiveRepository genericHiveRepository;
+  private final BlockTsMappingRepository blockTsMappingRepository;
   private final BlocksServiceImpl blocksService;
   private final BlockTsMappingServiceImpl blockTsMappingService;
   private final ContractsServiceImpl contractsService;
@@ -27,16 +32,17 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
   public CoreServiceImpl(
       GenericHiveRepository genericHiveRepository,
+      BlockTsMappingRepository blockTsMappingRepository,
       BlocksServiceImpl blocksService,
       BlockTsMappingServiceImpl blockTsMappingService,
       ContractsServiceImpl contractsService,
-      LogsServiceImpl logsService,
-      TokensServiceImpl tokensService,
+      LogsServiceImpl logsService, TokensServiceImpl tokensService,
       TokenTransfersServiceImpl tokenTransfersService,
       TracesServiceImpl tracesService,
       TransactionsServiceImpl transactionsService
   ) {
     this.genericHiveRepository = genericHiveRepository;
+    this.blockTsMappingRepository = blockTsMappingRepository;
     this.blocksService = blocksService;
     this.blockTsMappingService = blockTsMappingService;
     this.contractsService = contractsService;
@@ -72,9 +78,10 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Return response
+      // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -86,15 +93,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     try {
       // Update `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Fetch and populate `blocks` table
       fetchAndPopulateHiveTable(blocksService, request);
 
       // Return response
+      // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -109,15 +117,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     try {
       // Update `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Fetch and populate `contracts` table
       fetchAndPopulateHiveTable(contractsService, request);
 
       // Return response
+      // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -129,15 +138,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     try {
       // Update `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Fetch and populate `logs` table
       fetchAndPopulateHiveTable(logsService, request);
 
       // Return response
+      // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -152,15 +162,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     try {
       // Update `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Fetch and populate `token_transfers` table
       fetchAndPopulateHiveTable(tokenTransfersService, request);
 
       // Return response
+      // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -172,15 +183,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     try {
       // Update `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Fetch and populate `tokens` table
       fetchAndPopulateHiveTable(tokensService, request);
 
       // Return response
+      // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -192,15 +204,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     try {
       // Update `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Fetch and populate `traces` table
       fetchAndPopulateHiveTable(tracesService, request);
 
       // Return response
+      // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
@@ -215,25 +228,48 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     try {
       // Update `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
 
       // Fetch and populate `transactions` table
       fetchAndPopulateHiveTable(transactionsService, request);
 
       // Return response
+      // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
       responseObserver.onCompleted();
-    } catch (InterruptedException | IOException e) {
+    } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
       responseObserver.onError(e.fillInStackTrace());
     }
 
   }
 
-  public void fetchAndPopulateHiveTable(
+  /**
+   * Helper method to call fetch the required data from BigQuery using a degenerate/simplified
+   * Strategy pattern implementation.
+   * <p>
+   * The data is then staged and pushed to the relevant Hive tables.
+   *
+   * @param genericService The specific service (strategy) to use to query for BigQuery data.
+   * @param updateRequest  The block-number range to query for is defined and wrapped in the
+   *                       UpdateRequest object. The user defined `start` and `end` object are
+   *                       inclusive when translated to the BigQuery legacy SQL query constraints
+   *                       equivalent.
+   * @return UpdatedRequest object, where the `endBlockNumber` will be updated if the GenericService
+   * is of instance BlockTsMappingService, else the original updateRequest will be passed through
+   * and returned.
+   * @throws InterruptedException
+   * @throws IOException
+   * @throws InvalidRequestException
+   */
+  public UpdateRequest fetchAndPopulateHiveTable(
       GenericService genericService,
       UpdateRequest updateRequest
-  ) throws InterruptedException, IOException {
+  ) throws InterruptedException, IOException, InvalidRequestException {
+    if (!BlockUtil.validateRequest(updateRequest)) {
+      throw new InvalidRequestException("Invalid [start] and [end] range in request");
+    }
+
     // Fetch results from BigQuery
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
 
@@ -248,6 +284,19 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     // Remove temporary Hive table + temporary ORC file
     genericHiveRepository.dropTmpTable(genericService);
+
+    // If the requested block is larger than the most recent block, update the UpdateRequest object
+    if (genericService instanceof BlockTsMappingServiceImpl) {
+      BlockTimestampMapping blockTimestampMapping = blockTsMappingRepository.findMostRecent();
+      long mostRecentBlockNumber = blockTimestampMapping.getNumber();
+      if (updateRequest.getEndBlockNumber() > mostRecentBlockNumber) {
+        updateRequest = updateRequest.toBuilder()
+            .setEndBlockNumber(mostRecentBlockNumber)
+            .build();
+      }
+    }
+
+    return updateRequest;
   }
 
 }

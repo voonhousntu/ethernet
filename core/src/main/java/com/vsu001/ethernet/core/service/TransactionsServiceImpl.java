@@ -4,8 +4,8 @@ import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.Transaction;
-import com.vsu001.ethernet.core.repository.BlockRepository;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
+import com.vsu001.ethernet.core.repository.GenericHiveRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
@@ -22,14 +22,14 @@ public class TransactionsServiceImpl implements GenericService {
   private static final String TMP_TABLE_NAME = "tmp_" + TABLE_NAME;
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = Transaction.getDescriptor()
       .getFields();
-  private final BlockRepository blockRepository;
+  private final GenericHiveRepository genericHiveRepository;
   private final BlockTsMappingRepository blockTsMappingRepository;
 
   public TransactionsServiceImpl(
-      BlockRepository blockRepository,
+      GenericHiveRepository genericHiveRepository,
       BlockTsMappingRepository blockTsMappingRepository
   ) {
-    this.blockRepository = blockRepository;
+    this.genericHiveRepository = genericHiveRepository;
     this.blockTsMappingRepository = blockTsMappingRepository;
   }
 
@@ -39,7 +39,8 @@ public class TransactionsServiceImpl implements GenericService {
   @Override
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
     // Find blocks that are already in Hive table
-    List<Long> blockNumbers = blockRepository.findByNumberRange(
+    List<Long> blockNumbers = genericHiveRepository.findByNumberRange(
+        TABLE_NAME,
         request.getStartBlockNumber(),
         request.getEndBlockNumber()
     );
@@ -63,7 +64,6 @@ public class TransactionsServiceImpl implements GenericService {
       } else {
         BlockTimestampMapping startBTM = blockTsMappingRepository.findByNumber(lList.get(0));
         BlockTimestampMapping endBTM = blockTsMappingRepository.findByNumber(lList.get(1));
-        // TODO: What happens if user specifies a block that has not been mined yet?
         timestampSB.append("AND `block_timestamp` >= ");
         timestampSB.append(String.format("'%s' ", BlockUtil.protoTsToISO(startBTM.getTimestamp())));
         timestampSB.append("AND `block_timestamp` <= ");
@@ -84,6 +84,8 @@ public class TransactionsServiceImpl implements GenericService {
         queryCriteria
     );
 
+    // Table results should not be null
+    assert tableResult != null;
     log.info("Rows fetched: [{}]", tableResult.getTotalRows());
 
     return tableResult;
