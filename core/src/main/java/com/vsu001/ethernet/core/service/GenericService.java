@@ -72,4 +72,11 @@ public interface GenericService {
    */
   String getStructStr();
 
+  /**
+   * Create Graph representation of tabular data from Hive backing store.
+   * <p>
+   * TODO: Reference and implement the `run_import` method @ https://github.com/blockchain-etl/ethereum-etl-neo4j/blob/master/batch-import.sh
+   */
+  void doNeo4jImport();
+
 }

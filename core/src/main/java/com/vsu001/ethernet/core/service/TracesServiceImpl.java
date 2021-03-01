@@ -125,4 +125,12 @@ public class TracesServiceImpl implements GenericService {
     return OrcFileWriter.protoToOrcStructStr(FIELD_DESCRIPTOR_LIST);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void doNeo4jImport() {
+    // TODO: Implement this
+  }
+
 }

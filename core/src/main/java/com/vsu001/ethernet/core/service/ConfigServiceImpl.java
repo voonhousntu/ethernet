@@ -18,6 +18,15 @@ public class ConfigServiceImpl extends ConfigServiceGrpc.ConfigServiceImplBase {
   @Value("${spring.data.neo4j.password}")
   private String neo4jPassword;
 
+  /**
+   * gRPC service to handle request for Neo4J connection properties.
+   * <p>
+   * This service will return the connection url, username and password to connect to the Neo4j
+   * backing store.
+   *
+   * @param request          Request object for getting Neo4J connection properties.
+   * @param responseObserver StreamObserver wrapping a Neo4J config connection response.
+   */
   @Override
   public void getNeo4jServingConfig(
       GetNeo4jServingConfigRequest request,

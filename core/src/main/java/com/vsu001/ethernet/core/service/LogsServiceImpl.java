@@ -60,4 +60,12 @@ public class LogsServiceImpl implements GenericService {
     return OrcFileWriter.protoToOrcStructStr(FIELD_DESCRIPTOR_LIST);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void doNeo4jImport() {
+    throw new RuntimeException("This method is not implemented");
+  }
+
 }
