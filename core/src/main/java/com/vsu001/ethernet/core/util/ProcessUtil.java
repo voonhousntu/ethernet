@@ -26,14 +26,12 @@ public class ProcessUtil {
     Process process = builder.start();
     InputStream is = process.getInputStream();
 
-
     return new BufferedReader(new InputStreamReader(is));
   }
 
   /**
    * This function is used for debugging purposes.
    * <p>
-   *
    * The function takes a BufferedReader object, reads it line by line and print the contents to the
    * console.
    *
