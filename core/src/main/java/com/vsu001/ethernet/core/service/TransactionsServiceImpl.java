@@ -9,6 +9,8 @@ import com.vsu001.ethernet.core.repository.GenericHiveRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
+import com.vsu001.ethernet.core.util.ProcessUtil;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -129,8 +131,24 @@ public class TransactionsServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport() {
-    // TODO: Implement this
+  public void doNeo4jImport(String databaseName) throws IOException {
+    // Export required block rows to CSV
+
+    // Export required addresses rows to CSV
+
+    // Do import to Neo4j
+    StringBuilder sb = new StringBuilder();
+    sb.append("sudo -u neo4j neo4j-admin import ");
+    sb.append("--database ").append(databaseName).append(".db ");
+    sb.append("--report-file /tmp/import-report.txt ");
+    sb.append("--nodes: Address \"headers/addresses.csv,ethernet_workdir/addresses/addresses.csv\"");
+    sb.append("--nodes: Block \"headers/blocks.csv,ethernet_workdir/traces/blocks.csv\"");
+    sb.append("--relationships:TRANSACTION")
+        .append("\"headers/transactions.csv,ethernet_workdir/transactions/transactions.csv\"");
+    String cmd = sb.toString();
+
+    // Execute command
+    ProcessUtil.createProcess(cmd);
   }
 
 }

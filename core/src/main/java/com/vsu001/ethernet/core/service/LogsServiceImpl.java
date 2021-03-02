@@ -64,7 +64,7 @@ public class LogsServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport() {
+  public void doNeo4jImport(String databaseName) {
     throw new RuntimeException("This method is not implemented");
   }
 

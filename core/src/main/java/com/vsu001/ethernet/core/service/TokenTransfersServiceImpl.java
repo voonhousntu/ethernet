@@ -129,7 +129,7 @@ public class TokenTransfersServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport() {
+  public void doNeo4jImport(String databaseName) {
     // TODO: Implement this
   }
 

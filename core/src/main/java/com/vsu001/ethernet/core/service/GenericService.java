@@ -1,6 +1,7 @@
 package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
+import java.io.IOException;
 import java.util.UUID;
 
 public interface GenericService {
@@ -74,9 +75,9 @@ public interface GenericService {
 
   /**
    * Create Graph representation of tabular data from Hive backing store.
-   * <p>
-   * TODO: Reference and implement the `run_import` method @ https://github.com/blockchain-etl/ethereum-etl-neo4j/blob/master/batch-import.sh
+   *
+   * @param databaseName Name of graph database.
    */
-  void doNeo4jImport();
+  void doNeo4jImport(String databaseName) throws IOException;
 
 }
