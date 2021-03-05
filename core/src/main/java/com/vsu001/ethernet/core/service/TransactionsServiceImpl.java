@@ -8,6 +8,7 @@ import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
+import com.vsu001.ethernet.core.util.DatetimeUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import com.vsu001.ethernet.core.util.ProcessUtil;
 import java.io.IOException;
@@ -131,6 +132,15 @@ public class TransactionsServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
+  public void doNeo4jImport(UpdateRequest request) throws IOException {
+    String dbName = generateNeo4jDbName(request.getStartBlockNumber(), request.getEndBlockNumber());
+    doNeo4jImport(dbName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void doNeo4jImport(String databaseName) throws IOException {
     // Export required block rows to CSV
 
@@ -149,6 +159,20 @@ public class TransactionsServiceImpl implements GenericService {
 
     // Execute command
     ProcessUtil.createProcess(cmd);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
+    return String.format(
+        "%s_%s_%s_%s",
+        TABLE_NAME,
+        blockStartNo,
+        blockEndNo,
+        DatetimeUtil.getCurrentISOStr(ISO_STRING_PATTERN)
+    );
   }
 
 }

@@ -131,7 +131,23 @@ public class BlocksServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
+  public void doNeo4jImport(UpdateRequest request) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void doNeo4jImport(String databaseName) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
     throw new RuntimeException("This method is not implemented");
   }
 

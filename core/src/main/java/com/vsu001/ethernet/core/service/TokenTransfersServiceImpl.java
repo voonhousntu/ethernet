@@ -129,8 +129,25 @@ public class TokenTransfersServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
+  public void doNeo4jImport(UpdateRequest request) {
+    // TODO: Implement this
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void doNeo4jImport(String databaseName) {
     // TODO: Implement this
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
+    // TODO: Implement this
+    return null;
   }
 
 }
