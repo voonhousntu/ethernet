@@ -132,16 +132,16 @@ public class TransactionsServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport(UpdateRequest request) throws IOException {
+  public String doNeo4jImport(UpdateRequest request) throws IOException {
     String dbName = generateNeo4jDbName(request.getStartBlockNumber(), request.getEndBlockNumber());
-    doNeo4jImport(dbName);
+    return doNeo4jImport(dbName);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport(String databaseName) throws IOException {
+  public String doNeo4jImport(String databaseName) throws IOException {
     // Export required block rows to CSV
     // TODO
 
@@ -159,6 +159,8 @@ public class TransactionsServiceImpl implements GenericService {
 
     // Execute command
     ProcessUtil.createProcess(cmd);
+
+    return databaseName;
   }
 
   /**

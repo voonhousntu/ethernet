@@ -130,16 +130,18 @@ public class TokenTransfersServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport(UpdateRequest request) {
+  public String doNeo4jImport(UpdateRequest request) {
     // TODO: Implement this
+    return null;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport(String databaseName) {
+  public String doNeo4jImport(String databaseName) {
     // TODO: Implement this
+    return null;
   }
 
   /**

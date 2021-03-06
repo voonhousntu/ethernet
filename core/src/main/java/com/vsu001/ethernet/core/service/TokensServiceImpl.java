@@ -65,7 +65,7 @@ public class TokensServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport(UpdateRequest request) {
+  public String doNeo4jImport(UpdateRequest request) {
     throw new RuntimeException("This method is not implemented");
   }
 
@@ -73,7 +73,7 @@ public class TokensServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public void doNeo4jImport(String databaseName) {
+  public String doNeo4jImport(String databaseName) {
     throw new RuntimeException("This method is not implemented");
   }
 
