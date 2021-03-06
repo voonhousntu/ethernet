@@ -6,6 +6,7 @@ import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.Transaction;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
+import com.vsu001.ethernet.core.repository.TransactionRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.DatetimeUtil;
@@ -21,8 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionsServiceImpl implements GenericService {
 
-  private static final String TABLE_NAME = "transactions";
-  private static final String TMP_TABLE_NAME = "tmp_" + TABLE_NAME;
+  private static final String TMP_TABLE_NAME = "tmp_" + TransactionRepository.TABLE_NAME;
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = Transaction.getDescriptor()
       .getFields();
   private final GenericHiveRepository genericHiveRepository;
@@ -43,7 +43,7 @@ public class TransactionsServiceImpl implements GenericService {
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
     // Find blocks that are already in Hive table
     List<Long> blockNumbers = genericHiveRepository.findByNumberRange(
-        TABLE_NAME,
+        TransactionRepository.TABLE_NAME,
         request.getStartBlockNumber(),
         request.getEndBlockNumber()
     );
@@ -99,7 +99,7 @@ public class TransactionsServiceImpl implements GenericService {
    */
   @Override
   public String getTableName() {
-    return TABLE_NAME;
+    return TransactionRepository.TABLE_NAME;
   }
 
   /**
@@ -170,7 +170,7 @@ public class TransactionsServiceImpl implements GenericService {
   public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
     return String.format(
         TABLE_NAME_PATTERN,
-        TABLE_NAME,
+        TransactionRepository.TABLE_NAME,
         blockStartNo,
         blockEndNo,
         DatetimeUtil.getCurrentISOStr(ISO_STRING_PATTERN)

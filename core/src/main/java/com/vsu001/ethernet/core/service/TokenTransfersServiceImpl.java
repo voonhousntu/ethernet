@@ -6,6 +6,7 @@ import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.TokenTransfer;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
+import com.vsu001.ethernet.core.repository.TokenTransferRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.DatetimeUtil;
@@ -19,8 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenTransfersServiceImpl implements GenericService {
 
-  private static final String TABLE_NAME = "token_transfers";
-  private static final String TMP_TABLE_NAME = "tmp_" + TABLE_NAME;
+  private static final String TMP_TABLE_NAME = "tmp_" + TokenTransferRepository.TABLE_NAME;
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = TokenTransfer.getDescriptor()
       .getFields();
   private final GenericHiveRepository genericHiveRepository;
@@ -41,7 +41,7 @@ public class TokenTransfersServiceImpl implements GenericService {
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
     // Find blocks that are already in Hive table
     List<Long> blockNumbers = genericHiveRepository.findByNumberRange(
-        TABLE_NAME,
+        TokenTransferRepository.TABLE_NAME,
         request.getStartBlockNumber(),
         request.getEndBlockNumber()
     );
@@ -97,7 +97,7 @@ public class TokenTransfersServiceImpl implements GenericService {
    */
   @Override
   public String getTableName() {
-    return TABLE_NAME;
+    return TokenTransferRepository.TABLE_NAME;
   }
 
   /**
@@ -151,7 +151,7 @@ public class TokenTransfersServiceImpl implements GenericService {
   public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
     return String.format(
         TABLE_NAME_PATTERN,
-        TABLE_NAME,
+        TokenTransferRepository.TABLE_NAME,
         blockStartNo,
         blockEndNo,
         DatetimeUtil.getCurrentISOStr(ISO_STRING_PATTERN)
