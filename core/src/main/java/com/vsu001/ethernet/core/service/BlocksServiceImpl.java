@@ -41,7 +41,7 @@ public class BlocksServiceImpl implements GenericService {
 
 
     // Find blocks that are already in Hive table
-    List<Long> blockNumbers = blockRepository.findByNumberRange(
+    List<Long> blockNumbers = blockRepository.findNumberByNumberRange(
         request.getStartBlockNumber(),
         request.getEndBlockNumber()
     );

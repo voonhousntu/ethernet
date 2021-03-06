@@ -96,17 +96,17 @@ public class BlockRepositoryTest {
     assertEquals("ethernet_test", hiveRepository.getSchema());
 
     // Should return an empty list as table is empty
-    List<Long> longList = blockRepository.findByNumberRange(0L, 1L);
+    List<Long> longList = blockRepository.findNumberByNumberRange(0L, 1L);
 
     assertEquals(0, longList.size());
 
     // Insert a few rows
     insertDataIntoBlocks(5);
 
-    longList = blockRepository.findByNumberRange(0L, 1L);
+    longList = blockRepository.findNumberByNumberRange(0L, 1L);
     assertEquals(2, longList.size());
 
-    longList = blockRepository.findByNumberRange(0L, 4L);
+    longList = blockRepository.findNumberByNumberRange(0L, 4L);
     assertEquals(5, longList.size());
   }
 

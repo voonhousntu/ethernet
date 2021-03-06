@@ -149,15 +149,13 @@ public class TransactionsServiceImpl implements GenericService {
     // TODO
 
     // Do import to Neo4j
-    StringBuilder sb = new StringBuilder();
-    sb.append("sudo -u neo4j neo4j-admin import ");
-    sb.append("--database ").append(databaseName).append(".db ");
-    sb.append("--report-file /tmp/import-report.txt ");
-    sb.append("--nodes: Address \"headers/addresses.csv,ethernet_workdir/addresses/addresses.csv\"");
-    sb.append("--nodes: Block \"headers/blocks.csv,ethernet_workdir/traces/blocks.csv\"");
-    sb.append("--relationships:TRANSACTION")
-        .append("\"headers/transactions.csv,ethernet_workdir/transactions/transactions.csv\"");
-    String cmd = sb.toString();
+    String cmd = "sudo -u neo4j neo4j-admin import "
+        + "--database " + databaseName + ".db "
+        + "--report-file /tmp/import-report.txt "
+        + "--nodes: Address \"headers/addresses.csv,ethernet_workdir/addresses/addresses.csv\""
+        + "--nodes: Block \"headers/blocks.csv,ethernet_workdir/traces/blocks.csv\""
+        + "--relationships:TRANSACTION"
+        + "\"headers/transactions.csv,ethernet_workdir/transactions/transactions.csv\"";
 
     // Execute command
     ProcessUtil.createProcess(cmd);
