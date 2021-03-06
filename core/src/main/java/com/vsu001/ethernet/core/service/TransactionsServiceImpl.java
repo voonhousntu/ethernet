@@ -143,8 +143,10 @@ public class TransactionsServiceImpl implements GenericService {
   @Override
   public void doNeo4jImport(String databaseName) throws IOException {
     // Export required block rows to CSV
+    // TODO
 
     // Export required addresses rows to CSV
+    // TODO
 
     // Do import to Neo4j
     StringBuilder sb = new StringBuilder();
@@ -167,7 +169,7 @@ public class TransactionsServiceImpl implements GenericService {
   @Override
   public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
     return String.format(
-        "%s_%s_%s_%s",
+        TABLE_NAME_PATTERN,
         TABLE_NAME,
         blockStartNo,
         blockEndNo,

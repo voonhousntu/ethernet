@@ -3,6 +3,7 @@ package com.vsu001.ethernet.core.service;
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.model.Token;
+import com.vsu001.ethernet.core.util.DatetimeUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,8 +82,13 @@ public class TokensServiceImpl implements GenericService {
    */
   @Override
   public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
-    // TODO: Implement this
-    return null;
+    return String.format(
+        TABLE_NAME_PATTERN,
+        TABLE_NAME,
+        blockStartNo,
+        blockEndNo,
+        DatetimeUtil.getCurrentISOStr(ISO_STRING_PATTERN)
+    );
   }
 
 }

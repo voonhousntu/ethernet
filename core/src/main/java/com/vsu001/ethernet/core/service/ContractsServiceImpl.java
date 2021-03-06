@@ -8,6 +8,7 @@ import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
+import com.vsu001.ethernet.core.util.DatetimeUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -144,8 +145,13 @@ public class ContractsServiceImpl implements GenericService {
    */
   @Override
   public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
-    // TODO: Implement this
-    return null;
+    return String.format(
+        TABLE_NAME_PATTERN,
+        TABLE_NAME,
+        blockStartNo,
+        blockEndNo,
+        DatetimeUtil.getCurrentISOStr(ISO_STRING_PATTERN)
+    );
   }
 
 }
