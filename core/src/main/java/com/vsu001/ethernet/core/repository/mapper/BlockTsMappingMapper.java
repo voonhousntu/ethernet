@@ -17,13 +17,13 @@ public class BlockTsMappingMapper implements RowMapper<BlockTimestampMapping> {
    * basis.
    * <p>
    * The implementation performs the actual work of mapping each row to a result
-   * `BlockTimestampMapping` object. Users do not need to worry about exception handling as
-   * SQLExceptions will be caught and handled by the calling JdbcTemplate.
+   * <code>BlockTimestampMapping</code> object. Users do not need to worry about exception handling
+   * as SQLExceptions will be caught and handled by the calling JdbcTemplate.
    *
    * @param resultSet The result set to map, which is not null.
    * @param i         The number of the current row.
-   * @return The result object, which is of the BlockTimestampMapping type for the current row (may
-   * be null).
+   * @return The result object, which is of the <code>BlockTimestampMapping</code> type for the
+   * current row (may be null).
    * @throws SQLException If an SQLException is encountered getting column values.
    */
   @Override
