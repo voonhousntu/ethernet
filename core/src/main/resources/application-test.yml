@@ -10,13 +10,13 @@ spring:
       validation-query-timeout: 3
       test-on-borrow: true
       max-wait: 60000
-      schema: ethernet_test
+      schema: ethernet_test # Should be overridden
   neo4j:
     uri: bolt://172.21.148.207:7687
-    data:
-      neo4j:
-        username: neo4j
-        password: test
+  data:
+    neo4j:
+      username: neo4j
+      password: test
 
 hadoop:
   fs:
@@ -24,5 +24,3 @@ hadoop:
   dfs:
     datanode-use-hostname: true
     client-use-hostname: true
-
-neo4j:

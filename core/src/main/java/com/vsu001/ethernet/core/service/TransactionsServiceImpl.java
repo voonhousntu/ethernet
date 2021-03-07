@@ -75,6 +75,8 @@ public class TransactionsServiceImpl implements GenericService {
       }
     }
 
+    // Ensure that list is never empty (no block number with -1)
+    blockNumbers.add(-1L);
     String queryCriteria = String.format(
         timestampSB.toString() + " AND `block_number` NOT IN (%s)",
         blockNumbers.stream().map(String::valueOf).collect(Collectors.joining(","))

@@ -15,7 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=2000",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=BlockServiceImplTest"
+})
 @ActiveProfiles("test")
 public class BlockServiceImplTest {
 

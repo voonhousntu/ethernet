@@ -22,7 +22,7 @@ public class GenericHiveRepository {
   @Value("${hadoop.fs.default-fs}")
   private String defaultFs;
 
-  @Value("${hadoop.dfs.datanose-use-hostname}")
+  @Value("${hadoop.dfs.datanode-use-hostname}")
   private boolean datanodeUseHostname;
 
   @Value("${hadoop.dfs.client-use-hostname}")
@@ -63,15 +63,17 @@ public class GenericHiveRepository {
    * @param genericService The interface containing the implementation of a
    *                       <code>GenericService</code> that is responsible for writing a type of
    *                       protobuf of interest into a Hive table.
+   * @param nonce          Suffix to be added to the tmp table to be created that will only be used
+   *                       once for a single ETL session.
    */
-  public void createTmpTable(GenericService genericService) {
+  public void createTmpTable(GenericService genericService, String nonce) {
     // Use non-external table so that temporary file can be removed with table drop
     String sql =
         "CREATE TABLE %s (%s)"
             + " STORED AS ORC LOCATION '%s' TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     String query = String.format(
         sql,
-        genericService.getTmpTableName(),
+        genericService.getTmpTableName() + "_" + nonce,
         genericService.getSchemaStr(),
         genericService.getOutputPath()
     );
@@ -84,8 +86,10 @@ public class GenericHiveRepository {
    * @param genericService The interface containing the implementation of a
    *                       <code>GenericService</code> that is responsible for writing a type of
    *                       protobuf of interest into a Hive table.
+   * @param nonce          Suffix to be added to the tmp table to be created that will only be used
+   *                       once for a single ETL session.
    */
-  public void populateHiveTable(GenericService genericService) {
+  public void populateHiveTable(GenericService genericService, String nonce) {
     String sql =
         "INSERT INTO %s.%s "
             + "SELECT a.`number`, a.`timestamp` FROM %s a "
@@ -95,7 +99,7 @@ public class GenericHiveRepository {
         sql,
         schema,
         genericService.getTableName(),
-        genericService.getTmpTableName(),
+        genericService.getTmpTableName() + "_" + nonce,
         schema,
         genericService.getTableName()
     );
@@ -110,10 +114,12 @@ public class GenericHiveRepository {
    * @param genericService The interface containing the implementation of a
    *                       <code>GenericService</code> that is responsible for writing a type of
    *                       protobuf of interest into a Hive table.
+   * @param nonce          Suffix that is added to the tmp table that will only be used once for a
+   *                       single ETL session.
    */
-  public void dropTmpTable(GenericService genericService) {
+  public void dropTmpTable(GenericService genericService, String nonce) {
     String sql = "DROP TABLE %s";
-    String query = String.format(sql, genericService.getTmpTableName());
+    String query = String.format(sql, genericService.getTmpTableName() + "_" + nonce);
     jdbcTemplate.execute(query);
   }
 
@@ -134,9 +140,9 @@ public class GenericHiveRepository {
     }
 
     String sql =
-        "SELECT %s FROM %s.blocks "
+        "SELECT %s FROM %s.%s "
             + "WHERE %s BETWEEN %s AND %s";
-    String query = String.format(sql, numberColName, schema, numberColName, start, end);
+    String query = String.format(sql, numberColName, schema, tableName, numberColName, start, end);
     // String used in lambda expressions need to be final or effectively final
     String _numberColName = numberColName;
     return jdbcTemplate.query(query, (resultSet, i) -> resultSet.getLong(_numberColName));

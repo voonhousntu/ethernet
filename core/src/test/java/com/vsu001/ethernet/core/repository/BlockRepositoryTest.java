@@ -12,7 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=3000",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=BlockRepositoryTest"
+})
 @ActiveProfiles("test")
 public class BlockRepositoryTest {
 
@@ -93,7 +97,7 @@ public class BlockRepositoryTest {
   @Test
   public void testFindByNumberRange() {
     // Ensure we are using the test schema
-    assertEquals("ethernet_test", hiveRepository.getSchema());
+    assertEquals(this.getClass().getSimpleName(), hiveRepository.getSchema());
 
     // Should return an empty list as table is empty
     List<Long> longList = blockRepository.findNumberByNumberRange(0L, 1L);

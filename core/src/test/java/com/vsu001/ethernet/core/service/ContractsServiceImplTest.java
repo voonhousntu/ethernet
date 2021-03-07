@@ -15,7 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=2002",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=ContractsServiceImplTest"
+})
 @ActiveProfiles("test")
 public class ContractsServiceImplTest {
 

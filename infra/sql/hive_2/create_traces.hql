@@ -4,7 +4,7 @@ CREATE TABLE ethernet.traces
     `transaction_index` bigint,
     `from_address`      string,
     `to_address`        string,
-    `value`             numeric,
+    `value`             bigint,
     `input`             string,
     `output`            string,
     `trace_type`        string,
@@ -17,9 +17,9 @@ CREATE TABLE ethernet.traces
     `error`             string,
     `status`            bigint,
     `block_hash`        string,
-    `trace_id`          string,
     `block_number`      bigint,
-    `block_timestamp`   timestamp
+    `block_timestamp`   timestamp,
+    `trace_id`          string
 )
     STORED AS ORC
     TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB');

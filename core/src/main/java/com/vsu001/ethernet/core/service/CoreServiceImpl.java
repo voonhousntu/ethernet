@@ -7,6 +7,7 @@ import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
 import com.vsu001.ethernet.core.util.BlockUtil;
+import com.vsu001.ethernet.core.util.NonceUtil;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.time.Instant;
@@ -273,17 +274,19 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     // Fetch results from BigQuery
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
 
+    String nonce = NonceUtil.generateNonce();
+
     // Write query results to ORC file with random (UUID) filename in HDFS
     genericHiveRepository.writeTableResults(genericService, tableResult);
 
     // Create temporary Hive table
-    genericHiveRepository.createTmpTable(genericService);
+    genericHiveRepository.createTmpTable(genericService, nonce);
 
     // Insert data from temporary Hive table
-    genericHiveRepository.populateHiveTable(genericService);
+    genericHiveRepository.populateHiveTable(genericService, nonce);
 
     // Remove temporary Hive table + temporary ORC file
-    genericHiveRepository.dropTmpTable(genericService);
+    genericHiveRepository.dropTmpTable(genericService, nonce);
 
     // If the requested block is larger than the most recent block, update the UpdateRequest object
     if (genericService instanceof BlockTsMappingServiceImpl) {

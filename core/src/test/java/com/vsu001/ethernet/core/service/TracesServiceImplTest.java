@@ -15,7 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=2006",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=TracesServiceImplTest"
+})
 @ActiveProfiles("test")
 public class TracesServiceImplTest {
 
@@ -66,17 +70,29 @@ public class TracesServiceImplTest {
             + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     createBlocksTable = String.format(createBlocksTable, hiveRepository.getSchema());
 
-    // Create `contracts`
+    // Create `traces`
     String createContractsTable =
-        "CREATE TABLE %s.contracts "
-            + "(`address` string,"
-            + "`bytecode` string,"
-            + "`function_sighashes` string,"
-            + "`is_erc20` boolean,"
-            + "`is_erc721` boolean,"
-            + "`block_hash` string,"
-            + "`block_number` bigint,"
-            + "`block_timestamp` timestamp) "
+        "CREATE TABLE %s.traces "
+            + "(`transaction_hash`  string,"
+            + "`transaction_index` bigint,"
+            + "`from_address`      string,"
+            + "`to_address`        string,"
+            + "`value`             bigint,"
+            + "`input`             string,"
+            + "`output`            string,"
+            + "`trace_type`        string,"
+            + "`call_type`         string,"
+            + "`reward_type`       string,"
+            + "`gas`               bigint,"
+            + "`gas_used`          bigint,"
+            + "`subtraces`         bigint,"
+            + "`trace_address`     string,"
+            + "`error`             string,"
+            + "`status`            bigint,"
+            + "`block_hash`        string,"
+            + "`trace_id`          string,"
+            + "`block_number`      bigint,"
+            + "`block_timestamp`   timestamp)"
             + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     createContractsTable = String.format(createContractsTable, hiveRepository.getSchema());
 
@@ -144,7 +160,7 @@ public class TracesServiceImplTest {
       e.printStackTrace();
     }
 
-    assertEquals(950569L, tableResult.getTotalRows());
+    assertEquals(959463L, tableResult.getTotalRows());
   }
 
   @Test
