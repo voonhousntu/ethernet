@@ -75,8 +75,10 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `block_timestamp_mapping` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Fetch and populate `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -93,11 +95,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `blocks` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `blocks` table
-      fetchAndPopulateHiveTable(blocksService, request);
+      fetchAndPopulateHiveTable(blocksService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -117,11 +121,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `contracts` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `contracts` table
-      fetchAndPopulateHiveTable(contractsService, request);
+      fetchAndPopulateHiveTable(contractsService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -138,11 +144,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `logs` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `logs` table
-      fetchAndPopulateHiveTable(logsService, request);
+      fetchAndPopulateHiveTable(logsService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -162,11 +170,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `token_transfers` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `token_transfers` table
-      fetchAndPopulateHiveTable(tokenTransfersService, request);
+      fetchAndPopulateHiveTable(tokenTransfersService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -183,11 +193,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `tokens` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `tokens` table
-      fetchAndPopulateHiveTable(tokensService, request);
+      fetchAndPopulateHiveTable(tokensService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -204,11 +216,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `traces` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `traces` table
-      fetchAndPopulateHiveTable(tracesService, request);
+      fetchAndPopulateHiveTable(tracesService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -228,11 +242,15 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `transactions` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `transactions` table
-      fetchAndPopulateHiveTable(transactionsService, request);
+      fetchAndPopulateHiveTable(transactionsService, request, nonce);
+
+      transactionsService.doNeo4jImport(request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -256,6 +274,8 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
    *                       UpdateRequest object. The user defined `start` and `end` object are
    *                       inclusive when translated to the BigQuery legacy SQL query constraints
    *                       equivalent.
+   * @param nonce          A random generated string that will only be used once to identify all
+   *                       assets associated with the an ETl.
    * @return UpdatedRequest object, where the `endBlockNumber` will be updated if the GenericService
    * is of instance BlockTsMappingService, else the original updateRequest will be passed through
    * and returned.
@@ -265,7 +285,8 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
    */
   public UpdateRequest fetchAndPopulateHiveTable(
       GenericService genericService,
-      UpdateRequest updateRequest
+      UpdateRequest updateRequest,
+      String nonce
   ) throws InterruptedException, IOException, InvalidRequestException {
     if (!BlockUtil.validateRequest(updateRequest)) {
       throw new InvalidRequestException("Invalid [start] and [end] range in request");
@@ -273,8 +294,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
     // Fetch results from BigQuery
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
-
-    String nonce = NonceUtil.generateNonce();
 
     // Write query results to ORC file with random (UUID) filename in HDFS
     genericHiveRepository.writeTableResults(genericService, tableResult);

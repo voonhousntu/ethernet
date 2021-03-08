@@ -1,7 +1,7 @@
 package com.vsu001.ethernet.core.repository;
 
-import com.vsu001.ethernet.core.model.Trace;
-import com.vsu001.ethernet.core.repository.mapper.TraceMapper;
+import com.vsu001.ethernet.core.model.Transaction;
+import com.vsu001.ethernet.core.repository.mapper.TransactionMapper;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,11 +32,11 @@ public class TransactionRepository {
    * @return The <code>List</code> of <code>Transaction</code>s within the start (inclusive) and end
    * (inclusive) range.
    */
-  public List<Trace> findByBlockNumberRange(Long start, Long end) {
+  public List<Transaction> findByBlockNumberRange(Long start, Long end) {
     String sql = "SELECT * FROM %s.%s "
         + "WHERE number BETWEEN %s AND %s";
     String query = String.format(sql, schema, TABLE_NAME, start, end);
-    return jdbcTemplate.query(query, new TraceMapper());
+    return jdbcTemplate.query(query, new TransactionMapper());
   }
 
 }

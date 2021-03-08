@@ -132,7 +132,7 @@ public class TokenTransfersServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public String doNeo4jImport(UpdateRequest request) {
+  public String doNeo4jImport(UpdateRequest request, String nonce) {
     // TODO: Implement this
     return null;
   }
@@ -141,7 +141,7 @@ public class TokenTransfersServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public String doNeo4jImport(String databaseName) {
+  public String doNeo4jImport(String databaseName, UpdateRequest request, String nonce) {
     // TODO: Implement this
     return null;
   }

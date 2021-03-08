@@ -125,7 +125,7 @@ public class BlockTsMappingServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public String doNeo4jImport(UpdateRequest request) {
+  public String doNeo4jImport(UpdateRequest request, String nonce) {
     throw new RuntimeException("This method is not implemented");
   }
 
@@ -133,7 +133,7 @@ public class BlockTsMappingServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public String doNeo4jImport(String databaseName) {
+  public String doNeo4jImport(String databaseName, UpdateRequest request, String nonce) {
     throw new RuntimeException("This method is not implemented");
   }
 

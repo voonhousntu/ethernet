@@ -24,3 +24,6 @@ hadoop:
   dfs:
     datanode-use-hostname: true
     client-use-hostname: true
+
+ethernet:
+  work-dir: ethernet_work_dir

@@ -84,19 +84,27 @@ public interface GenericService {
    * @param request The block-number range to query for is defined and wrapped in the UpdateRequest
    *                object. The user defined `start` and `end` object are inclusive when translated
    *                to the BigQuery legacy SQL query constraints equivalent.
+   * @param nonce        A random generated string that will only be used once to identify all
+   *                     assets associated with the an ETl.
    * @return The Neo4j database name of the graph created.
    * @throws IOException If an I/O error occurs
    */
-  String doNeo4jImport(UpdateRequest request) throws IOException;
+  String doNeo4jImport(UpdateRequest request, String nonce) throws IOException;
 
   /**
    * Create Graph representation of tabular data from Hive backing store.
    *
    * @param databaseName Name of graph database.
+   * @param request      The block-number range to query for is defined and wrapped in the
+   *                     UpdateRequest object. The user defined `start` and `end` object are
+   *                     inclusive when translated to the BigQuery legacy SQL query constraints
+   *                     equivalent.
+   * @param nonce        A random generated string that will only be used once to identify all
+   *                     assets associated with the an ETl.
    * @return The Neo4j database name of the graph created.
    * @throws IOException If an I/O error occurs
    */
-  String doNeo4jImport(String databaseName) throws IOException;
+  String doNeo4jImport(String databaseName, UpdateRequest request, String nonce) throws IOException;
 
   /**
    * Create a Neo4j database name based on the block start and end ranges and date of creation.
