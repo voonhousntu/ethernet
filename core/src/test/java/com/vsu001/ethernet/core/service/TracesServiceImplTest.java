@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(properties = {
-    "grpc.server.port=2006",
+    "grpc.server.port=2007",
     "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
     "spring.datasource.hivedb.schema=TracesServiceImplTest"
 })

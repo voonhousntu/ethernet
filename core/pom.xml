@@ -116,9 +116,7 @@
         <!--					<artifactId>log4j-core</artifactId>-->
         <!--				</exclusion>-->
         <!--				<exclusion>-->
-        <!--					<groupId>org.apache.logging.log4j</group
-
-        Id>-->
+        <!--					<groupId>org.apache.logging.log4j</groupId>-->
         <!--					<artifactId>log4j-web</artifactId>-->
         <!--				</exclusion>-->
       </exclusions>
@@ -202,6 +200,13 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${csv.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>
