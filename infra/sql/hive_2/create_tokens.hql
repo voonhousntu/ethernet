@@ -5,9 +5,9 @@ CREATE TABLE ethernet.tokens
     `name`            string,
     `decimals`        string,
     `total_supply`    string,
-    `block_hash`      string,
+    `block_timestamp` timestamp,
     `block_number`    bigint,
-    `block_timestamp` timestamp
+    `block_hash`      string
 )
     STORED AS ORC
     TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB');

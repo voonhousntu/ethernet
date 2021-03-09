@@ -16,9 +16,9 @@ CREATE TABLE ethernet.traces
     `trace_address`     string,
     `error`             string,
     `status`            bigint,
-    `block_hash`        string,
-    `block_number`      bigint,
     `block_timestamp`   timestamp,
+    `block_number`      bigint,
+    `block_hash`        string,
     `trace_id`          string
 )
     STORED AS ORC

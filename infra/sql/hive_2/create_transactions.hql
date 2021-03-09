@@ -14,9 +14,9 @@ CREATE TABLE ethernet.transactions
     `receipt_contract_address`    string,
     `receipt_root`                string,
     `receipt_status`              bigint,
-    `block_hash`                  string,
+    `block_timestamp`             timestamp,
     `block_number`                bigint,
-    `block_timestamp`             timestamp
+    `block_hash`                  string
 )
     STORED AS ORC
     TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB');

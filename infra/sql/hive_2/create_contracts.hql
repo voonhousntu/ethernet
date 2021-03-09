@@ -5,9 +5,9 @@ CREATE TABLE ethernet.contracts
     `function_sighashes` string,
     `is_erc20`           boolean,
     `is_erc721`          boolean,
-    `block_hash`         string,
+    `block_timestamp`    timestamp,
     `block_number`       bigint,
-    `block_timestamp`    timestamp
+    `block_hash`         string
 )
     STORED AS ORC
     TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB');

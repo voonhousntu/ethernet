@@ -6,9 +6,9 @@ CREATE TABLE ethernet.token_transfers
     `value`            string,
     `transaction_hash` string,
     `log_index`        bigint,
-    `block_hash`       string,
+    `block_timestamp`  timestamp,
     `block_number`     bigint,
-    `block_timestamp`  timestamp
+    `block_hash`       string
 
 )
     STORED AS ORC
