@@ -5,6 +5,7 @@ import com.vsu001.ethernet.core.service.GenericService;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -40,14 +41,17 @@ public class GenericHiveRepository {
    *                       <code>GenericService</code> to facilitate the writing of the
    *                       <code>TableResult</code> into a HDFS directory.
    * @param tableResult    The <code>TableResult</code> obtained from a BigQuery job.
+   * @param nonce          Suffix that is added to the tmp table that will only be used once for a
+   *                       single ETL session.
    * @throws IOException If an IOException is encountered when writing to the HDFS directory.
    */
   public void writeTableResults(
       GenericService genericService,
-      TableResult tableResult
+      TableResult tableResult,
+      String nonce
   ) throws IOException {
     OrcFileWriter.writeTableResults(
-        genericService.getOutputPath() + genericService.getFilename(),
+        genericService.getOutputPath(nonce) + genericService.getFilename(),
         genericService.getStructStr(),
         tableResult,
         defaultFs,
@@ -75,7 +79,7 @@ public class GenericHiveRepository {
         sql,
         genericService.getTmpTableName() + "_" + nonce,
         genericService.getSchemaStr(),
-        genericService.getOutputPath()
+        genericService.getOutputPath(nonce)
     );
     jdbcTemplate.execute(query);
   }
@@ -90,18 +94,33 @@ public class GenericHiveRepository {
    *                       once for a single ETL session.
    */
   public void populateHiveTable(GenericService genericService, String nonce) {
+    String numberColName = "number";
+    if (!genericService.getTableName().equals("blocks")
+        && !genericService.getTableName().equals("block_timestamp_mapping")) {
+      numberColName = "block_number";
+    }
+
+    // Generate all columns of table
+    String columns = genericService.getFieldDescriptors().stream()
+        .map(s -> String.format("a.`%s`", s.getName()))
+        .collect(Collectors.joining(","));
+
     String sql =
         "INSERT INTO %s.%s "
-            + "SELECT a.`number`, a.`timestamp` FROM %s a "
-            + "LEFT OUTER JOIN %s.%s b ON a.number = b.number "
-            + "WHERE b.number IS NULL";
+            + "SELECT %s FROM %s a "
+            + "LEFT OUTER JOIN %s.%s b ON a.%s = b.%s "
+            + "WHERE b.%s IS NULL";
     String query = String.format(
         sql,
         schema,
         genericService.getTableName(),
+        columns,
         genericService.getTmpTableName() + "_" + nonce,
         schema,
-        genericService.getTableName()
+        genericService.getTableName(),
+        numberColName,
+        numberColName,
+        numberColName
     );
     jdbcTemplate.execute(query);
   }

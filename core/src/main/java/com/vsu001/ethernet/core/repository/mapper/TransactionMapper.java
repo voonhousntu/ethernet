@@ -7,9 +7,11 @@ import com.vsu001.ethernet.core.util.JavaSqlUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.RowMapper;
 
+@Slf4j
 public class TransactionMapper implements RowMapper<Transaction> {
 
   /**
