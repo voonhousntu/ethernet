@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
@@ -29,6 +30,7 @@ import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
 
+@Slf4j
 public class OrcFileWriter {
 
   /**
@@ -207,12 +209,20 @@ public class OrcFileWriter {
         // batch.size should be increased externally
         int rowNum = batch.size++;
 
+//        log.info("rowNum: {}", rowNum);
+
         // Write each column to the associated column vector
         for (int i = 0; i < fieldNames.size(); i++) {
           String fieldName = fieldNames.get(i);
           Field field = fieldList.get(fieldName);
           FieldValue fieldValue = fieldValueList.get(fieldName);
+
+//          log.info("{}: {}", fieldName, field.getType().name());
+//          log.info("{}: {}", fieldName, fieldValue);
+
           Object javaVal = BigQueryUtil.getJavaValue(field, fieldValue);
+
+//          log.info("{}: {}", fieldName, javaVal);
 
           consumers.get(i).accept(rowNum, javaVal);
         }
@@ -277,8 +287,13 @@ public class OrcFileWriter {
           .set(HiveDecimal.create((BigDecimal) val));
     } else if ("string".equals(type) || type.startsWith("varchar") || "char".equals(type)) {
       consumer = (row, val) -> {
-        byte[] buffer = val.toString().getBytes(StandardCharsets.UTF_8);
-        ((BytesColumnVector) columnVector).setRef(row, buffer, 0, buffer.length);
+        if (val != null) {
+          byte[] buffer = val.toString().getBytes(StandardCharsets.UTF_8);
+          ((BytesColumnVector) columnVector).setRef(row, buffer, 0, buffer.length);
+        } else {
+          byte[] EMPTY_BYTES = "".getBytes(StandardCharsets.UTF_8);
+          ((BytesColumnVector) columnVector).setRef(row, EMPTY_BYTES, 0, 0);
+        }
       };
     } else if ("timestamp".equals(type)) {
       consumer = (row, val) -> ((TimestampColumnVector) columnVector).set(row, (Timestamp) val);

@@ -1,6 +1,7 @@
 package com.vsu001.ethernet.core.util;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Timestamp;
 import com.opencsv.CSVWriter;
 import com.vsu001.ethernet.core.model.Block;
 import com.vsu001.ethernet.core.model.Contract;
@@ -28,7 +29,7 @@ public class CsvUtil {
    *                associated with the an ETl.
    * @throws Exception If an Exception is thrown.
    */
-  public static void toCsv(List<Object> objects, String path, String nonce)
+  public static void toCsv(List<?> objects, String path, String nonce)
       throws IOException {
     String filename = generateFilename(objects.get(0), nonce);
 
@@ -79,28 +80,28 @@ public class CsvUtil {
       case "Contract":
         Contract contract = (Contract) object;
         for (FieldDescriptor fieldDescriptor : Contract.getDescriptor().getFields()) {
-          String field = contract.getField(fieldDescriptor).toString();
+          String field = fieldToStr(fieldDescriptor, contract.getField(fieldDescriptor));
           strList.add(field);
         }
         break;
       case "TokenTransfer":
         TokenTransfer tokenTransfer = (TokenTransfer) object;
         for (FieldDescriptor fieldDescriptor : TokenTransfer.getDescriptor().getFields()) {
-          String field = tokenTransfer.getField(fieldDescriptor).toString();
+          String field = fieldToStr(fieldDescriptor, tokenTransfer.getField(fieldDescriptor));
           strList.add(field);
         }
         break;
       case "Trace":
         Trace trace = (Trace) object;
         for (FieldDescriptor fieldDescriptor : Trace.getDescriptor().getFields()) {
-          String field = trace.getField(fieldDescriptor).toString();
+          String field = fieldToStr(fieldDescriptor, trace.getField(fieldDescriptor));
           strList.add(field);
         }
         break;
       case "Transaction":
         Transaction transaction = (Transaction) object;
         for (FieldDescriptor fieldDescriptor : Transaction.getDescriptor().getFields()) {
-          String field = transaction.getField(fieldDescriptor).toString();
+          String field = fieldToStr(fieldDescriptor, transaction.getField(fieldDescriptor));
           strList.add(field);
         }
         break;
@@ -147,4 +148,11 @@ public class CsvUtil {
     return filename;
   }
 
+  private static String fieldToStr(FieldDescriptor fieldDescriptor, Object object) {
+    if (fieldDescriptor.getName().contains("timestamp")) {
+      return BlockUtil.protoTsToISO((Timestamp) object);
+    } else {
+      return object.toString();
+    }
+  }
 }
