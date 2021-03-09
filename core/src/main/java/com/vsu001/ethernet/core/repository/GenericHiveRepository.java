@@ -100,13 +100,17 @@ public class GenericHiveRepository {
       numberColName = "block_number";
     }
 
+    String liveTableCols = genericService.getFieldDescriptors().stream()
+        .map(s -> String.format("`%s`", s.getName()))
+        .collect(Collectors.joining(","));
+
     // Generate all columns of table
     String columns = genericService.getFieldDescriptors().stream()
         .map(s -> String.format("a.`%s`", s.getName()))
         .collect(Collectors.joining(","));
 
     String sql =
-        "INSERT INTO %s.%s "
+        "INSERT INTO %s.%s (%s) "
             + "SELECT %s FROM %s a "
             + "LEFT OUTER JOIN %s.%s b ON a.%s = b.%s "
             + "WHERE b.%s IS NULL";
@@ -114,6 +118,7 @@ public class GenericHiveRepository {
         sql,
         schema,
         genericService.getTableName(),
+        liveTableCols,
         columns,
         genericService.getTmpTableName() + "_" + nonce,
         schema,

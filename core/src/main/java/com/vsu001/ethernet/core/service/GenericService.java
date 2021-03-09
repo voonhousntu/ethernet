@@ -28,10 +28,12 @@ public interface GenericService {
   /**
    * Obtain the HDFS output path where the staging ORC file will be written to.
    *
+   * @param nonce Suffix that is added to the tmp table that will only be used once for a single ETL
+   *              session.
    * @return HDFS output path where the staging ORC file will be written to.
    */
-  default String getOutputPath() {
-    return "/user/hive/warehouse/orc_tmp/";
+  default String getOutputPath(String nonce) {
+    return String.format("/user/hive/warehouse/%s/", nonce);
   }
 
   /**

@@ -16,7 +16,7 @@ spring:
   data:
     neo4j:
       username: neo4j
-      password: secret
+      password: test
 
 hadoop:
   fs:

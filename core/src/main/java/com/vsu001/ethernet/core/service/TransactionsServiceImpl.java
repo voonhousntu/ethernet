@@ -17,7 +17,6 @@ import com.vsu001.ethernet.core.util.DatetimeUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import com.vsu001.ethernet.core.util.ProcessUtil;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -168,6 +167,9 @@ public class TransactionsServiceImpl implements GenericService {
   @Override
   public String doNeo4jImport(String databaseName, UpdateRequest request, String nonce)
       throws IOException {
+    // Create ethernet work directory if it does not exist
+    ethernetConfig.createWorkDir();
+
     String workDir = ethernetConfig.getEthernetWorkDir();
 
     // Fetch `blocks` of interest
@@ -186,25 +188,24 @@ public class TransactionsServiceImpl implements GenericService {
         .distinct()
         .collect(Collectors.toList());
 
-    // Export required block rows to CSV
-    CsvUtil.toCsv(Collections.singletonList(blocks), workDir, nonce);
-
     // Export required transaction rows to CSV
-    CsvUtil.toCsv(Collections.singletonList(transactions), workDir, nonce);
+    CsvUtil.toCsv(transactions, workDir, nonce);
 
     // Export required addresses rows to CSV
-    CsvUtil.toCsv(Collections.singletonList(addresses), workDir, nonce);
+    CsvUtil.toCsv(addresses, workDir, nonce);
+
+    // Export required block rows to CSV
+    CsvUtil.toCsv(blocks, workDir, nonce);
 
     // Do import to Neo4j
     String cmd = "sudo -u neo4j neo4j-admin import "
         + "--database " + databaseName + ".db "
         + "--report-file /tmp/import-report.txt "
-        + "--nodes: Address \"headers/addresses.csv,"
+        + "--nodes=Address=\"headers/addresses.csv,"
         + ethernetConfig.getEthernetWorkDir() + "/addresses_" + nonce + ".csv\""
-        + "--nodes: Block \"headers/blocks.csv,"
+        + "--nodes=Block=\"headers/blocks.csv,"
         + ethernetConfig.getEthernetWorkDir() + "/blocks_" + nonce + ".csv\""
-        + "--relationships:TRANSACTION"
-        + "\"headers/transactions.csv,"
+        + "--relationships=TRANSACTION=\"headers/transactions.csv,"
         + ethernetConfig.getEthernetWorkDir() + "/transactions_" + nonce + ".csv\"";
 
     // Execute command

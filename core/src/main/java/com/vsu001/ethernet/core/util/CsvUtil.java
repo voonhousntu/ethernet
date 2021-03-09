@@ -69,7 +69,7 @@ public class CsvUtil {
       case "Block":
         Block block = (Block) object;
         for (FieldDescriptor fieldDescriptor : Block.getDescriptor().getFields()) {
-          String field = block.getField(fieldDescriptor).toString();
+          String field = fieldToStr(fieldDescriptor, block.getField(fieldDescriptor));
           strList.add(field);
         }
         break;

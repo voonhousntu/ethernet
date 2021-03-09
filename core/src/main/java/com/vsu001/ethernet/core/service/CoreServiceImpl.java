@@ -245,7 +245,10 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       String nonce = NonceUtil.generateNonce();
 
       // Update `block_timestamp_mapping` table
-//      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
+
+      // Fetch and populate `blocks` table
+      fetchAndPopulateHiveTable(blocksService, request, nonce);
 
       // Fetch and populate `transactions` table
       fetchAndPopulateHiveTable(transactionsService, request, nonce);
@@ -296,7 +299,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
 
     // Write query results to ORC file with random (UUID) filename in HDFS
-    genericHiveRepository.writeTableResults(genericService, tableResult);
+    genericHiveRepository.writeTableResults(genericService, tableResult, nonce);
 
     // Create temporary Hive table
     genericHiveRepository.createTmpTable(genericService, nonce);
