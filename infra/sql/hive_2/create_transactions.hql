@@ -5,7 +5,7 @@ CREATE TABLE ethernet.transactions
     `transaction_index`           bigint,
     `from_address`                string,
     `to_address`                  string,
-    `value`                       bigint,
+    `value`                       string,
     `gas`                         bigint,
     `gas_price`                   bigint,
     `input`                       string,
