@@ -2,10 +2,21 @@ package com.vsu001.ethernet.core.util;
 
 import com.google.protobuf.Timestamp;
 import com.vsu001.ethernet.core.service.UpdateRequest;
+import com.vsu001.ethernet.core.util.interval.Interval;
+import com.vsu001.ethernet.core.util.interval.Interval.Bounded;
+import com.vsu001.ethernet.core.util.interval.IntervalTree;
+import com.vsu001.ethernet.core.util.interval.LongInterval;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 public class BlockUtil {
 
@@ -42,7 +53,7 @@ public class BlockUtil {
       Long end
   ) {
     // Create a copy of longList
-    List<Long> cloneList = new ArrayList<>(List.copyOf(longList));
+    List<Long> cloneList = new ArrayList<>(longList);
 
     // Add start and end sentinel values
     cloneList.add(0, start - 1);
@@ -79,6 +90,70 @@ public class BlockUtil {
       }
     }
     return lList;
+  }
+
+  /**
+   * Find missing contiguous sequence(s) of Long-type elements that are not in the list of Long-type
+   * elements as recorded by in a specified cache file.
+   * <p>
+   * The cache file will contain rows of intervals that of block number rangers that have already
+   * been fetched from BigQuery for a specific proto specification.
+   *
+   * @param filePath Path to the cache file containing the intervals.
+   * @param start    Starting sentinel value or range-start-number.
+   * @param end      Ending sentinel value that or inclusive range-end-number.
+   * @return List of contiguous sequence(s) of Long-type elements that are missing from the range
+   * between the sorted `longList`'s first and last element.
+   * @throws FileNotFoundException If the file to be read is not found
+   */
+  public static List<List<Long>> readFromCache(String filePath, Long start, Long end)
+      throws FileNotFoundException {
+    // Instantiate a new tree
+    IntervalTree<Long> tree = new IntervalTree<>();
+
+    FileInputStream fis = new FileInputStream(filePath);
+    Scanner sc = new Scanner(fis);
+
+    // Returns true if there is another line to read
+    while (sc.hasNextLine()) {
+      String lineData = sc.nextLine();
+      System.out.println(lineData);
+      String[] row = lineData.split(",");
+      tree.add(new LongInterval(Long.parseLong(row[0]), Long.parseLong(row[1]), Bounded.CLOSED));
+    }
+    sc.close();
+
+    Set<Interval<Long>> result = tree.query(new LongInterval(start, end, Bounded.CLOSED));
+
+    List<Long> longList = new ArrayList<>();
+    for (Interval<Long> interval : result) {
+      List<Long> range = LongStream.rangeClosed(interval.getStart(), interval.getEnd())
+          .boxed().collect(Collectors.toList());
+      longList.addAll(range);
+    }
+
+    return findMissingContRange(longList, start, end);
+  }
+
+  /**
+   * Update the cache file with the newly fetched intervals from BigQuery so that they are flagged.
+   * <p>
+   * By doing so, the intervals will not be fetched from BigQuery again.
+   *
+   * @param filePath       Path to the cache file containing the intervals to be updated.
+   * @param intervalsToAdd List of Long type intervals to be added to the cache file during the
+   *                       update.
+   * @throws IOException If the named file exists but is a directory rather than a regular file,
+   *                     does not exist but cannot be created, or cannot be opened for any other
+   *                     reason
+   */
+  public static void updateCache(String filePath, List<List<Long>> intervalsToAdd)
+      throws IOException {
+    FileWriter fileWriter = new FileWriter(filePath, true);
+    for (List<Long> longList : intervalsToAdd) {
+      fileWriter.write(String.format("%s,%s\n", longList.get(0), longList.get(1)));
+    }
+    fileWriter.close();
   }
 
   /**
