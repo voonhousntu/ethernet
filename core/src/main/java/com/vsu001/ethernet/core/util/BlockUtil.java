@@ -69,7 +69,7 @@ public class BlockUtil {
     List<Long> sList = new ArrayList<>(2);
 
     for (int i = 1; i < sortedList.size(); i++) {
-      if (sortedList.get(i - 1) + 1 != longList.get(i)) {
+      if (sortedList.get(i - 1) + 1 != sortedList.get(i)) {
         sList.add(sortedList.get(i - 1) + 1);
         sList.add(sortedList.get(i) - 1);
 
