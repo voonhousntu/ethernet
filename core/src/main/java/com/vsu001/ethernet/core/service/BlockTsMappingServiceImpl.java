@@ -108,8 +108,16 @@ public class BlockTsMappingServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
+  public List<FieldDescriptor> getFieldDescriptors() {
+    return FIELD_DESCRIPTOR_LIST;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public String getSchemaStr() {
-    return FIELD_DESCRIPTOR_LIST.stream()
+    return getFieldDescriptors().stream()
         .map(s -> String.format("`%s` %s", s.getName(), OrcFileWriter.protoToOrcType(s)))
         .collect(Collectors.joining(","));
   }

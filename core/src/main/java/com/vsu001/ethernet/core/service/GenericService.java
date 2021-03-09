@@ -1,7 +1,9 @@
 package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 public interface GenericService {
@@ -59,6 +61,14 @@ public interface GenericService {
   String getTmpTableName();
 
   /**
+   * Return the <code>FieldDescriptor</code> associated with the protobuf specification that the
+   * current implementation of the <code>GenericService</code> is handling.
+   *
+   * @return FieldDescriptor of protobuf specification.
+   */
+  List<FieldDescriptor> getFieldDescriptors();
+
+  /**
    * Obtain the Hive SQL schema string of Hive table which will be used to persist the protobuf
    * defined object of interest.
    *
@@ -84,8 +94,8 @@ public interface GenericService {
    * @param request The block-number range to query for is defined and wrapped in the UpdateRequest
    *                object. The user defined `start` and `end` object are inclusive when translated
    *                to the BigQuery legacy SQL query constraints equivalent.
-   * @param nonce        A random generated string that will only be used once to identify all
-   *                     assets associated with the an ETl.
+   * @param nonce   A random generated string that will only be used once to identify all assets
+   *                associated with the an ETl.
    * @return The Neo4j database name of the graph created.
    * @throws IOException If an I/O error occurs
    */
