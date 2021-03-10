@@ -33,7 +33,7 @@ public class TraceRepository {
    */
   public List<Trace> findByBlockNumberRange(Long start, Long end) {
     String sql = "SELECT * FROM %s.traces "
-        + "WHERE number BETWEEN %s AND %s";
+        + "WHERE `block_number` BETWEEN %s AND %s";
     String query = String.format(sql, schema, start, end);
     return jdbcTemplate.query(query, new TraceMapper());
   }

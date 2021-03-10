@@ -91,7 +91,7 @@ public class BigQueryUtil {
         return "COALESCE(to_address, receipt_contract_address) AS `to_address`";
       case "traces_to_address":
       case "token_transfers_to_address":
-        return "COALESCE(from_address, '0x0000000000000000000000000000000000000000') AS `to_address`";
+        return "COALESCE(to_address, '0x0000000000000000000000000000000000000000') AS `to_address`";
       case "traces_from_address":
       case "token_transfers_from_address":
         return "COALESCE(from_address, '0x0000000000000000000000000000000000000000') AS `from_address`";

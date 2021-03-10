@@ -34,7 +34,7 @@ public class TokenTransferRepository {
    */
   public List<TokenTransfer> findByBlockNumberRange(Long start, Long end) {
     String sql = "SELECT * FROM %s.%s "
-        + "WHERE number BETWEEN %s AND %s";
+        + "WHERE `block_number` BETWEEN %s AND %s";
     String query = String.format(sql, schema, TABLE_NAME, start, end);
     return jdbcTemplate.query(query, new TokenTransferMapper());
   }

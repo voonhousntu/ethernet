@@ -191,7 +191,7 @@ public class TracesServiceImpl implements GenericService {
         .distinct()
         .collect(Collectors.toList());
 
-    // Export required transaction rows to CSV
+    // Export required traces rows to CSV
     CsvUtil.toCsv(traces, workDir, nonce);
 
     // Export required addresses rows to CSV

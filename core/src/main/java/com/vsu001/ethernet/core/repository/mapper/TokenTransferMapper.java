@@ -1,13 +1,13 @@
 package com.vsu001.ethernet.core.repository.mapper;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.vsu001.ethernet.core.model.Contract;
 import com.vsu001.ethernet.core.model.TokenTransfer;
 import com.vsu001.ethernet.core.model.TokenTransfer.Builder;
 import com.vsu001.ethernet.core.util.JavaSqlUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.RowMapper;
 
 public class TokenTransferMapper implements RowMapper<TokenTransfer> {
@@ -27,9 +27,9 @@ public class TokenTransferMapper implements RowMapper<TokenTransfer> {
    * @throws SQLException If an SQLException is encountered getting column values.
    */
   @Override
-  public TokenTransfer mapRow(ResultSet resultSet, int i) throws SQLException {
+  public TokenTransfer mapRow(@NotNull ResultSet resultSet, int i) throws SQLException {
     Builder builder = TokenTransfer.newBuilder();
-    List<FieldDescriptor> fieldDescriptors = Contract.getDescriptor().getFields();
+    List<FieldDescriptor> fieldDescriptors = TokenTransfer.getDescriptor().getFields();
 
     for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
       builder.setField(fieldDescriptor, JavaSqlUtil.jSqlToProtoType(fieldDescriptor, resultSet));

@@ -34,8 +34,8 @@ public class BlockRepository {
    */
   public List<Long> findNumberByNumberRange(Long start, Long end) {
     String sql =
-        "SELECT number FROM %s.blocks "
-            + "WHERE number BETWEEN %s AND %s";
+        "SELECT `number` FROM %s.blocks "
+            + "WHERE `number` BETWEEN %s AND %s";
     String query = String.format(sql, schema, start, end);
     return jdbcTemplate.query(query, (resultSet, i) -> resultSet.getLong("number"));
   }
@@ -50,7 +50,7 @@ public class BlockRepository {
    */
   public List<Block> findByNumberRange(Long start, Long end) {
     String sql = "SELECT * FROM %s.blocks "
-        + "WHERE number BETWEEN %s AND %s";
+        + "WHERE `number` BETWEEN %s AND %s";
     String query = String.format(sql, schema, start, end);
     return jdbcTemplate.query(query, new BlockMapper());
   }

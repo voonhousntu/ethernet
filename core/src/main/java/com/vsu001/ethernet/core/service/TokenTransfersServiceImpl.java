@@ -192,7 +192,7 @@ public class TokenTransfersServiceImpl implements GenericService {
         .distinct()
         .collect(Collectors.toList());
 
-    // Export required transaction rows to CSV
+    // Export required token_transfer rows to CSV
     CsvUtil.toCsv(tokenTransfers, workDir, nonce);
 
     // Export required addresses rows to CSV
@@ -227,13 +227,15 @@ public class TokenTransfersServiceImpl implements GenericService {
    */
   @Override
   public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
+    // Neo4j database names can only allow for "-" and "." for special characters
+    // Note: `private final static String` constants cannot be modified
     return String.format(
         TABLE_NAME_PATTERN,
         TokenTransferRepository.TABLE_NAME,
         blockStartNo,
         blockEndNo,
         DatetimeUtil.getCurrentISOStr(ISO_STRING_PATTERN)
-    );
+    ).replace("_", "-");
   }
 
   /**

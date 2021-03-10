@@ -136,7 +136,7 @@ public class CsvUtil {
         filename = "token_transfers_" + nonce + ".csv";
         break;
       case "Trace":
-        filename = "trace_" + nonce + ".csv";
+        filename = "traces_" + nonce + ".csv";
         break;
       case "Transaction":
         filename = "transactions_" + nonce + ".csv";

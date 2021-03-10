@@ -59,7 +59,7 @@ public class BlockTsMappingRepository {
   public BlockTimestampMapping findByNumber(Long number) {
     String sql =
         "SELECT * FROM %s.block_timestamp_mapping "
-            + "WHERE number = %s";
+            + "WHERE `number` = %s";
     String query = String.format(sql, schema, number);
 
     try {
