@@ -154,4 +154,12 @@ public class BlockTsMappingServiceImpl implements GenericService {
     throw new RuntimeException("This method is not implemented");
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void updateCache(UpdateRequest request) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
 }

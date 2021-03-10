@@ -99,4 +99,9 @@ public class TokensServiceImpl implements GenericService {
     );
   }
 
+  @Override
+  public void updateCache(UpdateRequest request) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
 }

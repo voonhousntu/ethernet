@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BlockRepository {
 
+  public static final String TABLE_NAME = "blocks";
+
   private final JdbcTemplate jdbcTemplate;
 
   @Value("${spring.datasource.hivedb.schema}")

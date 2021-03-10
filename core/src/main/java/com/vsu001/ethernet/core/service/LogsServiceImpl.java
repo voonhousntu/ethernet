@@ -92,4 +92,9 @@ public class LogsServiceImpl implements GenericService {
     throw new RuntimeException("This method is not implemented");
   }
 
+  @Override
+  public void updateCache(UpdateRequest request) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
 }

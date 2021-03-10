@@ -93,8 +93,7 @@ public class BlockUtil {
   }
 
   /**
-   * Find missing contiguous sequence(s) of Long-type elements that are not in the list of Long-type
-   * elements as recorded by in a specified cache file.
+   * Find all intervals that have already been fetched from BigQuery.
    * <p>
    * The cache file will contain rows of intervals that of block number rangers that have already
    * been fetched from BigQuery for a specific proto specification.
@@ -102,37 +101,45 @@ public class BlockUtil {
    * @param filePath Path to the cache file containing the intervals.
    * @param start    Starting sentinel value or range-start-number.
    * @param end      Ending sentinel value that or inclusive range-end-number.
-   * @return List of contiguous sequence(s) of Long-type elements that are missing from the range
-   * between the sorted `longList`'s first and last element.
+   * @return Set of Long-type intervals that have already been fetched from BigQuery.
    * @throws FileNotFoundException If the file to be read is not found
    */
-  public static List<List<Long>> readFromCache(String filePath, Long start, Long end)
+  public static Set<Interval<Long>> readFromCache(String filePath, Long start, Long end)
       throws FileNotFoundException {
-    // Instantiate a new tree
+    // Instantiate a tree
     IntervalTree<Long> tree = new IntervalTree<>();
 
     FileInputStream fis = new FileInputStream(filePath);
     Scanner sc = new Scanner(fis);
 
-    // Returns true if there is another line to read
+    // Read contents of the file (line-by-line)
     while (sc.hasNextLine()) {
       String lineData = sc.nextLine();
-      System.out.println(lineData);
+      // Each row is in the {bounded_start_range,bounded_end_range} format
       String[] row = lineData.split(",");
       tree.add(new LongInterval(Long.parseLong(row[0]), Long.parseLong(row[1]), Bounded.CLOSED));
     }
+    // Close the file reader
     sc.close();
 
-    Set<Interval<Long>> result = tree.query(new LongInterval(start, end, Bounded.CLOSED));
+    // Query for intervals intersecting [start, end]
+    return tree.query(new LongInterval(start, end, Bounded.CLOSED));
+  }
 
-    List<Long> longList = new ArrayList<>();
-    for (Interval<Long> interval : result) {
+  /**
+   * Generate all the Long-type elements within a set of interval(s).
+   *
+   * @param intervals Set of Long-type intervals that have already been fetched from BigQuery.
+   * @return All Long-type elements within the intervals
+   */
+  public static List<Long> getLongInIntervals(Set<Interval<Long>> intervals) {
+    List<Long> blockNumbers = new ArrayList<>();
+    for (Interval<Long> interval : intervals) {
       List<Long> range = LongStream.rangeClosed(interval.getStart(), interval.getEnd())
           .boxed().collect(Collectors.toList());
-      longList.addAll(range);
+      blockNumbers.addAll(range);
     }
-
-    return findMissingContRange(longList, start, end);
+    return blockNumbers;
   }
 
   /**

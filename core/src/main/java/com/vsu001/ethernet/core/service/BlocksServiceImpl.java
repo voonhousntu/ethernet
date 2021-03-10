@@ -2,6 +2,7 @@ package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.vsu001.ethernet.core.config.EthernetConfig;
 import com.vsu001.ethernet.core.model.Block;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.repository.BlockRepository;
@@ -9,7 +10,10 @@ import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
+import com.vsu001.ethernet.core.util.interval.Interval;
+import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,35 +22,39 @@ import org.springframework.stereotype.Service;
 @Service
 public class BlocksServiceImpl implements GenericService {
 
-  private static final String TABLE_NAME = "blocks";
-  private static final String TMP_TABLE_NAME = "tmp_" + TABLE_NAME;
+  private static final String CACHE_FILE_NAME = BlockRepository.TABLE_NAME + ".cache";
+  private static final String TMP_TABLE_NAME = "tmp_" + BlockRepository.TABLE_NAME;
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = Block.getDescriptor()
       .getFields();
-  private final BlockRepository blockRepository;
+
   private final BlockTsMappingRepository blockTsMappingRepository;
+  private final EthernetConfig ethernetConfig;
 
   public BlocksServiceImpl(
-      BlockRepository blockRepository,
-      BlockTsMappingRepository blockTsMappingRepository
-  ) {
-    this.blockRepository = blockRepository;
+      BlockTsMappingRepository blockTsMappingRepository,
+      EthernetConfig ethernetConfig) {
     this.blockTsMappingRepository = blockTsMappingRepository;
+    this.ethernetConfig = ethernetConfig;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
-
-
-    // Find blocks that are already in Hive table
-    List<Long> blockNumbers = blockRepository.findNumberByNumberRange(
+  public TableResult fetchFromBq(UpdateRequest request)
+      throws InterruptedException, FileNotFoundException {
+    // Find contiguous block numbers that are missing from the Hive table using cache file
+    // Firstly, get all the intervals that have already been fetched
+    Set<Interval<Long>> cachedIntervals = BlockUtil.readFromCache(
+        String.format("%s/%s", ethernetConfig.getEthernetWorkDir(), CACHE_FILE_NAME),
         request.getStartBlockNumber(),
         request.getEndBlockNumber()
     );
 
-    // Find contiguous block numbers that are missing from the Hive table
+    // Secondly, generate all long integers within the interval range(s)
+    List<Long> blockNumbers = BlockUtil.getLongInIntervals(cachedIntervals);
+
+    // Lastly, find contiguous block numbers that are missing from the Hive table
     List<List<Long>> lLists = BlockUtil.findMissingContRange(
         blockNumbers,
         request.getStartBlockNumber(),
@@ -76,12 +84,18 @@ public class BlocksServiceImpl implements GenericService {
       }
     }
 
-    // Ensure that list is never empty (no block number with -1)
-    blockNumbers.add(-1L);
-    String queryCriteria = String.format(
-        timestampSB.toString() + "AND `number` NOT IN (%s)",
-        blockNumbers.stream().map(String::valueOf).collect(Collectors.joining(","))
-    );
+    // Ignore the ranges that have already been fetched
+    StringBuilder rangeToIgnore = new StringBuilder();
+    for (Interval<Long> cacheInterval : cachedIntervals) {
+      String range = String
+          .format(" AND `block_number` NOT BETWEEN %s AND %s",
+              cacheInterval.getStart(),
+              cacheInterval.getStart()
+          );
+      rangeToIgnore.append(range);
+    }
+
+    String queryCriteria = timestampSB.toString() + rangeToIgnore.toString();
 
     // Fetch results from BigQuery
     TableResult tableResult = BigQueryUtil.query(
@@ -100,7 +114,7 @@ public class BlocksServiceImpl implements GenericService {
    */
   @Override
   public String getTableName() {
-    return TABLE_NAME;
+    return BlockRepository.TABLE_NAME;
   }
 
   /**
@@ -159,6 +173,14 @@ public class BlocksServiceImpl implements GenericService {
   @Override
   public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
     throw new RuntimeException("This method is not implemented");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void updateCache(UpdateRequest request) {
+
   }
 
 }

@@ -18,8 +18,6 @@ import net.devh.boot.grpc.server.service.GrpcService;
 @GrpcService
 public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
-  // TODO: Update all tables if any of the tables are queried for?
-
   private final GenericHiveRepository genericHiveRepository;
   private final BlockTsMappingRepository blockTsMappingRepository;
   private final BlocksServiceImpl blocksService;
@@ -247,9 +245,6 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Update `block_timestamp_mapping` table
       request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
-      // Fetch and populate `blocks` table
-      fetchAndPopulateHiveTable(blocksService, request, nonce);
-
       // Fetch and populate `transactions` table
       fetchAndPopulateHiveTable(transactionsService, request, nonce);
 
@@ -311,6 +306,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     genericHiveRepository.dropTmpTable(genericService, nonce);
 
     // If the requested block is larger than the most recent block, update the UpdateRequest object
+    // This method will already fetch the most recent block available in BigQuery
     if (genericService instanceof BlockTsMappingServiceImpl) {
       BlockTimestampMapping blockTimestampMapping = blockTsMappingRepository.findMostRecent();
       long mostRecentBlockNumber = blockTimestampMapping.getNumber();
@@ -319,6 +315,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
             .setEndBlockNumber(mostRecentBlockNumber)
             .build();
       }
+    } else {
+      // Only need to update cache for other service types
+      genericService.updateCache(updateRequest);
     }
 
     return updateRequest;
