@@ -176,6 +176,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Fetch and populate `token_transfers` table
       fetchAndPopulateHiveTable(tokenTransfersService, request, nonce);
 
+      // Import data into Neo4j
+      String neo4jDbName = transactionsService.doNeo4jImport(request, nonce);
+
       // Return response
       // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
@@ -222,6 +225,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Fetch and populate `traces` table
       fetchAndPopulateHiveTable(tracesService, request, nonce);
 
+      // Import data into Neo4j
+      String neo4jDbName = transactionsService.doNeo4jImport(request, nonce);
+
       // Return response
       // TODO: Build a proper response.
       responseObserver.onNext(buildUpdateResponse());
@@ -248,7 +254,8 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       // Fetch and populate `transactions` table
       fetchAndPopulateHiveTable(transactionsService, request, nonce);
 
-      transactionsService.doNeo4jImport(request, nonce);
+      // Import data into Neo4j
+      String neo4jDbName = transactionsService.doNeo4jImport(request, nonce);
 
       // Return response
       // TODO: Build a proper response.
