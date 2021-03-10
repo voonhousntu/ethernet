@@ -181,15 +181,11 @@ public class TracesServiceImplTest {
   @Test
   public void testGetSchemaStr() {
     String expected =
-        "`transaction_hash` string,`transaction_index` bigint,"
-            + "`from_address` string,`to_address` string,"
-            + "`value` double,`input` string,"
-            + "`output` string,`trace_type` string,"
-            + "`call_type` string,`reward_type` string,"
-            + "`gas` bigint,`gas_used` bigint,"
-            + "`subtraces` bigint,`trace_address` string,"
-            + "`error` string,`status` bigint,"
-            + "`block_timestamp` timestamp,`block_number` bigint,"
+        "`transaction_hash` string,`transaction_index` bigint,`from_address` string,"
+            + "`to_address` string,`value` string,`input` string,`output` string,"
+            + "`trace_type` string,`call_type` string,`reward_type` string,`gas` bigint,"
+            + "`gas_used` bigint,`subtraces` bigint,`trace_address` string,`error` string,"
+            + "`status` bigint,`block_timestamp` timestamp,`block_number` bigint,"
             + "`block_hash` string,`trace_id` string";
     assertEquals(expected, tracesService.getSchemaStr());
   }
@@ -197,17 +193,11 @@ public class TracesServiceImplTest {
   @Test
   public void testGetStructStr() {
     String expected =
-        "struct<"
-            + "transaction_hash:string,transaction_index:bigint,"
-            + "from_address:string,to_address:string,"
-            + "value:double,input:string,"
-            + "output:string,trace_type:string,"
-            + "call_type:string,reward_type:string,"
-            + "gas:bigint,gas_used:bigint,"
-            + "subtraces:bigint,trace_address:string,"
-            + "error:string,status:bigint,"
-            + "block_timestamp:timestamp,block_number:bigint,"
-            + "block_hash:string,trace_id:string>";
+        "<struct<transaction_hash:string,transaction_index:bigint,from_address:string,"
+            + "to_address:string,value:string,input:string,output:string,trace_type:string,"
+            + "call_type:string,reward_type:string,gas:bigint,gas_used:bigint,subtraces:bigint,"
+            + "trace_address:string,error:string,status:bigint,block_timestamp:timestamp,"
+            + "block_number:bigint,block_hash:string,trace_id:string>";
     assertEquals(expected, tracesService.getStructStr());
   }
 

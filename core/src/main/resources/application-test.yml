@@ -26,4 +26,4 @@ hadoop:
     client-use-hostname: true
 
 ethernet:
-  work-dir: ethernet_work_dir
+  work-dir: ethernet_test_work_dir
