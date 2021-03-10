@@ -1,7 +1,7 @@
 package com.vsu001.ethernet.core.repository;
 
 import com.vsu001.ethernet.core.model.TokenTransfer;
-import com.vsu001.ethernet.core.repository.mapper.ContractMapper;
+import com.vsu001.ethernet.core.repository.mapper.TokenTransferMapper;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class TokenTransferRepository {
     String sql = "SELECT * FROM %s.%s "
         + "WHERE number BETWEEN %s AND %s";
     String query = String.format(sql, schema, TABLE_NAME, start, end);
-    return jdbcTemplate.query(query, new ContractMapper());
+    return jdbcTemplate.query(query, new TokenTransferMapper());
   }
 
 }

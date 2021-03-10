@@ -7,8 +7,8 @@ def run_neo4j_import(host: str, port: str, container_name: str, command: str):
   conn = rpyc.classic.connect(host=host, port=port)
 
   docker_cmd_prefix = "docker exec -it {} /var/lib/neo4j/bin/neo4j-admin ".format(container_name)
+  # Escape double quotes
   command = command.replace('"','\\"')
-#   print("os.popen(\"{}\").read()".format(docker_cmd_prefix + command))
 
   # Execute the shell command from python env
   conn.execute("import os")
