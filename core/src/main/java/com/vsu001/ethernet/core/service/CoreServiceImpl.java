@@ -293,8 +293,9 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     // Fetch results from BigQuery
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
 
-    if (tableResult != null) {
-      log.info("Importing data into hive");
+    if (tableResult != null || tableResult.getTotalRows() > 0) {
+      log.info("Importing [{}] rows into Hive table: [{}]", tableResult.getTotalRows(),
+          genericService.getTableName());
 
       // Write query results to ORC file with random (UUID) filename in HDFS
       genericHiveRepository.writeTableResults(genericService, tableResult, nonce);
@@ -321,6 +322,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       }
     } else {
       // Only need to update cache for other service types
+      log.info("Updating cache file for: [{}] ETL", genericService.getTableName());
       genericService.updateCache(updateRequest);
     }
 

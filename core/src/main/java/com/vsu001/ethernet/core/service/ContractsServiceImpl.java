@@ -7,7 +7,6 @@ import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.Contract;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.ContractRepository;
-import com.vsu001.ethernet.core.repository.TransactionRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
 import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.DatetimeUtil;
@@ -25,7 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ContractsServiceImpl implements GenericService {
 
-  private static final String CACHE_FILE_NAME = TransactionRepository.TABLE_NAME + ".cache";
+  private static final String CACHE_FILE_NAME = ContractRepository.TABLE_NAME + ".cache";
   private static final String TMP_TABLE_NAME = "tmp_" + ContractRepository.TABLE_NAME;
   private static final List<FieldDescriptor> FIELD_DESCRIPTOR_LIST = Contract.getDescriptor()
       .getFields();

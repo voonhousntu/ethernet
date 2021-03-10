@@ -113,7 +113,13 @@ public class BigQueryUtil {
   public static Object getJavaValue(Field field, FieldValue fieldValue) {
     switch (field.getType().name()) {
       case "STRING":
-        return fieldValue.getValue() != null ? fieldValue.getStringValue() : null;
+        if (field.getMode().name().equals("REPEATED")) {
+          return fieldValue.getRepeatedValue().stream()
+              .map(e -> e != null ? e.getStringValue() : "")
+              .collect(Collectors.joining(","));
+        } else {
+          return fieldValue.getValue() != null ? fieldValue.getStringValue() : null;
+        }
       case "BYTES":
         return fieldValue.getBytesValue();
       case "INTEGER":

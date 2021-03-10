@@ -217,12 +217,12 @@ public class OrcFileWriter {
           Field field = fieldList.get(fieldName);
           FieldValue fieldValue = fieldValueList.get(fieldName);
 
-//          log.info("{}: {}", fieldName, field.getType().name());
-//          log.info("{}: {}", fieldName, fieldValue);
+//          log.debug("{}: {}", fieldName, field.getType().name());
+//          log.debug("{}: {}", fieldName, fieldValue);
 
           Object javaVal = BigQueryUtil.getJavaValue(field, fieldValue);
 
-//          log.info("{}: {}", fieldName, javaVal);
+//          log.debug("{}: {}", fieldName, javaVal);
 
           consumers.get(i).accept(rowNum, javaVal);
         }

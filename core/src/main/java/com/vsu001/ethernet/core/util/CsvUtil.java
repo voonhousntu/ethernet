@@ -121,7 +121,7 @@ public class CsvUtil {
    * @return The CSV filename.
    */
   private static String generateFilename(Object object, String nonce) {
-    String filename = null;
+    String filename;
     switch (object.getClass().getSimpleName()) {
       case "Block":
         filename = "blocks_" + nonce + ".csv";
@@ -136,7 +136,7 @@ public class CsvUtil {
         filename = "token_transfers_" + nonce + ".csv";
         break;
       case "Trace":
-        Trace trace = (Trace) object;
+        filename = "trace_" + nonce + ".csv";
         break;
       case "Transaction":
         filename = "transactions_" + nonce + ".csv";

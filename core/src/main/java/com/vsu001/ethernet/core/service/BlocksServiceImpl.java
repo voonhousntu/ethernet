@@ -12,6 +12,7 @@ import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import com.vsu001.ethernet.core.util.interval.Interval;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -90,7 +91,7 @@ public class BlocksServiceImpl implements GenericService {
       StringBuilder rangeToIgnore = new StringBuilder();
       for (Interval<Long> cacheInterval : cachedIntervals) {
         String range = String
-            .format(" AND `block_number` NOT BETWEEN %s AND %s",
+            .format(" AND `number` NOT BETWEEN %s AND %s",
                 cacheInterval.getStart(),
                 cacheInterval.getEnd()
             );
@@ -183,8 +184,29 @@ public class BlocksServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
-  public void updateCache(UpdateRequest request) {
+  public void updateCache(UpdateRequest request) throws IOException {
+    // Find contiguous block numbers that are missing from the Hive table using cache file
+    // Firstly, get all the intervals that have already been fetched
+    Set<Interval<Long>> cachedIntervals = BlockUtil.readFromCache(
+        String.format("%s/%s", ethernetConfig.getEthernetWorkDir(), CACHE_FILE_NAME),
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
 
+    // Secondly, generate all long integers within the interval range(s)
+    List<Long> blockNumbers = BlockUtil.getLongInIntervals(cachedIntervals);
+
+    // Lastly, find contiguous block numbers that are missing from the Hive table
+    List<List<Long>> lLists = BlockUtil.findMissingContRange(
+        blockNumbers,
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
+    BlockUtil.updateCache(
+        String.format("%s/%s", ethernetConfig.getEthernetWorkDir(), CACHE_FILE_NAME),
+        lLists
+    );
   }
 
 }

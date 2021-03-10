@@ -1,6 +1,6 @@
 CREATE TABLE ethernet.token_transfers
 (
-    `token_adress`     string,
+    `token_address`     string,
     `from_address`     string,
     `to_address`       string,
     `value`            string,

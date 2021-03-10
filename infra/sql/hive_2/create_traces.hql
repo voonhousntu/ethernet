@@ -4,7 +4,7 @@ CREATE TABLE ethernet.traces
     `transaction_index` bigint,
     `from_address`      string,
     `to_address`        string,
-    `value`             bigint,
+    `value`             string,
     `input`             string,
     `output`            string,
     `trace_type`        string,
