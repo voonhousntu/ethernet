@@ -34,6 +34,14 @@ compile-protos-python:
 	cd ../../../../; \
 	python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
 
+install-rypc-server:
+	cd serving; \
+	virtualenv -p /usr/bin/python3 venv; \
+	venv/bin/pip install -r requirements.txt;
+
+run-rypc-server:
+	screen -S rpyc_server -d -m venv/bin/python3 venv/bin/rpyc_classic.py --host 0.0.0.0 -p 18812
+
 # Docker
 
 deploy-docker-deps:
