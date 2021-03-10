@@ -26,4 +26,6 @@ hadoop:
     client-use-hostname: true
 
 ethernet:
-  work-dir: ethernet_test_work_dir
+  work-dir: ethernet_test_work_dir # Do not change, this value is hardcoded
+  rpyc-host: 172.21.148.207
+  rpyc-port: 18812

@@ -8,6 +8,11 @@ protos:
 build:
 	protos build-java
 
+create-ethernet-asset-dir:
+	mkdir $$HOME/ethernet_assets; \
+	mkdir $$HOME/ethernet_work_dir; \
+	cp -R headers $$HOME/ethernet_assets/.
+
 # Java
 
 build-java:
@@ -46,5 +51,7 @@ deploy-neo4j:
 			-v $HOME/neo4j/logs:/logs \
 			-v $HOME/neo4j/import:/var/lib/neo4j/import \
 			-v $HOME/neo4j/plugins:/plugins \
+			-v $HOME/ethernet_assets:/ethernet_assets \
+			-v $HOME/ethernet_work_dir:/ethernet_work_dir \
 			--env NEO4J_AUTH=neo4j/test \
 			neo4j:latest
