@@ -202,16 +202,25 @@ public class TransactionsServiceImpl implements GenericService {
     CsvUtil.toCsv(addresses, workDir, nonce);
 
     // Do import to Neo4j
-    String cmd = "sudo -u neo4j neo4j-admin import "
+    String importCmd = "import "
         + "--database=" + databaseName + ".db "
-        + "--report-file=/tmp/import-report.txt "
-        + "--nodes=Address=\"headers/addresses.csv,"
-        + ethernetConfig.getEthernetWorkDir() + "/addresses_" + nonce + ".csv\""
-        + "--relationships=TRANSACTION=\"headers/transactions.csv,"
-        + ethernetConfig.getEthernetWorkDir() + "/transactions_" + nonce + ".csv\"";
+        + "--report-file=/logs/" + databaseName + "_import-report.txt "
+        + "--nodes=Address=\"/ethernet_assets/headers/addresses.csv,"
+        + "/" + ethernetConfig.getEthernetWorkDir() + "/addresses_" + nonce + ".csv\""
+        + "--relationships=TRANSACTION=\"/ethernet_assets/headers/transactions.csv,"
+        + "/"+ ethernetConfig.getEthernetWorkDir() + "/transactions_" + nonce + ".csv\"";
+
+    // Create serving interaction command
+    String interactionCmd = String.format(
+        "python3 serving/run_neo4j_import.py %s %s %s %s",
+        ethernetConfig.getRpycHost(),
+        ethernetConfig.getRpycPort(),
+        ethernetConfig.getNeo4jContainerName(),
+        importCmd
+    );
 
     // Execute command
-    ProcessUtil.createProcess(cmd);
+    ProcessUtil.createProcess(interactionCmd);
 
     return databaseName;
   }
