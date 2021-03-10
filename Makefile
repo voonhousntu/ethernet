@@ -9,9 +9,15 @@ build:
 	protos build-java
 
 create-ethernet-asset-dir:
-	mkdir $$HOME/ethernet_assets; \
-	mkdir $$HOME/ethernet_work_dir; \
-	cp -R headers $$HOME/ethernet_assets/.
+	mkdir $$HOME/ethernet_assets && \
+	mkdir $$HOME/ethernet_work_dir && \
+	cp -R headers $$HOME/ethernet_assets/. && \
+	cd $$HOME/ethernet_work_dir && \
+	touch blocks.cache && \
+	touch contracts.cache && \
+	touch token_transfers.cache && \
+	touch traces.cache && \
+	touch transactions.cache
 
 # Java
 
@@ -34,12 +40,12 @@ compile-protos-python:
 	cd ../../../../; \
 	python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
 
-install-rypc-server:
+install-rypc-dep:
 	cd serving; \
-	virtualenv -p /usr/bin/python3 venv; \
-	venv/bin/pip install -r requirements.txt;
+	virtualenv -p /usr/bin/python3 venv && \
+	venv/bin/pip3 install -r requirements.txt
 
-run-rypc-server:
+start-rypc-server:
 	screen -S rpyc_server -d -m venv/bin/python3 venv/bin/rpyc_classic.py --host 0.0.0.0 -p 18812
 
 # Docker

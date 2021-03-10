@@ -178,9 +178,6 @@ public class TransactionsServiceImpl implements GenericService {
   @Override
   public String doNeo4jImport(String databaseName, UpdateRequest request, String nonce)
       throws IOException {
-    // Create ethernet work directory if it does not exist
-    ethernetConfig.createWorkDir();
-
     String workDir = ethernetConfig.getEthernetWorkDir();
 
     // Fetch `transactions` of interest
@@ -202,17 +199,17 @@ public class TransactionsServiceImpl implements GenericService {
     CsvUtil.toCsv(addresses, workDir, nonce);
 
     // Do import to Neo4j
-    String importCmd = "import "
-        + "--database=" + databaseName + ".db "
-        + "--report-file=/logs/" + databaseName + "_import-report.txt "
-        + "--nodes=Address=\"/ethernet_assets/headers/addresses.csv,"
-        + "/" + ethernetConfig.getEthernetWorkDir() + "/addresses_" + nonce + ".csv\""
-        + "--relationships=TRANSACTION=\"/ethernet_assets/headers/transactions.csv,"
-        + "/"+ ethernetConfig.getEthernetWorkDir() + "/transactions_" + nonce + ".csv\"";
+    String importCmd = "import"
+        + " --database=" + databaseName + ".db"
+        + " --report-file=/logs/" + databaseName + "_import-report.txt"
+        + " --nodes=Address=\"/ethernet_assets/headers/addresses.csv,"
+        + "/ethernet_work_dir/addresses_" + nonce + ".csv\""
+        + " --relationships=TRANSACTION=\"/ethernet_assets/headers/transactions.csv,"
+        + "/ethernet_work_dir/transactions_" + nonce + ".csv\"";
 
     // Create serving interaction command
     String interactionCmd = String.format(
-        "python3 serving/run_neo4j_import.py %s %s %s %s",
+        "serving/venv/bin/python3 serving/run_neo4j_import.py %s %s %s '%s'",
         ethernetConfig.getRpycHost(),
         ethernetConfig.getRpycPort(),
         ethernetConfig.getNeo4jContainerName(),

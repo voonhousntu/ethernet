@@ -1,7 +1,5 @@
 package com.vsu001.ethernet.core.config;
 
-import com.vsu001.ethernet.core.util.FileUtil;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +21,7 @@ public class EthernetConfig {
   private String neo4jContainerName;
 
   public String getEthernetWorkDir() {
-    return ethernetWorkDir;
+    return ethernetWorkDir.replaceFirst("^~", System.getProperty("user.home"));
   }
 
   public String getRpycHost() {
@@ -36,14 +34,6 @@ public class EthernetConfig {
 
   public String getNeo4jContainerName() {
     return neo4jContainerName;
-  }
-
-  public void createWorkDir() {
-    try {
-      FileUtil.createDir(getEthernetWorkDir());
-    } catch (IOException e) {
-      log.error(e.getMessage());
-    }
   }
 
 }

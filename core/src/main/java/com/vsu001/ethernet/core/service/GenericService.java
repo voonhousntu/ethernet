@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface GenericService {
 
-  String TABLE_NAME_PATTERN = "%s_%s_%s_%s";
+  String TABLE_NAME_PATTERN = "%s-%s-%s-%s";
   String ISO_STRING_PATTERN = "yyyyMMdd'T'HHmm'Z'";
 
   /**

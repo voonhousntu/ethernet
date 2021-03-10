@@ -293,7 +293,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     // Fetch results from BigQuery
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
 
-    if (tableResult != null || tableResult.getTotalRows() > 0) {
+    if (tableResult != null && tableResult.getTotalRows() > 0) {
       log.info("Importing [{}] rows into Hive table: [{}]", tableResult.getTotalRows(),
           genericService.getTableName());
 

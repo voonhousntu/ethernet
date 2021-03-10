@@ -1,15 +1,19 @@
-import sys
 import os
+import sys
+import rpyc
 
-def run_neo4j_import(host: str, port: str, command: str, container_name: str):
+def run_neo4j_import(host: str, port: str, container_name: str, command: str):
   # Connect to rpyc
   conn = rpyc.classic.connect(host=host, port=port)
 
   docker_cmd_prefix = "docker exec -it {} /var/lib/neo4j/bin/neo4j-admin ".format(container_name)
+  command = command.replace('"','\\"')
+#   print("os.popen(\"{}\").read()".format(docker_cmd_prefix + command))
 
   # Execute the shell command from python env
   conn.execute("import os")
   std_out = conn.eval("os.popen(\"{}\").read()".format(docker_cmd_prefix + command))
+  print(std_out)
 
 if __name__ == "__main__":
   # First argument is the python file name at index 0
@@ -21,6 +25,6 @@ if __name__ == "__main__":
   run_neo4j_import(
     host=host,
     port=port,
-    cmd=cmd,
+    command=cmd,
     container_name=container_name
   )

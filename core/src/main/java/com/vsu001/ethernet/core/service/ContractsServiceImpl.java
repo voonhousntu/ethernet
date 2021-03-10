@@ -160,8 +160,7 @@ public class ContractsServiceImpl implements GenericService {
    */
   @Override
   public String doNeo4jImport(UpdateRequest request, String nonce) {
-    // TODO: Implement this
-    return null;
+    throw new RuntimeException("This method is not implemented");
   }
 
   /**
@@ -169,8 +168,7 @@ public class ContractsServiceImpl implements GenericService {
    */
   @Override
   public String doNeo4jImport(String databaseName, UpdateRequest request, String nonce) {
-    // TODO: Implement this
-    return null;
+    throw new RuntimeException("This method is not implemented");
   }
 
   /**
