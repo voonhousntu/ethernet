@@ -69,51 +69,56 @@ public class TransactionsServiceImpl implements GenericService {
         request.getEndBlockNumber()
     );
 
-    StringBuilder timestampSB = new StringBuilder("1=1 ");
-    for (List<Long> lList : lLists) {
-      if (lList.get(0).equals(lList.get(1))) {
-        // Cost to run query will be the same as querying for a day's worth of data
-        BlockTimestampMapping blockTspMapping = blockTsMappingRepository.findByNumber(lList.get(0));
-        timestampSB.append("AND `block_timestamp` = ");
-        timestampSB.append(
-            String.format("'%s' ", BlockUtil.protoTsToISO(blockTspMapping.getTimestamp()))
-        );
-      } else {
-        BlockTimestampMapping startBTM = blockTsMappingRepository.findByNumber(lList.get(0));
-        BlockTimestampMapping endBTM = blockTsMappingRepository.findByNumber(lList.get(1));
-        timestampSB.append("AND `block_timestamp` >= ");
-        timestampSB.append(String.format("'%s' ", BlockUtil.protoTsToISO(startBTM.getTimestamp())));
-        timestampSB.append("AND `block_timestamp` <= ");
-        timestampSB.append(String.format("'%s' ", BlockUtil.protoTsToISO(endBTM.getTimestamp()))
-        );
-      }
-    }
-
-    // Ignore the ranges that have already been fetched
-    StringBuilder rangeToIgnore = new StringBuilder();
-    for (Interval<Long> cacheInterval : cachedIntervals) {
-      String range = String
-          .format(" AND `block_number` NOT BETWEEN %s AND %s",
-              cacheInterval.getStart(),
-              cacheInterval.getStart()
+    if (lLists.size() > 0) {
+      StringBuilder timestampSB = new StringBuilder("1=1 ");
+      for (List<Long> lList : lLists) {
+        if (lList.get(0).equals(lList.get(1))) {
+          // Cost to run query will be the same as querying for a day's worth of data
+          BlockTimestampMapping blockTspMapping = blockTsMappingRepository
+              .findByNumber(lList.get(0));
+          timestampSB.append("AND `block_timestamp` = ");
+          timestampSB.append(
+              String.format("'%s' ", BlockUtil.protoTsToISO(blockTspMapping.getTimestamp()))
           );
-      rangeToIgnore.append(range);
+        } else {
+          BlockTimestampMapping startBTM = blockTsMappingRepository.findByNumber(lList.get(0));
+          BlockTimestampMapping endBTM = blockTsMappingRepository.findByNumber(lList.get(1));
+          timestampSB.append("AND `block_timestamp` >= ");
+          timestampSB
+              .append(String.format("'%s' ", BlockUtil.protoTsToISO(startBTM.getTimestamp())));
+          timestampSB.append("AND `block_timestamp` <= ");
+          timestampSB.append(String.format("'%s' ", BlockUtil.protoTsToISO(endBTM.getTimestamp()))
+          );
+        }
+      }
+
+      // Ignore the ranges that have already been fetched
+      StringBuilder rangeToIgnore = new StringBuilder();
+      for (Interval<Long> cacheInterval : cachedIntervals) {
+        String range = String
+            .format(" AND `block_number` NOT BETWEEN %s AND %s",
+                cacheInterval.getStart(),
+                cacheInterval.getEnd()
+            );
+        rangeToIgnore.append(range);
+      }
+
+      String queryCriteria = timestampSB.toString() + rangeToIgnore.toString();
+
+      // Fetch results from BigQuery
+      TableResult tableResult = BigQueryUtil.query(
+          Transaction.getDescriptor(),
+          "transactions",
+          queryCriteria
+      );
+
+      // Table results should not be null
+      assert tableResult != null;
+      log.info("Rows fetched: [{}]", tableResult.getTotalRows());
+      return tableResult;
     }
 
-    String queryCriteria = timestampSB.toString() + rangeToIgnore.toString();
-
-    // Fetch results from BigQuery
-    TableResult tableResult = BigQueryUtil.query(
-        Transaction.getDescriptor(),
-        "transactions",
-        queryCriteria
-    );
-
-    // Table results should not be null
-    assert tableResult != null;
-    log.info("Rows fetched: [{}]", tableResult.getTotalRows());
-
-    return tableResult;
+    return null;
   }
 
   /**
@@ -198,8 +203,8 @@ public class TransactionsServiceImpl implements GenericService {
 
     // Do import to Neo4j
     String cmd = "sudo -u neo4j neo4j-admin import "
-        + "--database " + databaseName + ".db "
-        + "--report-file /tmp/import-report.txt "
+        + "--database=" + databaseName + ".db "
+        + "--report-file=/tmp/import-report.txt "
         + "--nodes=Address=\"headers/addresses.csv,"
         + ethernetConfig.getEthernetWorkDir() + "/addresses_" + nonce + ".csv\""
         + "--relationships=TRANSACTION=\"headers/transactions.csv,"

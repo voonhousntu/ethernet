@@ -293,17 +293,21 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     // Fetch results from BigQuery
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
 
-    // Write query results to ORC file with random (UUID) filename in HDFS
-    genericHiveRepository.writeTableResults(genericService, tableResult, nonce);
+    if (tableResult != null) {
+      log.info("Importing data into hive");
 
-    // Create temporary Hive table
-    genericHiveRepository.createTmpTable(genericService, nonce);
+      // Write query results to ORC file with random (UUID) filename in HDFS
+      genericHiveRepository.writeTableResults(genericService, tableResult, nonce);
 
-    // Insert data from temporary Hive table
-    genericHiveRepository.populateHiveTable(genericService, nonce);
+      // Create temporary Hive table
+      genericHiveRepository.createTmpTable(genericService, nonce);
 
-    // Remove temporary Hive table + temporary ORC file
-    genericHiveRepository.dropTmpTable(genericService, nonce);
+      // Insert data from temporary Hive table
+      genericHiveRepository.populateHiveTable(genericService, nonce);
+
+      // Remove temporary Hive table + temporary ORC file
+      genericHiveRepository.dropTmpTable(genericService, nonce);
+    }
 
     // If the requested block is larger than the most recent block, update the UpdateRequest object
     // This method will already fetch the most recent block available in BigQuery
