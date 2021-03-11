@@ -40,7 +40,7 @@ compile-protos-python:
 	cd ../../../../; \
 	python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
 
-install-rypc-dep:
+install-serving-dep:
 	cd serving; \
 	virtualenv -p /usr/bin/python3 venv && \
 	venv/bin/pip3 install -r requirements.txt
