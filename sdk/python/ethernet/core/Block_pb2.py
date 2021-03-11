@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n\036com.vsu001.ethernet.core.modelB\nBlockProtoP\001',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0b\x42lock.proto\x12\x18\x63om.vsu001.ethernet.core\x1a\x1fgoogle/protobuf/timestamp.proto\"\x86\x03\n\x05\x42lock\x12-\n\ttimestamp\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0e\n\x06number\x18\x02 \x01(\x03\x12\x0c\n\x04hash\x18\x03 \x01(\t\x12\x13\n\x0bparent_hash\x18\x04 \x01(\t\x12\r\n\x05nonce\x18\x05 \x01(\t\x12\x13\n\x0bsha3_uncles\x18\x06 \x01(\t\x12\x12\n\nlogs_bloom\x18\x07 \x01(\t\x12\x19\n\x11transactions_root\x18\x08 \x01(\t\x12\x12\n\nstate_root\x18\t \x01(\t\x12\x15\n\rreceipts_root\x18\n \x01(\t\x12\r\n\x05miner\x18\x0b \x01(\t\x12\x12\n\ndifficulty\x18\x0c \x01(\x03\x12\x18\n\x10total_difficulty\x18\r \x01(\x03\x12\x0c\n\x04size\x18\x0e \x01(\x03\x12\x12\n\nextra_data\x18\x0f \x01(\t\x12\x11\n\tgas_limit\x18\x10 \x01(\x03\x12\x10\n\x08gas_used\x18\x11 \x01(\x03\x12\x19\n\x11transaction_count\x18\x12 \x01(\x03\x42.\n\x1e\x63om.vsu001.ethernet.core.modelB\nBlockProtoP\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0b\x42lock.proto\x12\x18\x63om.vsu001.ethernet.core\x1a\x1fgoogle/protobuf/timestamp.proto\"\x86\x03\n\x05\x42lock\x12-\n\ttimestamp\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0e\n\x06number\x18\x02 \x01(\x03\x12\x0c\n\x04hash\x18\x03 \x01(\t\x12\x13\n\x0bparent_hash\x18\x04 \x01(\t\x12\r\n\x05nonce\x18\x05 \x01(\t\x12\x13\n\x0bsha3_uncles\x18\x06 \x01(\t\x12\x12\n\nlogs_bloom\x18\x07 \x01(\t\x12\x19\n\x11transactions_root\x18\x08 \x01(\t\x12\x12\n\nstate_root\x18\t \x01(\t\x12\x15\n\rreceipts_root\x18\n \x01(\t\x12\r\n\x05miner\x18\x0b \x01(\t\x12\x12\n\ndifficulty\x18\x0c \x01(\t\x12\x18\n\x10total_difficulty\x18\r \x01(\t\x12\x0c\n\x04size\x18\x0e \x01(\x03\x12\x12\n\nextra_data\x18\x0f \x01(\t\x12\x11\n\tgas_limit\x18\x10 \x01(\x03\x12\x10\n\x08gas_used\x18\x11 \x01(\x03\x12\x19\n\x11transaction_count\x18\x12 \x01(\x03\x42.\n\x1e\x63om.vsu001.ethernet.core.modelB\nBlockProtoP\x01\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -114,15 +114,15 @@ _BLOCK = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='difficulty', full_name='com.vsu001.ethernet.core.Block.difficulty', index=11,
-      number=12, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
+      number=12, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='total_difficulty', full_name='com.vsu001.ethernet.core.Block.total_difficulty', index=12,
-      number=13, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
+      number=13, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),

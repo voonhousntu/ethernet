@@ -19,6 +19,11 @@ class ConfigServiceStub(object):
                 request_serializer=ConfigService__pb2.GetNeo4jServingConfigRequest.SerializeToString,
                 response_deserializer=ConfigService__pb2.GetNeo4jServingConfigResponse.FromString,
                 )
+        self.GetServingConfig = channel.unary_unary(
+                '/com.vsu001.ethernet.core.ConfigService/GetServingConfig',
+                request_serializer=ConfigService__pb2.GetServingConfigRequest.SerializeToString,
+                response_deserializer=ConfigService__pb2.GetServingConfigResponse.FromString,
+                )
 
 
 class ConfigServiceServicer(object):
@@ -31,6 +36,13 @@ class ConfigServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetServingConfig(self, request, context):
+        """Get serving connection configurations
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConfigServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -38,6 +50,11 @@ def add_ConfigServiceServicer_to_server(servicer, server):
                     servicer.GetNeo4jServingConfig,
                     request_deserializer=ConfigService__pb2.GetNeo4jServingConfigRequest.FromString,
                     response_serializer=ConfigService__pb2.GetNeo4jServingConfigResponse.SerializeToString,
+            ),
+            'GetServingConfig': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetServingConfig,
+                    request_deserializer=ConfigService__pb2.GetServingConfigRequest.FromString,
+                    response_serializer=ConfigService__pb2.GetServingConfigResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -63,5 +80,22 @@ class ConfigService(object):
         return grpc.experimental.unary_unary(request, target, '/com.vsu001.ethernet.core.ConfigService/GetNeo4jServingConfig',
             ConfigService__pb2.GetNeo4jServingConfigRequest.SerializeToString,
             ConfigService__pb2.GetNeo4jServingConfigResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetServingConfig(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/com.vsu001.ethernet.core.ConfigService/GetServingConfig',
+            ConfigService__pb2.GetServingConfigRequest.SerializeToString,
+            ConfigService__pb2.GetServingConfigResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

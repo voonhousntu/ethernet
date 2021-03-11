@@ -10,26 +10,25 @@ class Client:
     graphs.
     """
 
-    def __init__(self, options: Optional[Dict[str, str]], **kwargs):
+    def __init__(self, core_host: str, core_grpc_port: int, core_http_port: int):
         """
-        The EtherNet Client should be initialized with at lease one service
+        The Ethernet Client should be initialized with at lease one service
         url.
 
-        Commonly used options or arguments include:
-            core_url: EtherNet core URL. Used to manage Ethereum graphs.
-
         Args:
-            options:
-                Configuration options to initialize client with
+            core_host:
+                Ethernet core URL. Used to manage Ethereum ETL jobs and managing dependencies.
+
+            core_grpc_port:
+                Ethernet core grpc port. This port will used to interface with Ethernet exposed gRPC services.
+
+            core_http_port:
+                Ethernet core http port. This port will be used to interface with Ethernet exposed http services.
 
             **kwargs:
                 Additional keyword arguments that will be used as
                 configuration options along with "options"
         """
-
-        if options is None:
-            options = dict()
-
-        self._config = Config(options={**options, **kwargs})
-
-        self._core_service_stub: Optional[ExampleServiceStub] = None
+        self.core_host = core_host
+        self.core_grpc_port = core_grpc_port
+        self.core_http_port = core_http_port

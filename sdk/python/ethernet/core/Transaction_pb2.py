@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n\036com.vsu001.ethernet.core.modelB\020TransactionProtoP\001',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11Transaction.proto\x12\x18\x63om.vsu001.ethernet.core\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9b\x03\n\x0bTransaction\x12\x0c\n\x04hash\x18\x01 \x01(\t\x12\r\n\x05nonce\x18\x02 \x01(\x03\x12\x19\n\x11transaction_index\x18\x03 \x01(\x03\x12\x14\n\x0c\x66rom_address\x18\x04 \x01(\t\x12\x12\n\nto_address\x18\x05 \x01(\t\x12\r\n\x05value\x18\x06 \x01(\x03\x12\x0b\n\x03gas\x18\x07 \x01(\x03\x12\x11\n\tgas_price\x18\x08 \x01(\x03\x12\r\n\x05input\x18\t \x01(\t\x12#\n\x1breceipt_cumulative_gas_used\x18\n \x01(\x03\x12\x18\n\x10receipt_gas_used\x18\x0b \x01(\x03\x12 \n\x18receipt_contract_address\x18\x0c \x01(\t\x12\x14\n\x0creceipt_root\x18\r \x01(\t\x12\x16\n\x0ereceipt_status\x18\x0e \x01(\x03\x12\x33\n\x0f\x62lock_timestamp\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x62lock_number\x18\x10 \x01(\x03\x12\x12\n\nblock_hash\x18\x11 \x01(\tB4\n\x1e\x63om.vsu001.ethernet.core.modelB\x10TransactionProtoP\x01\x62\x06proto3'
+  serialized_pb=b'\n\x11Transaction.proto\x12\x18\x63om.vsu001.ethernet.core\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9b\x03\n\x0bTransaction\x12\x0c\n\x04hash\x18\x01 \x01(\t\x12\r\n\x05nonce\x18\x02 \x01(\x03\x12\x19\n\x11transaction_index\x18\x03 \x01(\x03\x12\x14\n\x0c\x66rom_address\x18\x04 \x01(\t\x12\x12\n\nto_address\x18\x05 \x01(\t\x12\r\n\x05value\x18\x06 \x01(\t\x12\x0b\n\x03gas\x18\x07 \x01(\x03\x12\x11\n\tgas_price\x18\x08 \x01(\x03\x12\r\n\x05input\x18\t \x01(\t\x12#\n\x1breceipt_cumulative_gas_used\x18\n \x01(\x03\x12\x18\n\x10receipt_gas_used\x18\x0b \x01(\x03\x12 \n\x18receipt_contract_address\x18\x0c \x01(\t\x12\x14\n\x0creceipt_root\x18\r \x01(\t\x12\x16\n\x0ereceipt_status\x18\x0e \x01(\x03\x12\x33\n\x0f\x62lock_timestamp\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x62lock_number\x18\x10 \x01(\x03\x12\x12\n\nblock_hash\x18\x11 \x01(\tB4\n\x1e\x63om.vsu001.ethernet.core.modelB\x10TransactionProtoP\x01\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -72,8 +72,8 @@ _TRANSACTION = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='value', full_name='com.vsu001.ethernet.core.Transaction.value', index=5,
-      number=6, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),

@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n\036com.vsu001.ethernet.core.modelB\nTraceProtoP\001',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0bTrace.proto\x12\x18\x63om.vsu001.ethernet.core\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa9\x03\n\x05Trace\x12\x18\n\x10transaction_hash\x18\x01 \x01(\t\x12\x19\n\x11transaction_index\x18\x02 \x01(\x03\x12\x14\n\x0c\x66rom_address\x18\x03 \x01(\t\x12\x12\n\nto_address\x18\x04 \x01(\t\x12\r\n\x05value\x18\x05 \x01(\x01\x12\r\n\x05input\x18\x06 \x01(\t\x12\x0e\n\x06output\x18\x07 \x01(\t\x12\x12\n\ntrace_type\x18\x08 \x01(\t\x12\x11\n\tcall_type\x18\t \x01(\t\x12\x13\n\x0breward_type\x18\n \x01(\t\x12\x0b\n\x03gas\x18\x0b \x01(\x03\x12\x10\n\x08gas_used\x18\x0c \x01(\x03\x12\x11\n\tsubtraces\x18\r \x01(\x03\x12\x15\n\rtrace_address\x18\x0e \x01(\t\x12\r\n\x05\x65rror\x18\x0f \x01(\t\x12\x0e\n\x06status\x18\x10 \x01(\x03\x12\x33\n\x0f\x62lock_timestamp\x18\x11 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x62lock_number\x18\x12 \x01(\x03\x12\x12\n\nblock_hash\x18\x13 \x01(\t\x12\x10\n\x08trace_id\x18\x14 \x01(\tB.\n\x1e\x63om.vsu001.ethernet.core.modelB\nTraceProtoP\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0bTrace.proto\x12\x18\x63om.vsu001.ethernet.core\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa9\x03\n\x05Trace\x12\x18\n\x10transaction_hash\x18\x01 \x01(\t\x12\x19\n\x11transaction_index\x18\x02 \x01(\x03\x12\x14\n\x0c\x66rom_address\x18\x03 \x01(\t\x12\x12\n\nto_address\x18\x04 \x01(\t\x12\r\n\x05value\x18\x05 \x01(\t\x12\r\n\x05input\x18\x06 \x01(\t\x12\x0e\n\x06output\x18\x07 \x01(\t\x12\x12\n\ntrace_type\x18\x08 \x01(\t\x12\x11\n\tcall_type\x18\t \x01(\t\x12\x13\n\x0breward_type\x18\n \x01(\t\x12\x0b\n\x03gas\x18\x0b \x01(\x03\x12\x10\n\x08gas_used\x18\x0c \x01(\x03\x12\x11\n\tsubtraces\x18\r \x01(\x03\x12\x15\n\rtrace_address\x18\x0e \x01(\t\x12\r\n\x05\x65rror\x18\x0f \x01(\t\x12\x0e\n\x06status\x18\x10 \x01(\x03\x12\x33\n\x0f\x62lock_timestamp\x18\x11 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x62lock_number\x18\x12 \x01(\x03\x12\x12\n\nblock_hash\x18\x13 \x01(\t\x12\x10\n\x08trace_id\x18\x14 \x01(\tB.\n\x1e\x63om.vsu001.ethernet.core.modelB\nTraceProtoP\x01\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -65,8 +65,8 @@ _TRACE = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='value', full_name='com.vsu001.ethernet.core.Trace.value', index=4,
-      number=5, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),

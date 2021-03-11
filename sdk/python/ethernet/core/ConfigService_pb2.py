@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n com.vsu001.ethernet.core.serviceB\022ConfigServiceProtoP\001',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x13\x43onfigService.proto\x12\x18\x63om.vsu001.ethernet.core\"\x1e\n\x1cGetNeo4jServingConfigRequest\"[\n\x1dGetNeo4jServingConfigResponse\x12\x16\n\x0e\x63onnection_uri\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t2\x9a\x01\n\rConfigService\x12\x88\x01\n\x15GetNeo4jServingConfig\x12\x36.com.vsu001.ethernet.core.GetNeo4jServingConfigRequest\x1a\x37.com.vsu001.ethernet.core.GetNeo4jServingConfigResponseB8\n com.vsu001.ethernet.core.serviceB\x12\x43onfigServiceProtoP\x01\x62\x06proto3'
+  serialized_pb=b'\n\x13\x43onfigService.proto\x12\x18\x63om.vsu001.ethernet.core\"\x1e\n\x1cGetNeo4jServingConfigRequest\"[\n\x1dGetNeo4jServingConfigResponse\x12\x16\n\x0e\x63onnection_uri\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"\x19\n\x17GetServingConfigRequest\"_\n\x18GetServingConfigResponse\x12\x11\n\trpyc_host\x18\x01 \x01(\t\x12\x11\n\trpyc_port\x18\x02 \x01(\t\x12\x1d\n\x15\x64ocker_container_name\x18\x03 \x01(\t2\x95\x02\n\rConfigService\x12\x88\x01\n\x15GetNeo4jServingConfig\x12\x36.com.vsu001.ethernet.core.GetNeo4jServingConfigRequest\x1a\x37.com.vsu001.ethernet.core.GetNeo4jServingConfigResponse\x12y\n\x10GetServingConfig\x12\x31.com.vsu001.ethernet.core.GetServingConfigRequest\x1a\x32.com.vsu001.ethernet.core.GetServingConfigResponseB8\n com.vsu001.ethernet.core.serviceB\x12\x43onfigServiceProtoP\x01\x62\x06proto3'
 )
 
 
@@ -95,8 +95,81 @@ _GETNEO4JSERVINGCONFIGRESPONSE = _descriptor.Descriptor(
   serialized_end=172,
 )
 
+
+_GETSERVINGCONFIGREQUEST = _descriptor.Descriptor(
+  name='GetServingConfigRequest',
+  full_name='com.vsu001.ethernet.core.GetServingConfigRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=174,
+  serialized_end=199,
+)
+
+
+_GETSERVINGCONFIGRESPONSE = _descriptor.Descriptor(
+  name='GetServingConfigResponse',
+  full_name='com.vsu001.ethernet.core.GetServingConfigResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='rpyc_host', full_name='com.vsu001.ethernet.core.GetServingConfigResponse.rpyc_host', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='rpyc_port', full_name='com.vsu001.ethernet.core.GetServingConfigResponse.rpyc_port', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='docker_container_name', full_name='com.vsu001.ethernet.core.GetServingConfigResponse.docker_container_name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=201,
+  serialized_end=296,
+)
+
 DESCRIPTOR.message_types_by_name['GetNeo4jServingConfigRequest'] = _GETNEO4JSERVINGCONFIGREQUEST
 DESCRIPTOR.message_types_by_name['GetNeo4jServingConfigResponse'] = _GETNEO4JSERVINGCONFIGRESPONSE
+DESCRIPTOR.message_types_by_name['GetServingConfigRequest'] = _GETSERVINGCONFIGREQUEST
+DESCRIPTOR.message_types_by_name['GetServingConfigResponse'] = _GETSERVINGCONFIGRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 GetNeo4jServingConfigRequest = _reflection.GeneratedProtocolMessageType('GetNeo4jServingConfigRequest', (_message.Message,), {
@@ -113,6 +186,20 @@ GetNeo4jServingConfigResponse = _reflection.GeneratedProtocolMessageType('GetNeo
   })
 _sym_db.RegisterMessage(GetNeo4jServingConfigResponse)
 
+GetServingConfigRequest = _reflection.GeneratedProtocolMessageType('GetServingConfigRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GETSERVINGCONFIGREQUEST,
+  '__module__' : 'ConfigService_pb2'
+  # @@protoc_insertion_point(class_scope:com.vsu001.ethernet.core.GetServingConfigRequest)
+  })
+_sym_db.RegisterMessage(GetServingConfigRequest)
+
+GetServingConfigResponse = _reflection.GeneratedProtocolMessageType('GetServingConfigResponse', (_message.Message,), {
+  'DESCRIPTOR' : _GETSERVINGCONFIGRESPONSE,
+  '__module__' : 'ConfigService_pb2'
+  # @@protoc_insertion_point(class_scope:com.vsu001.ethernet.core.GetServingConfigResponse)
+  })
+_sym_db.RegisterMessage(GetServingConfigResponse)
+
 
 DESCRIPTOR._options = None
 
@@ -123,8 +210,8 @@ _CONFIGSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=175,
-  serialized_end=329,
+  serialized_start=299,
+  serialized_end=576,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetNeo4jServingConfig',
@@ -133,6 +220,16 @@ _CONFIGSERVICE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_GETNEO4JSERVINGCONFIGREQUEST,
     output_type=_GETNEO4JSERVINGCONFIGRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetServingConfig',
+    full_name='com.vsu001.ethernet.core.ConfigService.GetServingConfig',
+    index=1,
+    containing_service=None,
+    input_type=_GETSERVINGCONFIGREQUEST,
+    output_type=_GETSERVINGCONFIGRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
