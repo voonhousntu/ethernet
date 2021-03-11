@@ -47,7 +47,7 @@ public class BlockTsMappingServiceImpl implements GenericService {
     if (blockTimestampMapping != null) {
       // Convert to instant so we can get the ISO8601 timestamp format
       Timestamp ts = blockTimestampMapping.getTimestamp();
-      Instant instantTs = Instant.ofEpochSecond(ts.getSeconds(), ts.getNanos());
+      Instant instantTs = Instant.ofEpochSecond(ts.getSeconds() / 1000);
       blockNumber = blockTimestampMapping.getNumber();
       iso8601Str = instantTs.toString();
     } else {
@@ -56,6 +56,7 @@ public class BlockTsMappingServiceImpl implements GenericService {
     }
 
     String query = "`number` > %s AND `timestamp` >= '%s'";
+
     //Check if Active profiles contains "local" or "test"
     if (Arrays.stream(environment.getActiveProfiles()).anyMatch(
         env -> (
@@ -107,8 +108,16 @@ public class BlockTsMappingServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
+  public List<FieldDescriptor> getFieldDescriptors() {
+    return FIELD_DESCRIPTOR_LIST;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public String getSchemaStr() {
-    return FIELD_DESCRIPTOR_LIST.stream()
+    return getFieldDescriptors().stream()
         .map(s -> String.format("`%s` %s", s.getName(), OrcFileWriter.protoToOrcType(s)))
         .collect(Collectors.joining(","));
   }
@@ -119,6 +128,38 @@ public class BlockTsMappingServiceImpl implements GenericService {
   @Override
   public String getStructStr() {
     return OrcFileWriter.protoToOrcStructStr(FIELD_DESCRIPTOR_LIST);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String doNeo4jImport(UpdateRequest request, String nonce) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String doNeo4jImport(String databaseName, UpdateRequest request, String nonce) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void updateCache(UpdateRequest request) {
+    throw new RuntimeException("This method is not implemented");
   }
 
 }

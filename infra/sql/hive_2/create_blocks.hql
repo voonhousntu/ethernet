@@ -1,7 +1,7 @@
 CREATE TABLE ethernet.blocks
 (
-    `number`            bigint,
     `timestamp`         timestamp,
+    `number`            bigint,
     `hash`              string,
     `parent_hash`       string,
     `nonce`             string,

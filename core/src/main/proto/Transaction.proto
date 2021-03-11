@@ -26,7 +26,7 @@ message Transaction {
   string to_address = 5;
 
   // Value transferred in Wei
-  int64 value = 6;
+  string value = 6;
 
   // Gas provided by the sender
   int64 gas = 7;
@@ -36,7 +36,6 @@ message Transaction {
 
   // The data sent along with the transaction
   string input = 9;
-
 
   // The total amount of gas used when this transaction was executed in the block
   int64 receipt_cumulative_gas_used = 10;

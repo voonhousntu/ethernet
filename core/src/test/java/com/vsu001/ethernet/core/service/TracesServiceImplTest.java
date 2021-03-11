@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.cloud.bigquery.TableResult;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
+import com.vsu001.ethernet.core.util.NonceUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=2007",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=TracesServiceImplTest"
+})
 @ActiveProfiles("test")
 public class TracesServiceImplTest {
 
@@ -66,17 +71,29 @@ public class TracesServiceImplTest {
             + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     createBlocksTable = String.format(createBlocksTable, hiveRepository.getSchema());
 
-    // Create `contracts`
+    // Create `traces`
     String createContractsTable =
-        "CREATE TABLE %s.contracts "
-            + "(`address` string,"
-            + "`bytecode` string,"
-            + "`function_sighashes` string,"
-            + "`is_erc20` boolean,"
-            + "`is_erc721` boolean,"
-            + "`block_hash` string,"
-            + "`block_number` bigint,"
-            + "`block_timestamp` timestamp) "
+        "CREATE TABLE %s.traces "
+            + "(`transaction_hash`  string,"
+            + "`transaction_index` bigint,"
+            + "`from_address`      string,"
+            + "`to_address`        string,"
+            + "`value`             bigint,"
+            + "`input`             string,"
+            + "`output`            string,"
+            + "`trace_type`        string,"
+            + "`call_type`         string,"
+            + "`reward_type`       string,"
+            + "`gas`               bigint,"
+            + "`gas_used`          bigint,"
+            + "`subtraces`         bigint,"
+            + "`trace_address`     string,"
+            + "`error`             string,"
+            + "`status`            bigint,"
+            + "`block_hash`        string,"
+            + "`trace_id`          string,"
+            + "`block_number`      bigint,"
+            + "`block_timestamp`   timestamp)"
             + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     createContractsTable = String.format(createContractsTable, hiveRepository.getSchema());
 
@@ -133,8 +150,10 @@ public class TracesServiceImplTest {
 
     TableResult tableResult = null;
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      coreService.fetchAndPopulateHiveTable(blockTsMappingService, updateRequest);
+      coreService.fetchAndPopulateHiveTable(blockTsMappingService, updateRequest, nonce);
 
       // Insert two rows into the required table
       insertDataIntoBlocks(2);
@@ -144,7 +163,7 @@ public class TracesServiceImplTest {
       e.printStackTrace();
     }
 
-    assertEquals(950569L, tableResult.getTotalRows());
+    assertEquals(959463L, tableResult.getTotalRows());
   }
 
   @Test
@@ -162,15 +181,11 @@ public class TracesServiceImplTest {
   @Test
   public void testGetSchemaStr() {
     String expected =
-        "`transaction_hash` string,`transaction_index` bigint,"
-            + "`from_address` string,`to_address` string,"
-            + "`value` double,`input` string,"
-            + "`output` string,`trace_type` string,"
-            + "`call_type` string,`reward_type` string,"
-            + "`gas` bigint,`gas_used` bigint,"
-            + "`subtraces` bigint,`trace_address` string,"
-            + "`error` string,`status` bigint,"
-            + "`block_timestamp` timestamp,`block_number` bigint,"
+        "`transaction_hash` string,`transaction_index` bigint,`from_address` string,"
+            + "`to_address` string,`value` string,`input` string,`output` string,"
+            + "`trace_type` string,`call_type` string,`reward_type` string,`gas` bigint,"
+            + "`gas_used` bigint,`subtraces` bigint,`trace_address` string,`error` string,"
+            + "`status` bigint,`block_timestamp` timestamp,`block_number` bigint,"
             + "`block_hash` string,`trace_id` string";
     assertEquals(expected, tracesService.getSchemaStr());
   }
@@ -178,17 +193,11 @@ public class TracesServiceImplTest {
   @Test
   public void testGetStructStr() {
     String expected =
-        "struct<"
-            + "transaction_hash:string,transaction_index:bigint,"
-            + "from_address:string,to_address:string,"
-            + "value:double,input:string,"
-            + "output:string,trace_type:string,"
-            + "call_type:string,reward_type:string,"
-            + "gas:bigint,gas_used:bigint,"
-            + "subtraces:bigint,trace_address:string,"
-            + "error:string,status:bigint,"
-            + "block_timestamp:timestamp,block_number:bigint,"
-            + "block_hash:string,trace_id:string>";
+        "<struct<transaction_hash:string,transaction_index:bigint,from_address:string,"
+            + "to_address:string,value:string,input:string,output:string,trace_type:string,"
+            + "call_type:string,reward_type:string,gas:bigint,gas_used:bigint,subtraces:bigint,"
+            + "trace_address:string,error:string,status:bigint,block_timestamp:timestamp,"
+            + "block_number:bigint,block_hash:string,trace_id:string>";
     assertEquals(expected, tracesService.getStructStr());
   }
 

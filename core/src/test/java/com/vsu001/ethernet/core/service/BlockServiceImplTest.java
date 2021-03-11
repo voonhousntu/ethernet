@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.cloud.bigquery.TableResult;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
+import com.vsu001.ethernet.core.util.NonceUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=2000",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=BlockServiceImplTest"
+})
 @ActiveProfiles("test")
 public class BlockServiceImplTest {
 
@@ -118,18 +123,20 @@ public class BlockServiceImplTest {
 
     TableResult tableResult = null;
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      coreService.fetchAndPopulateHiveTable(blockTsMappingService, updateRequest);
+      coreService.fetchAndPopulateHiveTable(blockTsMappingService, updateRequest, nonce);
 
       // Insert two rows into the required table
-      insertDataIntoBlocks(2);
+//      insertDataIntoBlocks(2);
 
       tableResult = blocksService.fetchFromBq(updateRequest);
     } catch (InterruptedException | IOException e) {
       e.printStackTrace();
     }
 
-    assertEquals(498L, tableResult.getTotalRows());
+    assertEquals(500L, tableResult.getTotalRows());
   }
 
   @Test
@@ -147,14 +154,10 @@ public class BlockServiceImplTest {
   @Test
   public void testGetSchemaStr() {
     String expected =
-        "`timestamp` timestamp,`number` bigint,"
-            + "`hash` string,`parent_hash` string,"
-            + "`nonce` string,`sha3_uncles` string,"
-            + "`logs_bloom` string,`transactions_root` string,"
-            + "`state_root` string,`receipts_root` string,"
-            + "`miner` string,`difficulty` bigint,"
-            + "`total_difficulty` bigint,`size` bigint,"
-            + "`extra_data` string,`gas_limit` bigint,"
+        "`timestamp` timestamp,`number` bigint,`hash` string,`parent_hash` string,`nonce` string,"
+            + "`sha3_uncles` string,`logs_bloom` string,`transactions_root` string,"
+            + "`state_root` string,`receipts_root` string,`miner` string,`difficulty` string,"
+            + "`total_difficulty` string,`size` bigint,`extra_data` string,`gas_limit` bigint,"
             + "`gas_used` bigint,`transaction_count` bigint";
     assertEquals(expected, blocksService.getSchemaStr());
   }
@@ -162,15 +165,10 @@ public class BlockServiceImplTest {
   @Test
   public void testGetStructStr() {
     String expected =
-        "struct<"
-            + "timestamp:timestamp,number:bigint,"
-            + "hash:string,parent_hash:string,"
-            + "nonce:string,sha3_uncles:string,"
-            + "logs_bloom:string,transactions_root:string,"
-            + "state_root:string,receipts_root:string,"
-            + "miner:string,difficulty:bigint,"
-            + "total_difficulty:bigint,size:bigint,"
-            + "extra_data:string,gas_limit:bigint,"
+        "struct<timestamp:timestamp,number:bigint,hash:string,parent_hash:string,"
+            + "nonce:string,sha3_uncles:string,logs_bloom:string,transactions_root:string,"
+            + "state_root:string,receipts_root:string,miner:string,difficulty:string,"
+            + "total_difficulty:string,size:bigint,extra_data:string,gas_limit:bigint,"
             + "gas_used:bigint,transaction_count:bigint>";
     assertEquals(expected, blocksService.getStructStr());
   }

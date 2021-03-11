@@ -6,9 +6,9 @@ CREATE TABLE ethernet.logs
     `address`           string,
     `data`              string,
     `topics`            string,
-    `block_hash`        string,
+    `block_timestamp`   timestamp,
     `block_number`      bigint,
-    `block_timestamp`   timestamp
+    `block_hash`        string
 
 )
     STORED AS ORC

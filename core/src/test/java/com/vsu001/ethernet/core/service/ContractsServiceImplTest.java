@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.cloud.bigquery.TableResult;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
+import com.vsu001.ethernet.core.util.NonceUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=2003",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=ContractsServiceImplTest"
+})
 @ActiveProfiles("test")
 public class ContractsServiceImplTest {
 
@@ -133,8 +138,10 @@ public class ContractsServiceImplTest {
 
     TableResult tableResult = null;
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      coreService.fetchAndPopulateHiveTable(blockTsMappingService, updateRequest);
+      coreService.fetchAndPopulateHiveTable(blockTsMappingService, updateRequest, nonce);
 
       // Insert two rows into the required table
       insertDataIntoBlocks(2);

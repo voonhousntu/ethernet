@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.cloud.bigquery.TableResult;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
+import com.vsu001.ethernet.core.util.NonceUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=2008",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=TransactionsServiceImplTest"
+})
 @ActiveProfiles("test")
 public class TransactionsServiceImplTest {
 
@@ -37,7 +42,7 @@ public class TransactionsServiceImplTest {
   @BeforeEach
   public void init() {
     // Initialise the required schema
-    String createSchema = "CREATE SCHEMA %s";
+    String createSchema = "CREATE SCHEMA IF NOT EXISTS %s";
     createSchema = String.format(createSchema, hiveRepository.getSchema());
     jdbcTemplate.execute(createSchema);
 
@@ -66,17 +71,26 @@ public class TransactionsServiceImplTest {
             + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     createBlocksTable = String.format(createBlocksTable, hiveRepository.getSchema());
 
-    // Create `contracts`
+    // Create `transactions`
     String createContractsTable =
-        "CREATE TABLE %s.contracts "
-            + "(`address` string,"
-            + "`bytecode` string,"
-            + "`function_sighashes` string,"
-            + "`is_erc20` boolean,"
-            + "`is_erc721` boolean,"
-            + "`block_hash` string,"
-            + "`block_number` bigint,"
-            + "`block_timestamp` timestamp) "
+        "CREATE TABLE %s.transactions "
+            + "(`hash`                        string,"
+            + "`nonce`                       bigint,"
+            + "`transaction_index`           bigint,"
+            + "`from_address`                string,"
+            + "`to_address`                  string,"
+            + "`value`                       bigint,"
+            + "`gas`                         bigint,"
+            + "`gas_price`                   bigint,"
+            + "`input`                       string,"
+            + "`receipt_cumulative_gas_used` bigint,"
+            + "`receipt_gas_used`            bigint,"
+            + "`receipt_contract_address`    string,"
+            + "`receipt_root`                string,"
+            + "`receipt_status`              bigint,"
+            + "`block_hash`                  string,"
+            + "`block_number`                bigint,"
+            + "`block_timestamp`             timestamp)"
             + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     createContractsTable = String.format(createContractsTable, hiveRepository.getSchema());
 
@@ -133,8 +147,10 @@ public class TransactionsServiceImplTest {
 
     TableResult tableResult = null;
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      coreService.fetchAndPopulateHiveTable(blockTsMappingService, updateRequest);
+      coreService.fetchAndPopulateHiveTable(blockTsMappingService, updateRequest, nonce);
 
       // Insert two rows into the required table
       insertDataIntoBlocks(2);
@@ -162,31 +178,22 @@ public class TransactionsServiceImplTest {
   @Test
   public void testGetSchemaStr() {
     String expected =
-        "`hash` string,`nonce` bigint,"
-            + "`transaction_index` bigint,`from_address` string,"
-            + "`to_address` string,`value` bigint,"
-            + "`gas` bigint,`gas_price` bigint,"
-            + "`input` string,`receipt_cumulative_gas_used` bigint,"
-            + "`receipt_gas_used` bigint,`receipt_contract_address` string,"
-            + "`receipt_root` string,`receipt_status` bigint,"
-            + "`block_timestamp` timestamp,`block_number` bigint,"
-            + "`block_hash` string";
+        "`hash` string,`nonce` bigint,`transaction_index` bigint,`from_address` string,"
+            + "`to_address` string,`value` string,`gas` bigint,`gas_price` bigint,"
+            + "`input` string,`receipt_cumulative_gas_used` bigint,`receipt_gas_used` bigint,"
+            + "`receipt_contract_address` string,`receipt_root` string,`receipt_status` bigint,"
+            + "`block_timestamp` timestamp,`block_number` bigint,`block_hash` string";
     assertEquals(expected, transactionsService.getSchemaStr());
   }
 
   @Test
   public void testGetStructStr() {
     String expected =
-        "struct<"
-            + "hash:string,nonce:bigint,"
-            + "transaction_index:bigint,from_address:string,"
-            + "to_address:string,value:bigint,"
-            + "gas:bigint,gas_price:bigint,"
-            + "input:string,receipt_cumulative_gas_used:bigint,"
-            + "receipt_gas_used:bigint,receipt_contract_address:string,"
-            + "receipt_root:string,receipt_status:bigint,"
-            + "block_timestamp:timestamp,block_number:bigint,"
-            + "block_hash:string>";
+        "struct<hash:string,nonce:bigint,transaction_index:bigint,from_address:string,"
+            + "to_address:string,value:string,gas:bigint,gas_price:bigint,input:string,"
+            + "receipt_cumulative_gas_used:bigint,receipt_gas_used:bigint,"
+            + "receipt_contract_address:string,receipt_root:string,receipt_status:bigint,"
+            + "block_timestamp:timestamp,block_number:bigint,block_hash:string>";
     assertEquals(expected, transactionsService.getStructStr());
   }
 

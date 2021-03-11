@@ -15,7 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=3001",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=BlockTsMappingRepositoryTest"
+})
 @ActiveProfiles("test")
 public class BlockTsMappingRepositoryTest {
 
@@ -31,14 +35,14 @@ public class BlockTsMappingRepositoryTest {
   @BeforeEach
   public void init() {
     // Initialise the required schema
-    String createSchema = "CREATE SCHEMA %s";
+    String createSchema = "CREATE SCHEMA IF NOT EXISTS %s";
     createSchema = String.format(createSchema, hiveRepository.getSchema());
     jdbcTemplate.execute(createSchema);
 
     // Initialise the required tables
     // Create `block_timestamp_mapping`
     String createTable =
-        "CREATE TABLE %s.block_timestamp_mapping "
+        "CREATE TABLE IF NOT EXISTS %s.block_timestamp_mapping "
             + "( `number` bigint, `timestamp` timestamp ) "
             + "STORED AS ORC TBLPROPERTIES ('ORC.COMPRESS' = 'ZLIB')";
     createTable = String.format(createTable, hiveRepository.getSchema());
@@ -64,7 +68,7 @@ public class BlockTsMappingRepositoryTest {
   @Test
   public void testFindMostRecent() {
     // Ensure we are using the test schema
-    assertEquals("ethernet_test", hiveRepository.getSchema());
+    assertEquals(this.getClass().getSimpleName(), hiveRepository.getSchema());
 
     // Should return null as table is empty
     BlockTimestampMapping blockTimestampMapping = blockTsMappingRepository.findMostRecent();
@@ -82,7 +86,7 @@ public class BlockTsMappingRepositoryTest {
   @Test
   public void testFindByNumber() {
     // Ensure we are using the test schema
-    assertEquals("ethernet_test", hiveRepository.getSchema());
+    assertEquals(this.getClass().getSimpleName(), hiveRepository.getSchema());
 
     // Should return null as table is empty
     BlockTimestampMapping blockTimestampMapping = blockTsMappingRepository.findByNumber(1L);
@@ -100,7 +104,7 @@ public class BlockTsMappingRepositoryTest {
   @Test
   public void testFindByNumbers() {
     // Ensure we are using the test schema
-    assertEquals("ethernet_test", hiveRepository.getSchema());
+    assertEquals(this.getClass().getSimpleName(), hiveRepository.getSchema());
 
     List<Long> longList = new ArrayList<>(Arrays.asList(0L, 1L));
 

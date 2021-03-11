@@ -43,10 +43,10 @@ message Block {
   string miner = 11;
 
   // Integer of the difficulty for this block
-  int64 difficulty = 12;
+  string difficulty = 12;
 
   // Integer of the total difficulty of the chain until this block
-  int64 total_difficulty = 13;
+  string total_difficulty = 13;
 
   // The size of this block in bytes
   int64 size = 14;

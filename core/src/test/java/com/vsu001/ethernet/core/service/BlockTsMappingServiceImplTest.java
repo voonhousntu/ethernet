@@ -12,7 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "grpc.server.port=2001",
+    "grpc.client.GLOBAL.negotiationType=PLAINTEXT",
+    "spring.datasource.hivedb.schema=BlockTsMappingServiceImplTest"
+})
 @ActiveProfiles("test")
 class BlockTsMappingServiceImplTest {
 
@@ -60,7 +64,7 @@ class BlockTsMappingServiceImplTest {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    assertEquals(500L, tableResult.getTotalRows());
+    assertEquals(447768L, tableResult.getTotalRows());
   }
 
   @Test

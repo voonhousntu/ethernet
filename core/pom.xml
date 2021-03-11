@@ -200,6 +200,13 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${csv.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>

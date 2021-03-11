@@ -27,7 +27,7 @@ message Trace {
   string to_address = 4;
 
   // Value transferred in Wei
-  double value = 5;
+  string value = 5;
 
   // The data sent along with the message call
   string input = 6;

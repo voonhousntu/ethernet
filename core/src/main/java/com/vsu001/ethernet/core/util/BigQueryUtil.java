@@ -70,7 +70,7 @@ public class BigQueryUtil {
 
     // Get all the columns
     String columnStr = descriptor.getFields().stream()
-        .map(s -> "`" + s.getName() + "`")
+        .map(s -> columnToSqlString(tableName, s.getName()))
         .collect(Collectors.joining(","));
 
     // Build the full query
@@ -83,6 +83,21 @@ public class BigQueryUtil {
 
     // Query for the results
     return bigquery.query(queryConfig);
+  }
+
+  private static String columnToSqlString(String tableName, String fieldDescriptorName) {
+    switch (tableName + "_" + fieldDescriptorName) {
+      case "transactions_to_address":
+        return "COALESCE(to_address, receipt_contract_address) AS `to_address`";
+      case "traces_to_address":
+      case "token_transfers_to_address":
+        return "COALESCE(to_address, '0x0000000000000000000000000000000000000000') AS `to_address`";
+      case "traces_from_address":
+      case "token_transfers_from_address":
+        return "COALESCE(from_address, '0x0000000000000000000000000000000000000000') AS `from_address`";
+      default:
+        return "`" + fieldDescriptorName + "`";
+    }
   }
 
   /**
@@ -98,11 +113,19 @@ public class BigQueryUtil {
   public static Object getJavaValue(Field field, FieldValue fieldValue) {
     switch (field.getType().name()) {
       case "STRING":
-        return fieldValue.getStringValue();
+        if (field.getMode() != null && field.getMode().name().equals("REPEATED")) {
+          return fieldValue.getRepeatedValue().stream()
+              .map(e -> e != null ? e.getStringValue() : "")
+              .collect(Collectors.joining(","));
+        } else {
+          return fieldValue.getValue() != null ? fieldValue.getStringValue() : null;
+        }
       case "BYTES":
         return fieldValue.getBytesValue();
       case "INTEGER":
-        return fieldValue.getLongValue();
+        return fieldValue.getValue() != null ? fieldValue.getLongValue() : -1;
+      case "NUMERIC":
+        return fieldValue.getValue() != null ? fieldValue.getStringValue() : null;
       case "FLOAT":
         return fieldValue.getDoubleValue();
       case "BOOLEAN":

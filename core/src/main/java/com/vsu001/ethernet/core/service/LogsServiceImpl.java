@@ -46,8 +46,16 @@ public class LogsServiceImpl implements GenericService {
    * {@inheritDoc}
    */
   @Override
+  public List<FieldDescriptor> getFieldDescriptors() {
+    return FIELD_DESCRIPTOR_LIST;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public String getSchemaStr() {
-    return FIELD_DESCRIPTOR_LIST.stream()
+    return getFieldDescriptors().stream()
         .map(s -> String.format("`%s` %s", s.getName(), OrcFileWriter.protoToOrcType(s)))
         .collect(Collectors.joining(","));
   }
@@ -58,6 +66,35 @@ public class LogsServiceImpl implements GenericService {
   @Override
   public String getStructStr() {
     return OrcFileWriter.protoToOrcStructStr(FIELD_DESCRIPTOR_LIST);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String doNeo4jImport(UpdateRequest request, String nonce) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String doNeo4jImport(String databaseName, UpdateRequest request, String nonce) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String generateNeo4jDbName(long blockStartNo, long blockEndNo) {
+    throw new RuntimeException("This method is not implemented");
+  }
+
+  @Override
+  public void updateCache(UpdateRequest request) {
+    throw new RuntimeException("This method is not implemented");
   }
 
 }

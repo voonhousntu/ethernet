@@ -8,13 +8,24 @@ protos:
 build:
 	protos build-java
 
+create-ethernet-asset-dir:
+	mkdir $$HOME/ethernet_assets && \
+	mkdir $$HOME/ethernet_work_dir && \
+	cp -R headers $$HOME/ethernet_assets/. && \
+	cd $$HOME/ethernet_work_dir && \
+	touch blocks.cache && \
+	touch contracts.cache && \
+	touch token_transfers.cache && \
+	touch traces.cache && \
+	touch transactions.cache
+
 # Java
 
 build-java:
 	mvn clean verify
 
 compile-protos-java:
-	protobuf:compile
+	mvn protobuf:compile; mvn protobuf:compile-custom
 
 # Python
 
@@ -28,6 +39,14 @@ compile-protos-python:
 			*Service.proto; \
 	cd ../../../../; \
 	python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
+
+install-serving-dep:
+	cd serving; \
+	virtualenv -p /usr/bin/python3 venv && \
+	venv/bin/pip3 install -r requirements.txt
+
+start-rypc-server:
+	screen -S rpyc_server -d -m venv/bin/python3 venv/bin/rpyc_classic.py --host 0.0.0.0 -p 18812
 
 # Docker
 
@@ -46,5 +65,7 @@ deploy-neo4j:
 			-v $HOME/neo4j/logs:/logs \
 			-v $HOME/neo4j/import:/var/lib/neo4j/import \
 			-v $HOME/neo4j/plugins:/plugins \
+			-v $HOME/ethernet_assets:/ethernet_assets \
+			-v $HOME/ethernet_work_dir:/ethernet_work_dir \
 			--env NEO4J_AUTH=neo4j/test \
 			neo4j:latest

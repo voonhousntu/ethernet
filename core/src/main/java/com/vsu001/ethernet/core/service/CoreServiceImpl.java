@@ -7,6 +7,7 @@ import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.GenericHiveRepository;
 import com.vsu001.ethernet.core.util.BlockUtil;
+import com.vsu001.ethernet.core.util.NonceUtil;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.time.Instant;
@@ -16,8 +17,6 @@ import net.devh.boot.grpc.server.service.GrpcService;
 @Slf4j
 @GrpcService
 public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
-
-  // TODO: Update all tables if any of the tables are queried for?
 
   private final GenericHiveRepository genericHiveRepository;
   private final BlockTsMappingRepository blockTsMappingRepository;
@@ -74,8 +73,10 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `block_timestamp_mapping` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Fetch and populate `block_timestamp_mapping` table
-      fetchAndPopulateHiveTable(blockTsMappingService, request);
+      fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -92,11 +93,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `blocks` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `blocks` table
-      fetchAndPopulateHiveTable(blocksService, request);
+      fetchAndPopulateHiveTable(blocksService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -116,11 +119,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `contracts` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `contracts` table
-      fetchAndPopulateHiveTable(contractsService, request);
+      fetchAndPopulateHiveTable(contractsService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -137,11 +142,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `logs` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `logs` table
-      fetchAndPopulateHiveTable(logsService, request);
+      fetchAndPopulateHiveTable(logsService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -161,11 +168,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `token_transfers` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `token_transfers` table
-      fetchAndPopulateHiveTable(tokenTransfersService, request);
+      fetchAndPopulateHiveTable(tokenTransfersService, request, nonce);
+
+      // Import data into Neo4j
+      String neo4jDbName = tokenTransfersService.doNeo4jImport(request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -182,11 +194,13 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `tokens` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `tokens` table
-      fetchAndPopulateHiveTable(tokensService, request);
+      fetchAndPopulateHiveTable(tokensService, request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -203,11 +217,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `traces` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `traces` table
-      fetchAndPopulateHiveTable(tracesService, request);
+      fetchAndPopulateHiveTable(tracesService, request, nonce);
+
+      // Import data into Neo4j
+      String neo4jDbName = tracesService.doNeo4jImport(request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -227,11 +246,16 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     log.info("Updating `transactions` table");
 
     try {
+      String nonce = NonceUtil.generateNonce();
+
       // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request);
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `transactions` table
-      fetchAndPopulateHiveTable(transactionsService, request);
+      fetchAndPopulateHiveTable(transactionsService, request, nonce);
+
+      // Import data into Neo4j
+      String neo4jDbName = transactionsService.doNeo4jImport(request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -255,6 +279,8 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
    *                       UpdateRequest object. The user defined `start` and `end` object are
    *                       inclusive when translated to the BigQuery legacy SQL query constraints
    *                       equivalent.
+   * @param nonce          A random generated string that will only be used once to identify all
+   *                       assets associated with the an ETl.
    * @return UpdatedRequest object, where the `endBlockNumber` will be updated if the GenericService
    * is of instance BlockTsMappingService, else the original updateRequest will be passed through
    * and returned.
@@ -264,7 +290,8 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
    */
   public UpdateRequest fetchAndPopulateHiveTable(
       GenericService genericService,
-      UpdateRequest updateRequest
+      UpdateRequest updateRequest,
+      String nonce
   ) throws InterruptedException, IOException, InvalidRequestException {
     if (!BlockUtil.validateRequest(updateRequest)) {
       throw new InvalidRequestException("Invalid [start] and [end] range in request");
@@ -273,19 +300,25 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     // Fetch results from BigQuery
     TableResult tableResult = genericService.fetchFromBq(updateRequest);
 
-    // Write query results to ORC file with random (UUID) filename in HDFS
-    genericHiveRepository.writeTableResults(genericService, tableResult);
+    if (tableResult != null && tableResult.getTotalRows() > 0) {
+      log.info("Importing [{}] rows into Hive table: [{}]", tableResult.getTotalRows(),
+          genericService.getTableName());
 
-    // Create temporary Hive table
-    genericHiveRepository.createTmpTable(genericService);
+      // Write query results to ORC file with random (UUID) filename in HDFS
+      genericHiveRepository.writeTableResults(genericService, tableResult, nonce);
 
-    // Insert data from temporary Hive table
-    genericHiveRepository.populateHiveTable(genericService);
+      // Create temporary Hive table
+      genericHiveRepository.createTmpTable(genericService, nonce);
 
-    // Remove temporary Hive table + temporary ORC file
-    genericHiveRepository.dropTmpTable(genericService);
+      // Insert data from temporary Hive table
+      genericHiveRepository.populateHiveTable(genericService, nonce);
+
+      // Remove temporary Hive table + temporary ORC file
+      genericHiveRepository.dropTmpTable(genericService, nonce);
+    }
 
     // If the requested block is larger than the most recent block, update the UpdateRequest object
+    // This method will already fetch the most recent block available in BigQuery
     if (genericService instanceof BlockTsMappingServiceImpl) {
       BlockTimestampMapping blockTimestampMapping = blockTsMappingRepository.findMostRecent();
       long mostRecentBlockNumber = blockTimestampMapping.getNumber();
@@ -294,6 +327,10 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
             .setEndBlockNumber(mostRecentBlockNumber)
             .build();
       }
+    } else {
+      // Only need to update cache for other service types
+      log.info("Updating cache file for: [{}] ETL", genericService.getTableName());
+      genericService.updateCache(updateRequest);
     }
 
     return updateRequest;
