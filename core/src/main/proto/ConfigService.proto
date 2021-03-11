@@ -9,6 +9,9 @@ option java_outer_classname = "ConfigServiceProto";
 service ConfigService {
   // Get Neo4j connection configurations
   rpc GetNeo4jServingConfig(GetNeo4jServingConfigRequest) returns (GetNeo4jServingConfigResponse);
+
+  // Get serving connection configurations
+  rpc GetServingConfig(GetServingConfigRequest) returns (GetServingConfigResponse);
 }
 
 message GetNeo4jServingConfigRequest {}
@@ -22,4 +25,18 @@ message GetNeo4jServingConfigResponse {
 
   // Neo4j password
   string password = 3;
+
+}
+
+message GetServingConfigRequest {}
+
+message GetServingConfigResponse {
+  // rpyc host
+  string rpyc_host = 1;
+
+  // rypc port
+  string rpyc_port = 2;
+
+  // Docker container name running neo4j
+  string docker_container_name = 3;
 }

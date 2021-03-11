@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.vsu001.ethernet.core.config.EthernetConfig;
 import com.vsu001.ethernet.core.config.Neo4jConfig;
 import io.grpc.internal.testing.StreamRecorder;
 import java.util.List;
@@ -36,11 +37,14 @@ public class ConfigServiceImplTest {
   @Autowired
   private Neo4jConfig neo4jConfig;
 
+  @Autowired
+  private EthernetConfig ethernetConfig;
+
   private ConfigServiceImpl configService;
 
   @BeforeEach
   public void setup() {
-    configService = new ConfigServiceImpl(neo4jConfig);
+    configService = new ConfigServiceImpl(neo4jConfig, ethernetConfig);
   }
 
   @Test
