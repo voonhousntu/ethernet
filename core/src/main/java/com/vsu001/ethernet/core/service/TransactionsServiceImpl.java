@@ -209,7 +209,7 @@ public class TransactionsServiceImpl implements GenericService {
 
     // Create serving interaction command
     String interactionCmd = String.format(
-        "serving/venv/bin/python3 serving/run_neo4j_import.py %s %s %s '%s'",
+        "serving/venv/bin/python3 serving/run_neo4j_import.py '%s' '%s' '%s' '%s'",
         ethernetConfig.getRpycHost(),
         ethernetConfig.getRpycPort(),
         ethernetConfig.getNeo4jContainerName(),
