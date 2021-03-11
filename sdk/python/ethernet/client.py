@@ -5,10 +5,10 @@ import rpyc
 
 import ethernet.core.ConfigService_pb2 as config_pb2
 import ethernet.core.ConfigService_pb2_grpc  as config_pb2_grpc
-from ethernet.utils.list_db import list_databases
-import ethernet.utils.switch_db as sdb_util
-import ethernet.core.CoreService_pb2_grpc as core_pb2_grpc
 import ethernet.core.CoreService_pb2 as core_pb2
+import ethernet.core.CoreService_pb2_grpc as core_pb2_grpc
+import ethernet.utils.switch_db as sdb_util
+from ethernet.utils.list_db import list_databases
 
 
 class Client:
