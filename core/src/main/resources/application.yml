@@ -30,5 +30,3 @@ ethernet:
   rpyc-host: 172.21.148.207 # Should be the same host as Neo4j
   rpyc-port: 18812
   neo4j-container-name: docker-neo4j # Do not change, this value is hardcoded
-  host-ssh-username: VMadmin
-  host-ssh-password: chamgeme!@#
