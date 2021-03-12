@@ -1,10 +1,12 @@
 package com.vsu001.ethernet.core.repository;
 
 import com.google.cloud.bigquery.TableResult;
+import com.google.common.base.Stopwatch;
 import com.vsu001.ethernet.core.service.GenericService;
 import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +52,9 @@ public class GenericHiveRepository {
       TableResult tableResult,
       String nonce
   ) throws IOException {
+    // To time how long function takes to run
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     OrcFileWriter.writeTableResults(
         genericService.getOutputPath(nonce) + genericService.getFilename(),
         genericService.getStructStr(),
@@ -58,6 +63,8 @@ public class GenericHiveRepository {
         datanodeUseHostname,
         clientUseHostname
     );
+    stopwatch.stop(); // Optional
+    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
   /**
@@ -71,6 +78,9 @@ public class GenericHiveRepository {
    *                       once for a single ETL session.
    */
   public void createTmpTable(GenericService genericService, String nonce) {
+    // To time how long function takes to run
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     // Use non-external table so that temporary file can be removed with table drop
     String sql =
         "CREATE TABLE %s (%s)"
@@ -82,6 +92,9 @@ public class GenericHiveRepository {
         genericService.getOutputPath(nonce)
     );
     jdbcTemplate.execute(query);
+
+    stopwatch.stop(); // Optional
+    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
   /**
@@ -94,6 +107,9 @@ public class GenericHiveRepository {
    *                       once for a single ETL session.
    */
   public void populateHiveTable(GenericService genericService, String nonce) {
+    // To time how long function takes to run
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     String numberColName = "number";
     if (!genericService.getTableName().equals("blocks")
         && !genericService.getTableName().equals("block_timestamp_mapping")) {
@@ -128,6 +144,9 @@ public class GenericHiveRepository {
         numberColName
     );
     jdbcTemplate.execute(query);
+
+    stopwatch.stop(); // Optional
+    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
   /**
@@ -142,9 +161,15 @@ public class GenericHiveRepository {
    *                       single ETL session.
    */
   public void dropTmpTable(GenericService genericService, String nonce) {
+    // To time how long function takes to run
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     String sql = "DROP TABLE %s";
     String query = String.format(sql, genericService.getTmpTableName() + "_" + nonce);
     jdbcTemplate.execute(query);
+
+    stopwatch.stop(); // Optional
+    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
   /**

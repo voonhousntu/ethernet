@@ -1,6 +1,7 @@
 package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
+import com.google.common.base.Stopwatch;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.config.EthernetConfig;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
@@ -18,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +53,9 @@ public class TokenTransfersServiceImpl implements GenericService {
   @Override
   public TableResult fetchFromBq(UpdateRequest request)
       throws InterruptedException, FileNotFoundException {
+    // To time how long function takes to run
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     // Find contiguous block numbers that are missing from the Hive table using cache file
     // Firstly, get all the intervals that have already been fetched
     Set<Interval<Long>> cachedIntervals = BlockUtil.readFromCache(
@@ -112,9 +117,14 @@ public class TokenTransfersServiceImpl implements GenericService {
           queryCriteria
       );
 
-      // Table results should not be null
-      assert tableResult != null;
-      log.info("Rows fetched: [{}]", tableResult.getTotalRows());
+      stopwatch.stop(); // Optional
+      log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+      long rowsFetched = 0;
+      if (tableResult != null) {
+        rowsFetched = tableResult.getTotalRows();
+      }
+      log.info("Rows fetched: [{}]", rowsFetched);
 
       return tableResult;
     }
@@ -168,8 +178,17 @@ public class TokenTransfersServiceImpl implements GenericService {
    */
   @Override
   public String doNeo4jImport(UpdateRequest request, String nonce) throws IOException {
+    // To time how long function takes to run
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     String dbName = generateNeo4jDbName(request.getStartBlockNumber(), request.getEndBlockNumber());
-    return doNeo4jImport(dbName, request, nonce);
+
+    doNeo4jImport(dbName, request, nonce);
+
+    stopwatch.stop(); // Optional
+    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+    return dbName;
   }
 
   /**

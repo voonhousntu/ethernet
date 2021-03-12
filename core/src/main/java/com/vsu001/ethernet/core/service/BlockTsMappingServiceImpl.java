@@ -1,6 +1,7 @@
 package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
+import com.google.common.base.Stopwatch;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Timestamp;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
@@ -10,6 +11,7 @@ import com.vsu001.ethernet.core.util.OrcFileWriter;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
@@ -39,6 +41,9 @@ public class BlockTsMappingServiceImpl implements GenericService {
    */
   @Override
   public TableResult fetchFromBq(UpdateRequest request) throws InterruptedException {
+    // To time how long function takes to run
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     // Find the most recent BlockTimestampMapping in Hive
     BlockTimestampMapping blockTimestampMapping = blockTsMappingRepository.findMostRecent();
 
@@ -83,7 +88,14 @@ public class BlockTsMappingServiceImpl implements GenericService {
         queryCriteria
     );
 
-    log.info("Rows fetched: [{}]", tableResult.getTotalRows());
+    stopwatch.stop(); // Optional
+    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+    long rowsFetched = 0;
+    if (tableResult != null) {
+      rowsFetched = tableResult.getTotalRows();
+    }
+    log.info("Rows fetched: [{}]", rowsFetched);
 
     return tableResult;
   }
