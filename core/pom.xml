@@ -206,6 +206,14 @@
       <artifactId>opencsv</artifactId>
       <version>${csv.version}</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+    <!-- For stopwatch/timing -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+
 
   </dependencies>
 

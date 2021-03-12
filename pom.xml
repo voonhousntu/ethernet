@@ -26,6 +26,7 @@
     <junit.jupiter.version>5.7.0</junit.jupiter.version>
     <orc.version>1.6.6</orc.version>
     <csv.version>5.3</csv.version>
+    <guava.version>30.1-jre</guava.version>
   </properties>
 
   <modules>
