@@ -6,6 +6,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.config.EthernetConfig;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.Trace;
+import com.vsu001.ethernet.core.model.Transaction;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.TraceRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
@@ -77,26 +78,43 @@ public class TracesServiceImpl implements GenericService {
         request.getEndBlockNumber()
     );
 
+    StringBuilder timestampSB = new StringBuilder("1=1 ");
     if (lLists.size() > 0) {
-      StringBuilder timestampSB = new StringBuilder("1=1 ");
-      for (List<Long> lList : lLists) {
+
+      for (int i = 0; i < lLists.size(); i++) {
+        List<Long> lList = lLists.get(i);
+
+        // Range is only bounded by 1 integer
         if (lList.get(0).equals(lList.get(1))) {
           // Cost to run query will be the same as querying for a day's worth of data
           BlockTimestampMapping blockTspMapping = blockTsMappingRepository
               .findByNumber(lList.get(0));
-          timestampSB.append("AND `block_timestamp` = ");
-          timestampSB.append(
-              String.format("'%s' ", BlockUtil.protoTsToISO(blockTspMapping.getTimestamp()))
-          );
+
+          if (i == 0) {
+            timestampSB.append("AND ");
+          } else {
+            timestampSB.append("OR ");
+          }
+
+          String timestamp = BlockUtil.protoTsToISO(blockTspMapping.getTimestamp());
+          timestampSB.append("`block_timestamp` = ").append(String.format("'%s' ", timestamp));
         } else {
+          // Range is only bounded by 2 integers
           BlockTimestampMapping startBTM = blockTsMappingRepository.findByNumber(lList.get(0));
           BlockTimestampMapping endBTM = blockTsMappingRepository.findByNumber(lList.get(1));
-          timestampSB.append("AND `block_timestamp` >= ");
-          timestampSB
-              .append(String.format("'%s' ", BlockUtil.protoTsToISO(startBTM.getTimestamp())));
-          timestampSB.append("AND `block_timestamp` <= ");
-          timestampSB.append(String.format("'%s' ", BlockUtil.protoTsToISO(endBTM.getTimestamp()))
-          );
+
+          String startTs = BlockUtil.protoTsToISO(startBTM.getTimestamp());
+          String endTs = BlockUtil.protoTsToISO(endBTM.getTimestamp());
+
+          if (i == 0) {
+            timestampSB.append("AND ");
+          } else {
+            timestampSB.append("OR ");
+          }
+
+          timestampSB.append("`block_timestamp` BETWEEN ");
+          timestampSB.append(String.format("'%s' ", startTs));
+          timestampSB.append(String.format("AND '%s' ", endTs));
         }
       }
 
@@ -106,7 +124,7 @@ public class TracesServiceImpl implements GenericService {
         String range = String
             .format(" AND `block_number` NOT BETWEEN %s AND %s",
                 cacheInterval.getStart(),
-                cacheInterval.getStart()
+                cacheInterval.getEnd()
             );
         rangeToIgnore.append(range);
       }
@@ -115,8 +133,8 @@ public class TracesServiceImpl implements GenericService {
 
       // Fetch results from BigQuery
       TableResult tableResult = BigQueryUtil.query(
-          Trace.getDescriptor(),
-          "traces",
+          Transaction.getDescriptor(),
+          TraceRepository.TABLE_NAME,
           queryCriteria
       );
 
@@ -134,6 +152,7 @@ public class TracesServiceImpl implements GenericService {
 
       return tableResult;
     }
+
     return null;
   }
 

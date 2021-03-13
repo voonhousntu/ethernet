@@ -77,26 +77,43 @@ public class TransactionsServiceImpl implements GenericService {
         request.getEndBlockNumber()
     );
 
+    StringBuilder timestampSB = new StringBuilder("1=1 ");
     if (lLists.size() > 0) {
-      StringBuilder timestampSB = new StringBuilder("1=1 ");
-      for (List<Long> lList : lLists) {
+
+      for (int i = 0; i < lLists.size(); i++) {
+        List<Long> lList = lLists.get(i);
+
+        // Range is only bounded by 1 integer
         if (lList.get(0).equals(lList.get(1))) {
           // Cost to run query will be the same as querying for a day's worth of data
           BlockTimestampMapping blockTspMapping = blockTsMappingRepository
               .findByNumber(lList.get(0));
-          timestampSB.append("AND `block_timestamp` = ");
-          timestampSB.append(
-              String.format("'%s' ", BlockUtil.protoTsToISO(blockTspMapping.getTimestamp()))
-          );
+
+          if (i == 0) {
+            timestampSB.append("AND ");
+          } else {
+            timestampSB.append("OR ");
+          }
+
+          String timestamp = BlockUtil.protoTsToISO(blockTspMapping.getTimestamp());
+          timestampSB.append("`block_timestamp` = ").append(String.format("'%s' ", timestamp));
         } else {
+          // Range is only bounded by 2 integers
           BlockTimestampMapping startBTM = blockTsMappingRepository.findByNumber(lList.get(0));
           BlockTimestampMapping endBTM = blockTsMappingRepository.findByNumber(lList.get(1));
-          timestampSB.append("AND `block_timestamp` >= ");
-          timestampSB
-              .append(String.format("'%s' ", BlockUtil.protoTsToISO(startBTM.getTimestamp())));
-          timestampSB.append("AND `block_timestamp` <= ");
-          timestampSB.append(String.format("'%s' ", BlockUtil.protoTsToISO(endBTM.getTimestamp()))
-          );
+
+          String startTs = BlockUtil.protoTsToISO(startBTM.getTimestamp());
+          String endTs = BlockUtil.protoTsToISO(endBTM.getTimestamp());
+
+          if (i == 0) {
+            timestampSB.append("AND ");
+          } else {
+            timestampSB.append("OR ");
+          }
+
+          timestampSB.append("`block_timestamp` BETWEEN ");
+          timestampSB.append(String.format("'%s' ", startTs));
+          timestampSB.append(String.format("AND '%s' ", endTs));
         }
       }
 
@@ -116,7 +133,7 @@ public class TransactionsServiceImpl implements GenericService {
       // Fetch results from BigQuery
       TableResult tableResult = BigQueryUtil.query(
           Transaction.getDescriptor(),
-          "transactions",
+          TransactionRepository.TABLE_NAME,
           queryCriteria
       );
 
