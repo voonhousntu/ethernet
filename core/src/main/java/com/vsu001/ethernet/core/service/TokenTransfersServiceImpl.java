@@ -53,6 +53,9 @@ public class TokenTransfersServiceImpl implements GenericService {
   @Override
   public TableResult fetchFromBq(UpdateRequest request)
       throws InterruptedException, FileNotFoundException {
+    // Get the current method name
+    String methodName = new Throwable().getStackTrace()[0].getMethodName();
+
     // To time how long function takes to run
     Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -118,7 +121,10 @@ public class TokenTransfersServiceImpl implements GenericService {
       );
 
       stopwatch.stop(); // Optional
-      log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+      log.info("[{}] -> Time elapsed: [{}] ms",
+          methodName,
+          stopwatch.elapsed(TimeUnit.MILLISECONDS)
+      );
 
       long rowsFetched = 0;
       if (tableResult != null) {
@@ -178,6 +184,9 @@ public class TokenTransfersServiceImpl implements GenericService {
    */
   @Override
   public String doNeo4jImport(UpdateRequest request, String nonce) throws IOException {
+    // Get the current method name
+    String methodName = new Throwable().getStackTrace()[0].getMethodName();
+
     // To time how long function takes to run
     Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -186,7 +195,10 @@ public class TokenTransfersServiceImpl implements GenericService {
     doNeo4jImport(dbName, request, nonce);
 
     stopwatch.stop(); // Optional
-    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    log.info("[{}] -> Time elapsed: [{}] ms",
+        methodName,
+        stopwatch.elapsed(TimeUnit.MILLISECONDS)
+    );
 
     return dbName;
   }

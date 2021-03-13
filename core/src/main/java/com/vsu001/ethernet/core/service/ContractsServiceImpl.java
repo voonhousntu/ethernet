@@ -47,6 +47,9 @@ public class ContractsServiceImpl implements GenericService {
   @Override
   public TableResult fetchFromBq(UpdateRequest request)
       throws InterruptedException, FileNotFoundException {
+    // Get the current method name
+    String methodName = new Throwable().getStackTrace()[0].getMethodName();
+
     // To time how long function takes to run
     Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -111,7 +114,7 @@ public class ContractsServiceImpl implements GenericService {
       );
 
       stopwatch.stop(); // Optional
-      log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+      log.info("{} -> Time elapsed: [{}] ms", methodName, stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
       long rowsFetched = 0;
       if (tableResult != null) {

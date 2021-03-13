@@ -52,6 +52,9 @@ public class GenericHiveRepository {
       TableResult tableResult,
       String nonce
   ) throws IOException {
+    // Get the current method name
+    String methodName = new Throwable().getStackTrace()[0].getMethodName();
+
     // To time how long function takes to run
     Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -64,7 +67,10 @@ public class GenericHiveRepository {
         clientUseHostname
     );
     stopwatch.stop(); // Optional
-    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    log.info("[{} - {}] -> Time elapsed: [{}] ms",
+        genericService.getTableName(),
+        methodName,
+        stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
   /**
@@ -78,6 +84,9 @@ public class GenericHiveRepository {
    *                       once for a single ETL session.
    */
   public void createTmpTable(GenericService genericService, String nonce) {
+    // Get the current method name
+    String methodName = new Throwable().getStackTrace()[0].getMethodName();
+
     // To time how long function takes to run
     Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -94,7 +103,11 @@ public class GenericHiveRepository {
     jdbcTemplate.execute(query);
 
     stopwatch.stop(); // Optional
-    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    log.info("[{} - {}] -> Time elapsed: [{}] ms",
+        genericService.getTableName(),
+        methodName,
+        stopwatch.elapsed(TimeUnit.MILLISECONDS)
+    );
   }
 
   /**
@@ -107,6 +120,9 @@ public class GenericHiveRepository {
    *                       once for a single ETL session.
    */
   public void populateHiveTable(GenericService genericService, String nonce) {
+    // Get the current method name
+    String methodName = new Throwable().getStackTrace()[0].getMethodName();
+
     // To time how long function takes to run
     Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -146,7 +162,11 @@ public class GenericHiveRepository {
     jdbcTemplate.execute(query);
 
     stopwatch.stop(); // Optional
-    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    log.info("[{} - {}] -> Time elapsed: [{}] ms",
+        genericService.getTableName(),
+        methodName,
+        stopwatch.elapsed(TimeUnit.MILLISECONDS)
+    );
   }
 
   /**
@@ -161,6 +181,9 @@ public class GenericHiveRepository {
    *                       single ETL session.
    */
   public void dropTmpTable(GenericService genericService, String nonce) {
+    // Get the current method name
+    String methodName = new Throwable().getStackTrace()[0].getMethodName();
+
     // To time how long function takes to run
     Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -169,7 +192,11 @@ public class GenericHiveRepository {
     jdbcTemplate.execute(query);
 
     stopwatch.stop(); // Optional
-    log.info("Time elapsed: [{}] ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    log.info("[{} - {}] -> Time elapsed: [{}] ms",
+        genericService.getTableName(),
+        methodName,
+        stopwatch.elapsed(TimeUnit.MILLISECONDS)
+    );
   }
 
   /**

@@ -1,6 +1,7 @@
 package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
+import com.google.common.base.Stopwatch;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.config.EthernetConfig;
 import com.vsu001.ethernet.core.model.Block;
@@ -15,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,12 @@ public class BlocksServiceImpl implements GenericService {
   @Override
   public TableResult fetchFromBq(UpdateRequest request)
       throws InterruptedException, FileNotFoundException {
+    // Get the current method name
+    String methodName = new Throwable().getStackTrace()[0].getMethodName();
+
+    // To time how long function takes to run
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     // Find contiguous block numbers that are missing from the Hive table using cache file
     // Firstly, get all the intervals that have already been fetched
     Set<Interval<Long>> cachedIntervals = BlockUtil.readFromCache(
@@ -105,6 +113,11 @@ public class BlocksServiceImpl implements GenericService {
           Block.getDescriptor(),
           "blocks",
           queryCriteria
+      );
+
+      log.info("[{}] -> Time elapsed: [{}] ms",
+          methodName,
+          stopwatch.elapsed(TimeUnit.MILLISECONDS)
       );
 
       log.info("Rows fetched: [{}]", tableResult.getTotalRows());
