@@ -6,7 +6,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.config.EthernetConfig;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.Trace;
-import com.vsu001.ethernet.core.model.Transaction;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.TraceRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
@@ -133,7 +132,7 @@ public class TracesServiceImpl implements GenericService {
 
       // Fetch results from BigQuery
       TableResult tableResult = BigQueryUtil.query(
-          Transaction.getDescriptor(),
+          Trace.getDescriptor(),
           TraceRepository.TABLE_NAME,
           queryCriteria
       );

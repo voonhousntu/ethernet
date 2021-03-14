@@ -6,7 +6,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.vsu001.ethernet.core.config.EthernetConfig;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.model.TokenTransfer;
-import com.vsu001.ethernet.core.model.Transaction;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
 import com.vsu001.ethernet.core.repository.TokenTransferRepository;
 import com.vsu001.ethernet.core.util.BigQueryUtil;
@@ -133,7 +132,7 @@ public class TokenTransfersServiceImpl implements GenericService {
 
       // Fetch results from BigQuery
       TableResult tableResult = BigQueryUtil.query(
-          Transaction.getDescriptor(),
+          TokenTransfer.getDescriptor(),
           TokenTransferRepository.TABLE_NAME,
           queryCriteria
       );

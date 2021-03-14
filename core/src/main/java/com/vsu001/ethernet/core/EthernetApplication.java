@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EthernetApplication {
 
   public static void main(String[] args) {
+    // Enforce the usage of UTC timezone in JVM
+    System.setProperty("user.timezone", "UTC");
     SpringApplication.run(EthernetApplication.class, args);
   }
 

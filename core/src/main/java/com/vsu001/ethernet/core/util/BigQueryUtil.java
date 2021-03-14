@@ -1,7 +1,5 @@
 package com.vsu001.ethernet.core.util;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Field;
@@ -9,17 +7,13 @@ import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableResult;
 import com.google.protobuf.Descriptors.Descriptor;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class BigQueryUtil {
 
-  private static final String CREDENTIALS_PATH = "yolo-mdp-b9a50242cf8a.json";
+//  private static final String CREDENTIALS_PATH = "yolo-mdp-b9a50242cf8a.json";
   private static final String PROJECT_ID = "bigquery-public-data";
   private static final String DATASET_NAME = "crypto_ethereum";
   private static final String QUERY = "SELECT %s FROM `%s.%s.%s` WHERE %s;";
@@ -50,23 +44,24 @@ public class BigQueryUtil {
     // Load credentials from JSON key file. If you can't set the GOOGLE_APPLICATION_CREDENTIALS
     // environment variable, you can explicitly load the credentials file to construct the
     // credentials.
-    GoogleCredentials credentials;
-    try {
-      File file = new File(
-          BigQueryUtil.class.getClassLoader().getResource(CREDENTIALS_PATH).toURI());
-      FileInputStream serviceAccountStream = new FileInputStream(file);
-      credentials = ServiceAccountCredentials.fromStream(serviceAccountStream);
-    } catch (IOException | URISyntaxException e) {
-      e.printStackTrace();
-      log.error("Unable to load credential files");
-      return null;
-    }
+//    GoogleCredentials credentials;
+//    try {
+//      File file = new File(
+//          BigQueryUtil.class.getClassLoader().getResource(CREDENTIALS_PATH).toURI());
+//      FileInputStream serviceAccountStream = new FileInputStream(file);
+//      credentials = ServiceAccountCredentials.fromStream(serviceAccountStream);
+//    } catch (IOException | URISyntaxException e) {
+//      e.printStackTrace();
+//      log.error("Unable to load credential files");
+//      return null;
+//    }
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
-    BigQuery bigquery = BigQueryOptions.newBuilder()
-        .setCredentials(credentials)
-        .build().getService();
+//    BigQuery bigquery = BigQueryOptions.newBuilder()
+//        .setCredentials(credentials)
+//        .build().getService();
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
     // Get all the columns
     String columnStr = descriptor.getFields().stream()
