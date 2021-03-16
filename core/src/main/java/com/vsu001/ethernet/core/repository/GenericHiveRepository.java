@@ -141,24 +141,40 @@ public class GenericHiveRepository {
         .map(s -> String.format("a.`%s`", s.getName()))
         .collect(Collectors.joining(","));
 
+    // Strict mode insertion (for multi-user environment)
+    // Use this mode when multiple imports are happening at once
+//    String sql =
+//        "INSERT INTO %s.%s (%s) "
+//            + "SELECT %s FROM %s a "
+//            + "LEFT OUTER JOIN %s.%s b ON a.%s = b.%s "
+//            + "WHERE b.%s IS NULL";
+//    String query = String.format(
+//        sql,
+//        schema,
+//        genericService.getTableName(),
+//        liveTableCols,
+//        columns,
+//        genericService.getTmpTableName() + "_" + nonce,
+//        schema,
+//        genericService.getTableName(),
+//        numberColName,
+//        numberColName,
+//        numberColName
+//    );
+
+    // Non-strict mode insertion
     String sql =
         "INSERT INTO %s.%s (%s) "
-            + "SELECT %s FROM %s a "
-            + "LEFT OUTER JOIN %s.%s b ON a.%s = b.%s "
-            + "WHERE b.%s IS NULL";
+            + "SELECT %s FROM %s a";
     String query = String.format(
         sql,
         schema,
         genericService.getTableName(),
         liveTableCols,
         columns,
-        genericService.getTmpTableName() + "_" + nonce,
-        schema,
-        genericService.getTableName(),
-        numberColName,
-        numberColName,
-        numberColName
+        genericService.getTmpTableName() + "_" + nonce
     );
+    
     jdbcTemplate.execute(query);
 
     stopwatch.stop(); // Optional

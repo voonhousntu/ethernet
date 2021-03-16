@@ -8,7 +8,7 @@ import java.util.TimeZone;
 public class DatetimeUtil {
 
   /**
-   * Get the current datetime and create a ISO string as specified in the provided pattern with a
+   * Get the current datetime and create an ISO string as specified in the provided pattern with a
    * UTC timezone.
    *
    * @param pattern The pattern describing the date and time format

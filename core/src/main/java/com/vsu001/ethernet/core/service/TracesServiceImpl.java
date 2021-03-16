@@ -90,6 +90,7 @@ public class TracesServiceImpl implements GenericService {
               .findByNumber(lList.get(0));
 
           if (i == 0) {
+
             timestampSB.append("AND ");
           } else {
             timestampSB.append("OR ");
