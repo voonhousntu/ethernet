@@ -205,6 +205,7 @@ public class OrcFileWriter {
     // Open a writer to write the data to an ORC fle
     try (Writer writer = OrcFile
         .createWriter(new Path(path), OrcFile.writerOptions(configuration).setSchema(schema))) {
+
       for (FieldValueList fieldValueList : tableResult.iterateAll()) {
         // batch.size should be increased externally
         int rowNum = batch.size++;

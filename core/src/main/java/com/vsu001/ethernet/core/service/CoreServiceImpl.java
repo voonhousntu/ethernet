@@ -70,7 +70,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       UpdateRequest request,
       StreamObserver<UpdateResponse> responseObserver
   ) {
-    log.info("Updating `block_timestamp_mapping` table");
+    log.info("Updating [block_timestamp_mapping] table");
 
     try {
       String nonce = NonceUtil.generateNonce();
@@ -90,7 +90,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
   @Override
   public void updateBlocks(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
-    log.info("Updating `blocks` table");
+    log.info("Updating [blocks] table");
 
     try {
       String nonce = NonceUtil.generateNonce();
@@ -116,7 +116,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       UpdateRequest request,
       StreamObserver<UpdateResponse> responseObserver
   ) {
-    log.info("Updating `contracts` table");
+    log.info("Updating [contracts] table");
 
     try {
       String nonce = NonceUtil.generateNonce();
@@ -139,7 +139,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
   @Override
   public void updateLogs(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
-    log.info("Updating `logs` table");
+    log.info("Updating [logs] table");
 
     try {
       String nonce = NonceUtil.generateNonce();
@@ -165,7 +165,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       UpdateRequest request,
       StreamObserver<UpdateResponse> responseObserver
   ) {
-    log.info("Updating `token_transfers` table");
+    log.info("Updating [token_transfers] table");
 
     try {
       String nonce = NonceUtil.generateNonce();
@@ -177,7 +177,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(tokenTransfersService, request, nonce);
 
       // Import data into Neo4j
-      String neo4jDbName = tokenTransfersService.doNeo4jImport(request, nonce);
+//      String neo4jDbName = tokenTransfersService.doNeo4jImport(request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -214,7 +214,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
 
   @Override
   public void updateTraces(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
-    log.info("Updating `traces` table");
+    log.info("Updating [traces] table");
 
     try {
       String nonce = NonceUtil.generateNonce();
@@ -226,7 +226,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(tracesService, request, nonce);
 
       // Import data into Neo4j
-      String neo4jDbName = tracesService.doNeo4jImport(request, nonce);
+//      String neo4jDbName = tracesService.doNeo4jImport(request, nonce);
 
       // Return response
       // TODO: Build a proper response.
@@ -243,7 +243,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       UpdateRequest request,
       StreamObserver<UpdateResponse> responseObserver
   ) {
-    log.info("Updating `transactions` table");
+    log.info("Updating [transactions] table");
 
     try {
       String nonce = NonceUtil.generateNonce();
@@ -255,7 +255,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(transactionsService, request, nonce);
 
       // Import data into Neo4j
-      String neo4jDbName = transactionsService.doNeo4jImport(request, nonce);
+//      String neo4jDbName = transactionsService.doNeo4jImport(request, nonce);
 
       // Return response
       // TODO: Build a proper response.

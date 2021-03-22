@@ -74,7 +74,7 @@ public class BlockUtil {
    */
   public static List<List<Long>> findMissingContRange(List<Long> longList) {
     // Sort the longList and collect the results into a new variable
-    List<Long> sortedList = longList.stream().sorted().collect(Collectors.toList());
+    List<Long> sortedList = longList.stream().sorted().distinct().collect(Collectors.toList());
 
     List<List<Long>> lList = new ArrayList<>();
     List<Long> sList = new ArrayList<>(2);
