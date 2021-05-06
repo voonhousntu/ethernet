@@ -185,8 +185,8 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     try {
       String nonce = NonceUtil.generateNonce();
 
-//       Update `block_timestamp_mapping` table
-//      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
+      // Update `block_timestamp_mapping` table
+      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `token_transfers` table
       fetchAndPopulateHiveTable(tokenTransfersService, request, nonce);
