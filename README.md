@@ -16,9 +16,3 @@ The deployment guide can be found [here](DEPLOYMENT_GUIDE.md).
 
 ## Development Guide
 The development guide can be found [here](DEVELOPMENT_GUIDE.md).
-
-## Note
-TBD
-
-## TODOs
-
