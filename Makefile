@@ -61,11 +61,11 @@ deploy-neo4j:
 			--name docker-neo4j \
 			-p7474:7474 -p7687:7687 \
 			-d \
-			-v $HOME/neo4j/data:/data \
-			-v $HOME/neo4j/logs:/logs \
-			-v $HOME/neo4j/import:/var/lib/neo4j/import \
-			-v $HOME/neo4j/plugins:/plugins \
-			-v $HOME/ethernet_assets:/ethernet_assets \
-			-v $HOME/ethernet_work_dir:/ethernet_work_dir \
+			-v $$HOME/neo4j/data:/data \
+			-v $$HOME/neo4j/logs:/logs \
+			-v $$HOME/neo4j/import:/var/lib/neo4j/import \
+			-v $$HOME/neo4j/plugins:/plugins \
+			-v $$HOME/ethernet_assets:/ethernet_assets \
+			-v $$HOME/ethernet_work_dir:/ethernet_work_dir \
 			--env NEO4J_AUTH=neo4j/test \
 			neo4j:latest
