@@ -11,7 +11,6 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -20,9 +19,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n com.vsu001.ethernet.core.serviceB\020CoreServiceProtoP\001',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11\x43oreService.proto\x12\x18\x63om.vsu001.ethernet.core\x1a\x1fgoogle/protobuf/timestamp.proto\"E\n\rUpdateRequest\x12\x1a\n\x12start_block_number\x18\x01 \x01(\x03\x12\x18\n\x10\x65nd_block_number\x18\x02 \x01(\x03\"O\n\x0eUpdateResponse\x12\x0e\n\x06number\x18\x01 \x01(\x03\x12-\n\ttimestamp\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp2\xcc\x06\n\x0b\x43oreService\x12k\n\x14UpdateBlockTsMapping\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x63\n\x0cUpdateBlocks\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x66\n\x0fUpdateContracts\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x61\n\nUpdateLogs\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12k\n\x14UpdateTokenTransfers\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x63\n\x0cUpdateTokens\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x63\n\x0cUpdateTraces\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12i\n\x12UpdateTransactions\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x42\x36\n com.vsu001.ethernet.core.serviceB\x10\x43oreServiceProtoP\x01\x62\x06proto3'
-  ,
-  dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
+  serialized_pb=b'\n\x11\x43oreService.proto\x12\x18\x63om.vsu001.ethernet.core\"E\n\rUpdateRequest\x12\x1a\n\x12start_block_number\x18\x01 \x01(\x03\x12\x18\n\x10\x65nd_block_number\x18\x02 \x01(\x03\"&\n\x0eUpdateResponse\x12\x14\n\x0c\x64\x61tabaseName\x18\x01 \x01(\t2\xcc\x06\n\x0b\x43oreService\x12k\n\x14UpdateBlockTsMapping\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x63\n\x0cUpdateBlocks\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x66\n\x0fUpdateContracts\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x61\n\nUpdateLogs\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12k\n\x14UpdateTokenTransfers\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x63\n\x0cUpdateTokens\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12\x63\n\x0cUpdateTraces\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x12i\n\x12UpdateTransactions\x12\'.com.vsu001.ethernet.core.UpdateRequest\x1a(.com.vsu001.ethernet.core.UpdateResponse\"\x00\x42\x36\n com.vsu001.ethernet.core.serviceB\x10\x43oreServiceProtoP\x01\x62\x06proto3'
+)
 
 
 
@@ -61,8 +59,8 @@ _UPDATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=80,
-  serialized_end=149,
+  serialized_start=47,
+  serialized_end=116,
 )
 
 
@@ -75,16 +73,9 @@ _UPDATERESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='number', full_name='com.vsu001.ethernet.core.UpdateResponse.number', index=0,
-      number=1, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='timestamp', full_name='com.vsu001.ethernet.core.UpdateResponse.timestamp', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='databaseName', full_name='com.vsu001.ethernet.core.UpdateResponse.databaseName', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -100,11 +91,10 @@ _UPDATERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=151,
-  serialized_end=230,
+  serialized_start=118,
+  serialized_end=156,
 )
 
-_UPDATERESPONSE.fields_by_name['timestamp'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 DESCRIPTOR.message_types_by_name['UpdateRequest'] = _UPDATEREQUEST
 DESCRIPTOR.message_types_by_name['UpdateResponse'] = _UPDATERESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -133,8 +123,8 @@ _CORESERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=233,
-  serialized_end=1077,
+  serialized_start=159,
+  serialized_end=1003,
   methods=[
   _descriptor.MethodDescriptor(
     name='UpdateBlockTsMapping',

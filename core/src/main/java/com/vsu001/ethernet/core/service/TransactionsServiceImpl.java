@@ -86,7 +86,7 @@ public class TransactionsServiceImpl implements GenericService {
         // Range is only bounded by 1 integer
         if (lList.get(0).equals(lList.get(1))) {
           // Cost to run query will be the same as querying for a day's worth of data
-          BlockTimestampMapping blockTspMapping = blockTsMappingRepository
+          BlockTimestampMapping blockTsMapping = blockTsMappingRepository
               .findByNumber(lList.get(0));
 
           if (i == 0) {
@@ -95,7 +95,7 @@ public class TransactionsServiceImpl implements GenericService {
             timestampSB.append("OR ");
           }
 
-          String timestamp = BlockUtil.protoTsToISO(blockTspMapping.getTimestamp());
+          String timestamp = BlockUtil.protoTsToISO(blockTsMapping.getTimestamp());
           timestampSB.append("`block_timestamp` = ").append(String.format("'%s' ", timestamp));
         } else {
           // Range is only bounded by 2 integers

@@ -61,6 +61,7 @@ public class BigQueryUtil {
 //    BigQuery bigquery = BigQueryOptions.newBuilder()
 //        .setCredentials(credentials)
 //        .build().getService();
+
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
     // Get all the columns
@@ -77,7 +78,8 @@ public class BigQueryUtil {
     log.info("Query: {}", query);
 
     // Query for the results
-    return bigquery.query(queryConfig);
+//    return bigquery.query(queryConfig);
+    return null;
   }
 
   private static String columnToSqlString(String tableName, String fieldDescriptorName) {

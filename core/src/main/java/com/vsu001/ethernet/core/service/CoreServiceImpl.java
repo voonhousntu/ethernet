@@ -1,7 +1,6 @@
 package com.vsu001.ethernet.core.service;
 
 import com.google.cloud.bigquery.TableResult;
-import com.google.protobuf.Timestamp;
 import com.vsu001.ethernet.core.exception.InvalidRequestException;
 import com.vsu001.ethernet.core.model.BlockTimestampMapping;
 import com.vsu001.ethernet.core.repository.BlockTsMappingRepository;
@@ -10,7 +9,6 @@ import com.vsu001.ethernet.core.util.BlockUtil;
 import com.vsu001.ethernet.core.util.NonceUtil;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
-import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 
@@ -52,16 +50,12 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
     this.transactionsService = transactionsService;
   }
 
-  private static UpdateResponse buildUpdateResponse() {
-    Instant time = Instant.now();
+  private static UpdateResponse buildUpdateResponse(String neo4jDbName) {
+    // Append ".db" suffix to end of neo4jDbName
+    neo4jDbName += ".db";
+
     return UpdateResponse.newBuilder()
-        .setNumber(-1L)
-        .setTimestamp(
-            Timestamp.newBuilder()
-                .setSeconds(time.getEpochSecond())
-                .setNanos(time.getNano())
-                .build()
-        )
+        .setDatabaseName(neo4jDbName.toLowerCase())
         .build();
   }
 
@@ -72,6 +66,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   ) {
     log.info("Updating [block_timestamp_mapping] table");
 
+    log.info("Received update request for block {} to {}",
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     try {
       String nonce = NonceUtil.generateNonce();
 
@@ -79,8 +78,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Return response
-      // TODO: Build a proper response.
-      responseObserver.onNext(buildUpdateResponse());
+      responseObserver.onNext(buildUpdateResponse(null));
       responseObserver.onCompleted();
     } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
@@ -92,6 +90,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   public void updateBlocks(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
     log.info("Updating [blocks] table");
 
+    log.info("Received update request for block {} to {}",
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     try {
       String nonce = NonceUtil.generateNonce();
 
@@ -102,8 +105,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(blocksService, request, nonce);
 
       // Return response
-      // TODO: Build a proper response.
-      responseObserver.onNext(buildUpdateResponse());
+      responseObserver.onNext(buildUpdateResponse(null));
       responseObserver.onCompleted();
     } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
@@ -118,6 +120,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   ) {
     log.info("Updating [contracts] table");
 
+    log.info("Received update request for block {} to {}",
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     try {
       String nonce = NonceUtil.generateNonce();
 
@@ -128,8 +135,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(contractsService, request, nonce);
 
       // Return response
-      // TODO: Build a proper response.
-      responseObserver.onNext(buildUpdateResponse());
+      responseObserver.onNext(buildUpdateResponse(null));
       responseObserver.onCompleted();
     } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
@@ -141,6 +147,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   public void updateLogs(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
     log.info("Updating [logs] table");
 
+    log.info("Received update request for block {} to {}",
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     try {
       String nonce = NonceUtil.generateNonce();
 
@@ -151,8 +162,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(logsService, request, nonce);
 
       // Return response
-      // TODO: Build a proper response.
-      responseObserver.onNext(buildUpdateResponse());
+      responseObserver.onNext(buildUpdateResponse(null));
       responseObserver.onCompleted();
     } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
@@ -167,21 +177,25 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   ) {
     log.info("Updating [token_transfers] table");
 
+    log.info("Received update request for block {} to {}",
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     try {
       String nonce = NonceUtil.generateNonce();
 
-      // Update `block_timestamp_mapping` table
-      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
+//       Update `block_timestamp_mapping` table
+//      request = fetchAndPopulateHiveTable(blockTsMappingService, request, nonce);
 
       // Fetch and populate `token_transfers` table
       fetchAndPopulateHiveTable(tokenTransfersService, request, nonce);
 
       // Import data into Neo4j
-//      String neo4jDbName = tokenTransfersService.doNeo4jImport(request, nonce);
+      String neo4jDbName = tokenTransfersService.doNeo4jImport(request, nonce);
 
       // Return response
-      // TODO: Build a proper response.
-      responseObserver.onNext(buildUpdateResponse());
+      responseObserver.onNext(buildUpdateResponse(neo4jDbName));
       responseObserver.onCompleted();
     } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
@@ -193,6 +207,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   public void updateTokens(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
     log.info("Updating `tokens` table");
 
+    log.info("Received update request for block {} to {}",
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     try {
       String nonce = NonceUtil.generateNonce();
 
@@ -203,8 +222,7 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(tokensService, request, nonce);
 
       // Return response
-      // TODO: Build a proper response.
-      responseObserver.onNext(buildUpdateResponse());
+      responseObserver.onNext(buildUpdateResponse(null));
       responseObserver.onCompleted();
     } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
@@ -216,6 +234,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   public void updateTraces(UpdateRequest request, StreamObserver<UpdateResponse> responseObserver) {
     log.info("Updating [traces] table");
 
+    log.info("Received update request for block {} to {}",
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     try {
       String nonce = NonceUtil.generateNonce();
 
@@ -226,11 +249,10 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(tracesService, request, nonce);
 
       // Import data into Neo4j
-//      String neo4jDbName = tracesService.doNeo4jImport(request, nonce);
+      String neo4jDbName = tracesService.doNeo4jImport(request, nonce);
 
       // Return response
-      // TODO: Build a proper response.
-      responseObserver.onNext(buildUpdateResponse());
+      responseObserver.onNext(buildUpdateResponse(neo4jDbName));
       responseObserver.onCompleted();
     } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
@@ -245,6 +267,11 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
   ) {
     log.info("Updating [transactions] table");
 
+    log.info("Received update request for block {} to {}",
+        request.getStartBlockNumber(),
+        request.getEndBlockNumber()
+    );
+
     try {
       String nonce = NonceUtil.generateNonce();
 
@@ -255,11 +282,10 @@ public class CoreServiceImpl extends CoreServiceGrpc.CoreServiceImplBase {
       fetchAndPopulateHiveTable(transactionsService, request, nonce);
 
       // Import data into Neo4j
-//      String neo4jDbName = transactionsService.doNeo4jImport(request, nonce);
+      String neo4jDbName = transactionsService.doNeo4jImport(request, nonce);
 
       // Return response
-      // TODO: Build a proper response.
-      responseObserver.onNext(buildUpdateResponse());
+      responseObserver.onNext(buildUpdateResponse(neo4jDbName));
       responseObserver.onCompleted();
     } catch (InvalidRequestException | InterruptedException | IOException e) {
       e.printStackTrace();
