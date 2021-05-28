@@ -20,7 +20,7 @@ public class ProcessUtil {
    * @throws IOException If an I/O error occurs
    */
   public static BufferedReader createProcess(String command) throws IOException {
-    ProcessBuilder builder = new ProcessBuilder(command);
+    ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
     builder.redirectErrorStream(true);
 
     Process process = builder.start();

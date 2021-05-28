@@ -6,8 +6,6 @@ option java_multiple_files = true;
 option java_package = "com.vsu001.ethernet.core.service";
 option java_outer_classname = "CoreServiceProto";
 
-import "google/protobuf/timestamp.proto";
-
 service CoreService {
   // Update the block number and timestamp mapping in the Hive table
   // The most recent block number and timestamp will be returned after the update
@@ -54,9 +52,6 @@ message UpdateRequest {
 
 // Update response
 message UpdateResponse {
-  // The block number
-  int64 number = 1;
-
-  // Timestamp of the block where this token was created
-  google.protobuf.Timestamp timestamp = 2;
+  // Neo4j database name
+  string databaseName = 1;
 }

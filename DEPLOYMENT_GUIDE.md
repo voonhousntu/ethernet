@@ -23,3 +23,8 @@ Execute the following commands to build the `Ethernet-core` backend.
 ```shell
 make build
 ```
+
+## 6. Deploy Ethernet-core (backend)
+```shell
+PATH=./path/to/google_private_key.json java -jar ./path/to/ethernet-core.jar
+```

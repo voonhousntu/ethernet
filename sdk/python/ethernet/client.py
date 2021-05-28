@@ -128,9 +128,11 @@ class Client:
             start_block_number=start_block_number,
             end_block_number=end_block_number
         )
-        stub = core_pb2_grpc.CoreServiceStub(channel=self.grpc_channel)
-        response = stub.UpdateTokenTransfers(request)
-        return response
+
+        with grpc.insecure_channel(self.grpc_channel) as channel:
+            stub = core_pb2_grpc.CoreServiceStub(channel=channel)
+            response = stub.UpdateTokenTransfers(request)
+            return response
 
     def create_traces_graph(
             self, start_block_number: int, end_block_number: int
@@ -140,9 +142,11 @@ class Client:
             start_block_number=start_block_number,
             end_block_number=end_block_number
         )
-        stub = core_pb2_grpc.CoreServiceStub(channel=self.grpc_channel)
-        response = stub.UpdateTraces(request)
-        return response
+
+        with grpc.insecure_channel(self.grpc_channel) as channel:
+            stub = core_pb2_grpc.CoreServiceStub(channel=channel)
+            response = stub.UpdateTraces(request)
+            return response
 
     def create_transactions_graph(
             self, start_block_number: int, end_block_number: int
@@ -152,6 +156,8 @@ class Client:
             start_block_number=start_block_number,
             end_block_number=end_block_number
         )
-        stub = core_pb2_grpc.CoreServiceStub(channel=self.grpc_channel)
-        response = stub.UpdateTransactions(request)
-        return response
+
+        with grpc.insecure_channel(self.grpc_channel) as channel:
+            stub = core_pb2_grpc.CoreServiceStub(channel=channel)
+            response = stub.UpdateTransactions(request)
+            return response
