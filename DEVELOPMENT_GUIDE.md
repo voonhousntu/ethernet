@@ -74,6 +74,16 @@ Note that hostnames referenced in the `docker-compose.yml` configuration as refe
 
 3. Save the file.
 
-
 ### Ports used
-TODO
+| Port  | Description                                         |
+|-------|-----------------------------------------------------|
+| 5432  | PostgreSQL listening port                           |
+| 7473  | Neo4j online WebUI (https) [Not Enabled]            |
+| 7474  | Neo4j online WebUI (http)                           |
+| 7687  | Neo4j bolt listening port                           |
+| 9083  | Hive metastore thrift listening port                |
+| 10000 | Hive server2 thrift listening port                  |
+| 50070 | Hadoop NameNode WebUI listening port                |
+| 8020  | Hadoop NameNode metadata service IPC listening port |
+| 50075 | DataNode WebUI to access the status, logs, etc      |
+| 50010 | Custom DataNode HDFS protocol for data transfer     |
