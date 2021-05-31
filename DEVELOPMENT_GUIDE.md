@@ -22,6 +22,8 @@ From the Makefile, the following commands are available:
 | deploy-docker-deps    | Deploy all docker images that are required for the Ethernet application to run properly |
 | deploy-hive-hadoop    | Deploy the Hive and Hadoop docker images                                                |
 | deploy-neo4j          | Deploy the latest Neo4j docker image                                                    |
+| start-rpyc-server     | Start the RPyC server responsible for handling EtherNet-Core to Neo4j commands          |
+
 
 ## Running the Docker Images
 The Hive-Hadoop docker-compose is adapted from:
@@ -65,6 +67,8 @@ sudo nano /etc/hosts
 
 2. Insert the following lines at the end of the `/etc/hosts` file.
 
+Note that you should switch out the addresses used below for your servers' private addresses.
+
 ```text
 172.21.148.207 namenode
 172.21.148.207 ddatanode
@@ -74,6 +78,16 @@ Note that hostnames referenced in the `docker-compose.yml` configuration as refe
 
 3. Save the file.
 
-
 ### Ports used
-TODO
+| Port  | Description                                         |
+|-------|-----------------------------------------------------|
+| 5432  | PostgreSQL listening port                           |
+| 7473  | Neo4j online WebUI (https) [Not Enabled]            |
+| 7474  | Neo4j online WebUI (http)                           |
+| 7687  | Neo4j bolt listening port                           |
+| 9083  | Hive metastore thrift listening port                |
+| 10000 | Hive server2 thrift listening port                  |
+| 50070 | Hadoop NameNode WebUI listening port                |
+| 8020  | Hadoop NameNode metadata service IPC listening port |
+| 50075 | DataNode WebUI to access the status, logs, etc      |
+| 50010 | Custom DataNode HDFS protocol for data transfer     |

@@ -31,22 +31,23 @@ compile-protos-java:
 
 compile-protos-python:
 	cd ./core/src/main/proto; \
-	python3 -m grpc_tools.protoc -I . \
+	../../../../serving/venv/bin/python3 -m grpc_tools.protoc -I . \
 			--python_out=../../../../sdk/python/ethernet/core \
 			*.proto; \
-		python3 -m grpc_tools.protoc -I . \
-			--grpc_python_out=../../../../sdk/python/ethernet/core \
-			*Service.proto; \
+    ../../../../serving/venv/bin/python3 -m grpc_tools.protoc -I . \
+            --grpc_python_out=../../../../sdk/python/ethernet/core \
+            *Service.proto; \
 	cd ../../../../; \
-	python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
+	serving/venv/bin/python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
 
 install-serving-dep:
 	cd serving; \
 	virtualenv -p /usr/bin/python3 venv && \
-	venv/bin/pip3 install -r requirements.txt
+	venv/bin/pip3 install -r requirements.txt && \
+	cd ..
 
 start-rypc-server:
-	screen -S rpyc_server -d -m venv/bin/python3 venv/bin/rpyc_classic.py --host 0.0.0.0 -p 18812
+	screen -S rpyc_server -d -m serving/venv/bin/python3 serving/venv/bin/rpyc_classic.py --host 0.0.0.0 -p 18812
 
 # Docker
 
@@ -54,7 +55,7 @@ deploy-docker-deps:
 	deploy-hive-hadoop deploy-neo4j
 
 deploy-hive-hadoop:
-	cd ./infra/docker-hive; docker-compose up -d
+	cd ./infra/docker-hive; docker-compose up -d; cd ../..
 
 deploy-neo4j:
 	docker run \
