@@ -19,10 +19,10 @@ From the Makefile, the following commands are available:
 | build-java            | Build the ethernet-core                                                                 |
 | compile-java-python   | Compile Java protos                                                                     |
 | compile-protos-python | Compile Python protos and reference errors                                              |
-| deploy-docker-deps    | Deploy all docker images that are required for the Ethernet application to run properly |
+| deploy-docker-deps    | Deploy all docker images that are required for the EtherNet application to run properly |
 | deploy-hive-hadoop    | Deploy the Hive and Hadoop docker images                                                |
 | deploy-neo4j          | Deploy the latest Neo4j docker image                                                    |
-| start-rpyc-server     | Start the RPyC server responsible for handling EtherNet-Core to Neo4j commands          |
+| start-rpyc-server     | Start the RPyC server responsible for handling ethernet-core to Neo4j commands          |
 
 
 ## Running the Docker Images
