@@ -22,6 +22,8 @@ From the Makefile, the following commands are available:
 | deploy-docker-deps    | Deploy all docker images that are required for the Ethernet application to run properly |
 | deploy-hive-hadoop    | Deploy the Hive and Hadoop docker images                                                |
 | deploy-neo4j          | Deploy the latest Neo4j docker image                                                    |
+| start-rpyc-server     | Start the RPyC server responsible for handling EtherNet-Core to Neo4j commands          |
+
 
 ## Running the Docker Images
 The Hive-Hadoop docker-compose is adapted from:
@@ -64,6 +66,8 @@ sudo nano /etc/hosts
 ```
 
 2. Insert the following lines at the end of the `/etc/hosts` file.
+
+Note that you should switch out the addresses used below for your servers' private addresses.
 
 ```text
 172.21.148.207 namenode
