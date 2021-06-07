@@ -7,10 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.vsu001.ethernet.core.service.UpdateRequest;
 import com.vsu001.ethernet.core.util.interval.Interval;
 import com.vsu001.ethernet.core.util.interval.Interval.Bounded;
+import com.vsu001.ethernet.core.util.interval.IntervalTree;
 import com.vsu001.ethernet.core.util.interval.LongInterval;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -40,22 +41,57 @@ public class BlockUtilTest {
 
   @Test
   public void testFindMissingContRange() {
-    // Test empty list
-    Set<Interval<Long>> longList = new HashSet<>(new ArrayList<>());
+    // Constant start and end
     Long start = 0L;
     Long end = 99L;
 
-    List<List<Long>> expected = new ArrayList<>();
-    expected.add(new ArrayList<>(Arrays.asList(0L, 99L)));
-    assertEquals(expected, BlockUtil.findMissingContRange(longList, start, end));
+    // --- FIRST test (cache only has 1 block) ---
 
-    longList = new HashSet<>();
-    longList.add(new LongInterval(4L, 5L, Bounded.CLOSED));
-    longList.add(new LongInterval(8L, 8L, Bounded.CLOSED));
-    longList.add(new LongInterval(10L, 12L, Bounded.CLOSED));
-    longList.add(new LongInterval(15L, 17L, Bounded.CLOSED));
-    longList.add(new LongInterval(19L, 19L, Bounded.CLOSED));
-    longList.add(new LongInterval(25L, 25L, Bounded.CLOSED));
+    // Instantiate a new tree
+    IntervalTree<Long> tree = new IntervalTree<>();
+
+    // Add some intervals
+    tree.add(new LongInterval(0L, 0L, Bounded.CLOSED));
+
+    // Query the tree
+    Set<Interval<Long>> treeResult = tree.query(new LongInterval(start, end, Bounded.CLOSED));
+
+    // Test the function
+    List<List<Long>> expected = new ArrayList<>();
+    expected.add(new ArrayList<>(Arrays.asList(1L, 99L)));
+    assertEquals(expected, BlockUtil.findMissingContRange(treeResult, start, end));
+
+    // --- SECOND test (All blocks present) ---
+
+    // Instantiate a new tree
+    tree = new IntervalTree<>();
+
+    // Add some intervals
+    tree.add(new LongInterval(0L, 100L, Bounded.CLOSED));
+
+    // Query the tree
+    treeResult = tree.query(new LongInterval(start, end, Bounded.CLOSED));
+
+    // Test the function
+    expected = new ArrayList<>();
+    expected.add(Collections.emptyList());
+    assertEquals(expected, BlockUtil.findMissingContRange(treeResult, start, end));
+
+    // --- Third test (Complex example) ---
+
+    // Instantiate a new tree
+    tree = new IntervalTree<>();
+
+    // Add some intervals
+    tree.add(new LongInterval(4L, 5L, Bounded.CLOSED));
+    tree.add(new LongInterval(8L, 8L, Bounded.CLOSED));
+    tree.add(new LongInterval(10L, 12L, Bounded.CLOSED));
+    tree.add(new LongInterval(15L, 17L, Bounded.CLOSED));
+    tree.add(new LongInterval(19L, 19L, Bounded.CLOSED));
+    tree.add(new LongInterval(25L, 25L, Bounded.CLOSED));
+
+    // Query the tree
+    treeResult = tree.query(new LongInterval(start, end, Bounded.CLOSED));
 
     expected = new ArrayList<>(
         Arrays.asList(
@@ -68,7 +104,7 @@ public class BlockUtilTest {
             new ArrayList<>(Arrays.asList(26L, 99L))
         )
     );
-    assertEquals(expected, BlockUtil.findMissingContRange(longList, start, end));
+    assertEquals(expected, BlockUtil.findMissingContRange(tree, start, end));
   }
 
 }
