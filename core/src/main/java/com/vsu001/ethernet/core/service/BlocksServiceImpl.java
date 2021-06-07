@@ -61,12 +61,9 @@ public class BlocksServiceImpl implements GenericService {
         request.getEndBlockNumber()
     );
 
-    // Secondly, generate all long integers within the interval range(s)
-    List<Long> blockNumbers = BlockUtil.getLongInIntervals(cachedIntervals);
-
     // Lastly, find contiguous block numbers that are missing from the Hive table
     List<List<Long>> lLists = BlockUtil.findMissingContRange(
-        blockNumbers,
+        cachedIntervals,
         request.getStartBlockNumber(),
         request.getEndBlockNumber()
     );
@@ -228,12 +225,9 @@ public class BlocksServiceImpl implements GenericService {
         request.getEndBlockNumber()
     );
 
-    // Secondly, generate all long integers within the interval range(s)
-    List<Long> blockNumbers = BlockUtil.getLongInIntervals(cachedIntervals);
-
     // Lastly, find contiguous block numbers that are missing from the Hive table
     List<List<Long>> lLists = BlockUtil.findMissingContRange(
-        blockNumbers,
+        cachedIntervals,
         request.getStartBlockNumber(),
         request.getEndBlockNumber()
     );
