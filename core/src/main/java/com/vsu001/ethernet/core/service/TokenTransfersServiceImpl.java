@@ -263,7 +263,6 @@ public class TokenTransfersServiceImpl implements GenericService {
     );
 
     // Execute command
-    ProcessUtil.createProcess("ls -la > something.txt");
     ProcessUtil.createProcess(interactionCmd);
 
     return databaseName;
