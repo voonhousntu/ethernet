@@ -12,11 +12,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 public class BlockUtil {
 
@@ -41,55 +41,78 @@ public class BlockUtil {
    * <p>
    * This implementation is O(n).
    *
-   * @param longList List of Long-type elements to check.
+   * @param intervals List of intervals.
    * @param start    Starting sentinel value or range-start-number.
    * @param end      Ending sentinel value that or inclusive range-end-number.
    * @return List of contiguous sequence(s) of Long-type elements that are missing from the range
    * between `start` and `end` (inclusive).
    */
   public static List<List<Long>> findMissingContRange(
-      List<Long> longList,
+      Set<Interval<Long>> intervals,
       Long start,
       Long end
   ) {
-    // Create a copy of longList
-    List<Long> cloneList = new ArrayList<>(longList);
+    // List to store the result
+    List<List<Long>> result = new ArrayList<>();
 
-    // Add start and end sentinel values
-    cloneList.add(0, start - 1);
-    cloneList.add(end + 1);
+    // ArrayList to store markers
+    ArrayList<Marker> markers = new ArrayList<>();
 
-    return findMissingContRange(cloneList);
-  }
+    // Create the markers
+    for (Interval<Long> i : intervals) {
+      markers.add(new Marker(i.getStart(), true));
+      markers.add(new Marker(i.getEnd(), false));
+    }
 
-  /**
-   * Find missing contiguous sequence(s) of Long-type elements that are not in the list of Long-type
-   * elements.
-   * <p>
-   * This implementation is O(n).
-   *
-   * @param longList List of Long-type elements to check.
-   * @return List of contiguous sequence(s) of Long-type elements that are missing from the range
-   * between the sorted `longList`'s first and last element.
-   */
-  public static List<List<Long>> findMissingContRange(List<Long> longList) {
-    // Sort the longList and collect the results into a new variable
-    List<Long> sortedList = longList.stream().sorted().distinct().collect(Collectors.toList());
+    // Sort the markers in ascending order
+    markers.sort(Comparator.comparing(a -> a.val));
 
-    List<List<Long>> lList = new ArrayList<>();
-    List<Long> sList = new ArrayList<>(2);
+    int overlap = 0;
+    boolean endReached = false;
 
-    for (int i = 1; i < sortedList.size(); i++) {
-      if (sortedList.get(i - 1) + 1 != sortedList.get(i)) {
-        sList.add(sortedList.get(i - 1) + 1);
-        sList.add(sortedList.get(i) - 1);
+    // If the first
+    if (markers.get(0).val > start) {
+      ArrayList<Long> missingInterval = new ArrayList<>(
+          Arrays.asList(start, markers.get(0).val - 1)
+      );
+      result.add(missingInterval);
+    }
 
-        lList.add(sList);
+    // Iterate through markers
+    for (int i = 0; i < markers.size() - 1; i++) {
+      Marker m = markers.get(i);
 
-        sList = new ArrayList<>(2);
+      // Integer base stack implementation
+      overlap += m.start ? 1 : -1;
+      Marker next = markers.get(i + 1);
+
+      // Only handle when all "parenthesis/markers" are closed
+      if (!m.val.equals(next.val) && overlap == 0 && next.val > start) {
+        Long intervalStart = m.val > start ? m.val : start;
+        Long intervalEnd = next.val;
+        if (next.val > end) {
+          intervalEnd = end;
+          endReached = true;
+        }
+
+        ArrayList<Long> missingInterval = new ArrayList<>(
+            Arrays.asList(intervalStart + 1, intervalEnd - 1)
+        );
+        result.add(missingInterval);
+        if (endReached) {
+          break;
+        }
       }
     }
-    return lList;
+
+    // Process any dangling overlaps
+    Marker m = markers.get(markers.size() - 1);
+    if (!endReached && m.val < end) {
+      ArrayList<Long> missingInterval = new ArrayList<>(Arrays.asList(m.val + 1, end));
+      result.add(missingInterval);
+    }
+
+    return result;
   }
 
   /**
@@ -127,22 +150,6 @@ public class BlockUtil {
   }
 
   /**
-   * Generate all the Long-type elements within a set of interval(s).
-   *
-   * @param intervals Set of Long-type intervals that have already been fetched from BigQuery.
-   * @return All Long-type elements within the intervals
-   */
-  public static List<Long> getLongInIntervals(Set<Interval<Long>> intervals) {
-    List<Long> blockNumbers = new ArrayList<>();
-    for (Interval<Long> interval : intervals) {
-      List<Long> range = LongStream.rangeClosed(interval.getStart(), interval.getEnd())
-          .boxed().collect(Collectors.toList());
-      blockNumbers.addAll(range);
-    }
-    return blockNumbers;
-  }
-
-  /**
    * Update the cache file with the newly fetched intervals from BigQuery so that they are flagged.
    * <p>
    * By doing so, the intervals will not be fetched from BigQuery again.
@@ -176,3 +183,22 @@ public class BlockUtil {
   }
 
 }
+
+/**
+ * Class to act as a parenthesis marker.
+ *
+ * If `start` is true, it represents an `opening` parenthesis.
+ * if `start` is false, it represents a `closing` parenthesis.
+ */
+class Marker {
+
+  public Long val;
+  public boolean start;
+
+  public Marker(Long val, boolean start) {
+    this.val = val;
+    this.start = start;
+  }
+
+}
+

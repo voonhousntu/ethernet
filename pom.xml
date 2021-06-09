@@ -15,7 +15,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.3.7.RELEASE</version>
+    <version>2.4.6</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -24,7 +24,7 @@
     <grpc.version>1.30.2</grpc.version>
     <protobuf.version>3.14.0</protobuf.version>
     <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
-    <spring.boot.version>2.3.7.RELEASE</spring.boot.version>
+    <spring.boot.version>2.4.6</spring.boot.version>
     <lombok.version>1.18.16</lombok.version>
     <hive.jdbc.version>2.3.7</hive.jdbc.version>
     <tomcat.jdbc.version>10.0.0</tomcat.jdbc.version>
