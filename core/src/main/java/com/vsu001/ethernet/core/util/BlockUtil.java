@@ -37,9 +37,7 @@ public class BlockUtil {
 
   /**
    * Find missing contiguous sequence(s) of Long-type elements that are not in the list of Long-type
-   * elements.
-   * <p>
-   * This implementation is O(n).
+   * Intervals.
    *
    * @param intervals List of intervals.
    * @param start    Starting sentinel value or range-start-number.
