@@ -2,11 +2,9 @@ PROJECT_ROOT 	:= $(shell git rev-parse --show-toplevel)
 
 # General
 
-protos:
-	compile-protos-java compile-protos-python
+protos: compile-protos-java compile-protos-python
 
-build:
-	protos build-java
+build:  protos build-java
 
 create-ethernet-asset-dir:
 	mkdir $$HOME/ethernet_assets && \
@@ -22,7 +20,7 @@ create-ethernet-asset-dir:
 # Java
 
 build-java:
-	mvn clean verify
+	mvn clean verify -Dmaven.test.skip=true
 
 compile-protos-java:
 	mvn protobuf:compile; mvn protobuf:compile-custom
@@ -34,9 +32,9 @@ compile-protos-python:
 	../../../../serving/venv/bin/python3 -m grpc_tools.protoc -I . \
 			--python_out=../../../../sdk/python/ethernet/core \
 			*.proto; \
-    ../../../../serving/venv/bin/python3 -m grpc_tools.protoc -I . \
-            --grpc_python_out=../../../../sdk/python/ethernet/core \
-            *Service.proto; \
+	../../../../serving/venv/bin/python3 -m grpc_tools.protoc -I . \
+			--grpc_python_out=../../../../sdk/python/ethernet/core \
+			*Service.proto; \
 	cd ../../../../; \
 	serving/venv/bin/python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
 
@@ -51,8 +49,7 @@ start-rypc-server:
 
 # Docker
 
-deploy-docker-deps:
-	deploy-hive-hadoop deploy-neo4j
+deploy-docker-deps: deploy-hive-hadoop deploy-neo4j
 
 deploy-hive-hadoop:
 	cd ./infra/docker-hive; docker-compose up -d; cd ../..
