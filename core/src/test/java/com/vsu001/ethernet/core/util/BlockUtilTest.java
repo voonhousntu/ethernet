@@ -56,9 +56,11 @@ public class BlockUtilTest {
     // Query the tree
     Set<Interval<Long>> treeResult = tree.query(new LongInterval(start, end, Bounded.CLOSED));
 
-    // Test the function
+    // Declare expected results
     List<List<Long>> expected = new ArrayList<>();
     expected.add(new ArrayList<>(Arrays.asList(1L, 99L)));
+
+    // Test the function
     assertEquals(expected, BlockUtil.findMissingContRange(treeResult, start, end));
 
     // --- SECOND test (All blocks present) ---
@@ -72,9 +74,10 @@ public class BlockUtilTest {
     // Query the tree
     treeResult = tree.query(new LongInterval(start, end, Bounded.CLOSED));
 
+    // Declare expected results
+    expected = new ArrayList<>(Collections.emptyList());
+
     // Test the function
-    expected = new ArrayList<>();
-    expected.add(Collections.emptyList());
     assertEquals(expected, BlockUtil.findMissingContRange(treeResult, start, end));
 
     // --- Third test (Complex example) ---
@@ -93,6 +96,7 @@ public class BlockUtilTest {
     // Query the tree
     treeResult = tree.query(new LongInterval(start, end, Bounded.CLOSED));
 
+    // Declare expected results
     expected = new ArrayList<>(
         Arrays.asList(
             new ArrayList<>(Arrays.asList(0L, 3L)),
@@ -104,7 +108,8 @@ public class BlockUtilTest {
             new ArrayList<>(Arrays.asList(26L, 99L))
         )
     );
-    assertEquals(expected, BlockUtil.findMissingContRange(tree, start, end));
+
+    assertEquals(expected, BlockUtil.findMissingContRange(treeResult, start, end));
   }
 
 }
