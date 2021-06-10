@@ -75,6 +75,13 @@ fded5a95efa9   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh
 94ab94cb5efe   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   35 seconds ago   Up 31 seconds             0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                                                        docker-hive_hive-metastore-postgresql_
 ```
 
+### 5.3. Creating Hive schema and tables
+Execute the command below to initialise Hive with the required schema and tables.
+
+```shell
+make init-hive
+```
+
 
 ## 6. Add the required hostname mappings into the host-file
 For the following step, this should be done on the server hosting your project and the client 
