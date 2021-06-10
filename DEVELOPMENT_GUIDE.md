@@ -19,10 +19,12 @@ From the Makefile, the following commands are available:
 | build-java                | Build the ethernet-core                                                                 |
 | compile-java-python       | Compile Java protos                                                                     |
 | compile-protos-python     | Compile Python protos and reference errors                                              |
-| create-ethernet-asset-dir | Initialise the required EtherNet asset and working directories.                         |
+| create-ethernet-asset-dir | Initialise the required EtherNet asset and working directories                          |
+| create-schema-n-tables    | Create the required Hive schema and tables                                              |
 | deploy-docker-deps        | Deploy all docker images that are required for the EtherNet application to run properly |
 | deploy-hive-hadoop        | Deploy the Hive and Hadoop docker images                                                |
 | deploy-neo4j              | Deploy the latest Neo4j docker image                                                    |
+| init-hive                 | Initialise Hive with the required schema and tables                                     |
 | start-rpyc-server         | Start the RPyC server responsible for handling ethernet-core to Neo4j commands          |
 
 
