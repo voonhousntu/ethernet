@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.blocks
+CREATE TABLE IF NOT EXISTS ethernet.blocks
 (
     `number`            bigint,
     `timestamp`         timestamp,

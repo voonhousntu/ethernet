@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.block_timestamp_mapping
+CREATE TABLE IF NOT EXISTS ethernet.block_timestamp_mapping
 (
     `number` bigint,
     `timestamp` timestamp

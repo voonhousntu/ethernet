@@ -1,1 +1,1 @@
-CREATE SCHEMA ethernet;
+CREATE SCHEMA IF NOT EXISTS ethernet;
