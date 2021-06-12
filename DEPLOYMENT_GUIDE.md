@@ -219,5 +219,5 @@ are in your `$HOME` directory.
     │   ├── pom.xml
     │   ├── sdk
     │   └── serving
-    └── gcp_private_key.json
+    └── google_private_key.json
 ```
