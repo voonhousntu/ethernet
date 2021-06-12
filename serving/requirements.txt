@@ -1,2 +1,3 @@
 pysftp==0.2.9
 rpyc==5.0.1
+grpcio-tools==1.36.1
