@@ -67,6 +67,7 @@ deploy-neo4j:
 		-v $$HOME/ethernet_assets:/ethernet_assets \
 		-v $$HOME/ethernet_work_dir:/ethernet_work_dir \
 		--env NEO4J_AUTH=neo4j/test \
+		--env NEO4JLABS_PLUGINS='["graph-data-science"]' \
 		neo4j:latest
 
 
