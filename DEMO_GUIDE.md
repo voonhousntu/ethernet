@@ -51,7 +51,7 @@ remote server, use the command below:
 screen -S demo_jup_server -dm jupyter notebook --no-browser --ip 0.0.0.0
 ```
 
-### 1.5. Navigate through the Notebook
+### 1.5. Notebook time!
 Navigate your way to `python/demo_notebook.ipynb` for the worked example on how to use EtherNet.
 
 One can also read through the example without starting the Jupyter Notebook by navigating to:
