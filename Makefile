@@ -30,11 +30,11 @@ compile-protos-java:
 compile-protos-python:
 	cd ./core/src/main/proto; \
 	../../../../serving/venv/bin/python3 -m grpc_tools.protoc -I . \
-			--python_out=../../../../sdk/python/ethernet/core \
-			*.proto; \
+		--python_out=../../../../sdk/python/ethernet/core \
+		*.proto; \
 	../../../../serving/venv/bin/python3 -m grpc_tools.protoc -I . \
-			--grpc_python_out=../../../../sdk/python/ethernet/core \
-			*Service.proto; \
+		--grpc_python_out=../../../../sdk/python/ethernet/core \
+		*Service.proto; \
 	cd ../../../../; \
 	serving/venv/bin/python3 ./infra/protoc_utils/fix_pb2.py "./sdk/python/ethernet/core/*.py"
 
@@ -44,8 +44,9 @@ install-serving-dep:
 	venv/bin/pip3 install -r requirements.txt && \
 	cd ..
 
-start-rypc-server:
-	screen -S rpyc_server -d -m serving/venv/bin/python3 serving/venv/bin/rpyc_classic.py --host 0.0.0.0 -p 18812
+start-rpyc-server:
+	screen -S rpyc_server -d -m serving/venv/bin/python3 serving/venv/bin/rpyc_classic.py \
+		--host 0.0.0.0 -p 18812
 
 # Docker
 
@@ -56,14 +57,34 @@ deploy-hive-hadoop:
 
 deploy-neo4j:
 	docker run \
-			--name docker-neo4j \
-			-p7474:7474 -p7687:7687 \
-			-d \
-			-v $$HOME/neo4j/data:/data \
-			-v $$HOME/neo4j/logs:/logs \
-			-v $$HOME/neo4j/import:/var/lib/neo4j/import \
-			-v $$HOME/neo4j/plugins:/plugins \
-			-v $$HOME/ethernet_assets:/ethernet_assets \
-			-v $$HOME/ethernet_work_dir:/ethernet_work_dir \
-			--env NEO4J_AUTH=neo4j/test \
-			neo4j:latest
+		--name docker-neo4j \
+		-p7474:7474 -p7687:7687 \
+		-d \
+		-v $$HOME/neo4j/data:/data \
+		-v $$HOME/neo4j/logs:/logs \
+		-v $$HOME/neo4j/import:/var/lib/neo4j/import \
+		-v $$HOME/neo4j/plugins:/plugins \
+		-v $$HOME/ethernet_assets:/ethernet_assets \
+		-v $$HOME/ethernet_work_dir:/ethernet_work_dir \
+		--env NEO4J_AUTH=neo4j/test \
+		--env NEO4JLABS_PLUGINS='["graph-data-science"]' \
+		neo4j:latest
+
+
+# Hive
+
+init-hive:  create-schema-n-tables
+
+create-schema-n-tables:
+	docker exec docker-hive_hive-server_1 /opt/hive/bin/hive -e \
+		"` \
+			cat infra/sql/create_ethernet_schema.hql; \
+			cat infra/sql/hive_2/create_block_timestamp_mapping.hql; \
+			cat infra/sql/hive_2/create_blocks.hql; \
+			cat infra/sql/hive_2/create_contracts.hql; \
+			cat infra/sql/hive_2/create_logs.hql; \
+			cat infra/sql/hive_2/create_token_transfers.hql; \
+			cat infra/sql/hive_2/create_tokens.hql; \
+			cat infra/sql/hive_2/create_traces.hql; \
+			cat infra/sql/hive_2/create_transactions.hql; \
+		`"

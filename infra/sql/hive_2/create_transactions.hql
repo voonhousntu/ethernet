@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.transactions
+CREATE TABLE IF NOT EXISTS ethernet.transactions
 (
     `hash`                        string,
     `nonce`                       bigint,

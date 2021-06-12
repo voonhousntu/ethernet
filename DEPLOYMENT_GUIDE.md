@@ -75,11 +75,15 @@ fded5a95efa9   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh
 94ab94cb5efe   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   35 seconds ago   Up 31 seconds             0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                                                        docker-hive_hive-metastore-postgresql_
 ```
 
+### 5.3. Creating Hive schema and tables
+Execute the command below to initialise Hive with the required schema and tables.
+
+```shell
+make init-hive
+```
+
 
 ## 6. Add the required hostname mappings into the host-file
-For the following step, this should be done on the server hosting your project and the client 
-machine that is going to consume the EtherNet services.
-
 In short, modification of the `/etc/hosts` file needs to be done on two places.
 
 Please follow the guide which can be found 
@@ -87,7 +91,26 @@ Please follow the guide which can be found
 
 
 ## 7. Build EtherNet-core (backend) and Python protos
-Execute the following commands to build the `ethernet-core` backend.
+
+## 7.1. Modify the EtherNet-core configs
+Before compiling please ensure that the EtherNet-core configurations are configured correctly.
+This can be done by modifying the `core/src/main/resources/appliaction.yml` file.
+
+The key things to change are:
+1. spring.datasource.hivedb.url
+2. spring.neo4j.uri
+3. spring.data.neo4j (Leave it unchanged if you are following this deployment guide)
+4. ethernet.work-dir (Leave it unchanged if you are following this deployment guide)
+5. ethernet.rpyc-host
+6. ethernet.rpyc-port (Leave it unchanged if you are following this deployment guide)
+
+```shell
+nano core/src/main/resources/application.yml
+```
+
+
+## 7.2. Build the EtherNet-core jar
+Execute the following commands to build the `EtherNet-core` backend.
 
 ```shell
 make build
@@ -127,6 +150,11 @@ deploy EtherNet-core with the following command.
 
 ```shell
 GOOGLE_APPLICATION_CREDENTIALS=./path/to/google_private_key.json java -jar core-0.0.1-SNAPSHOT.jar
+```
+
+To start the EtherNet-core in a screen, use the command below:
+```shell
+screen -s ethernet_core -dm GOOGLE_APPLICATION_CREDENTIALS=./path/to/google_private_key.json java -jar core-0.0.1-SNAPSHOT.jar
 ```
 
 ## 9. Run RPyC server
@@ -188,5 +216,5 @@ are in your `$HOME` directory.
     │   ├── pom.xml
     │   ├── sdk
     │   └── serving
-    └── gcp_private_key.json
+    └── google_private_key.json
 ```

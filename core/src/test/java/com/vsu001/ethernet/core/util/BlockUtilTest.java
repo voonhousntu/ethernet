@@ -109,6 +109,24 @@ public class BlockUtilTest {
         )
     );
 
+    // Test the function
+    assertEquals(expected, BlockUtil.findMissingContRange(treeResult, start, end));
+
+    // --- Fourth test (Empty cache) ---
+
+    // Instantiate a new tree
+    tree = new IntervalTree<>();
+
+    // Do not add any intervals (empty tree)
+
+    // Query the tree
+    treeResult = tree.query(new LongInterval(start, end, Bounded.CLOSED));
+
+    // Declare expected results
+    expected = new ArrayList<>();
+    expected.add(new ArrayList<>(Arrays.asList(0L, 99L)));
+
+    // Test the function
     assertEquals(expected, BlockUtil.findMissingContRange(treeResult, start, end));
   }
 

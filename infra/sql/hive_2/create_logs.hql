@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.logs
+CREATE TABLE IF NOT EXISTS ethernet.logs
 (
     `log_index`         bigint,
     `transaction_hash`  string,

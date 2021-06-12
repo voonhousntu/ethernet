@@ -12,17 +12,20 @@ sudo apt install build-essential -y
 ### Makefile functions
 From the Makefile, the following commands are available:
 
-| Commands              | Description                                                                             |
-|-----------------------|-----------------------------------------------------------------------------------------|
-| protos                | Generate required proto dependencies for Python and Java                                |
-| build                 | Build the protos and compile ethernet-core (backend)                                    |
-| build-java            | Build the ethernet-core                                                                 |
-| compile-java-python   | Compile Java protos                                                                     |
-| compile-protos-python | Compile Python protos and reference errors                                              |
-| deploy-docker-deps    | Deploy all docker images that are required for the EtherNet application to run properly |
-| deploy-hive-hadoop    | Deploy the Hive and Hadoop docker images                                                |
-| deploy-neo4j          | Deploy the latest Neo4j docker image                                                    |
-| start-rpyc-server     | Start the RPyC server responsible for handling ethernet-core to Neo4j commands          |
+| Commands                  | Description                                                                             |
+|---------------------------|-----------------------------------------------------------------------------------------|
+| protos                    | Generate required proto dependencies for Python and Java                                |
+| build                     | Build the protos and compile Ethernet-Core (backend)                                    |
+| build-java                | Build the ethernet-core                                                                 |
+| compile-java-python       | Compile Java protos                                                                     |
+| compile-protos-python     | Compile Python protos and reference errors                                              |
+| create-ethernet-asset-dir | Initialise the required EtherNet asset and working directories                          |
+| create-schema-n-tables    | Create the required Hive schema and tables                                              |
+| deploy-docker-deps        | Deploy all docker images that are required for the EtherNet application to run properly |
+| deploy-hive-hadoop        | Deploy the Hive and Hadoop docker images                                                |
+| deploy-neo4j              | Deploy the latest Neo4j docker image                                                    |
+| init-hive                 | Initialise Hive with the required schema and tables                                     |
+| start-rpyc-server         | Start the RPyC server responsible for handling ethernet-core to Neo4j commands          |
 
 
 ## Running the Docker Images
@@ -69,6 +72,12 @@ sudo nano /etc/hosts
 
 Note that you should switch out the addresses used below for your servers' private addresses.
 
+Note that you should also modify the `/etc/hosts` on your development machine to point to the same 
+ip address(es) should you want to access the Hadoop NameNode Web UI. 
+
+(This might be useful if you would like to traverse the hdfs via the Web UI without 
+using `hdfs dfs` via console)
+
 ```text
 172.21.148.207 namenode
 172.21.148.207 ddatanode
@@ -82,12 +91,12 @@ Note that hostnames referenced in the `docker-compose.yml` configuration as refe
 | Port  | Description                                         |
 |-------|-----------------------------------------------------|
 | 5432  | PostgreSQL listening port                           |
-| 7473  | Neo4j online WebUI (https) [Not Enabled]            |
-| 7474  | Neo4j online WebUI (http)                           |
+| 7473  | Neo4j online Web UI (https) [Not Enabled]            |
+| 7474  | Neo4j online Web UI (http)                           |
 | 7687  | Neo4j bolt listening port                           |
 | 9083  | Hive metastore thrift listening port                |
 | 10000 | Hive server2 thrift listening port                  |
-| 50070 | Hadoop NameNode WebUI listening port                |
+| 50070 | Hadoop NameNode Web UI listening port                |
 | 8020  | Hadoop NameNode metadata service IPC listening port |
 | 50075 | DataNode WebUI to access the status, logs, etc      |
 | 50010 | Custom DataNode HDFS protocol for data transfer     |

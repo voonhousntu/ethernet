@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.contracts
+CREATE TABLE IF NOT EXISTS ethernet.contracts
 (
     `block_number`       bigint,
     `block_timestamp`    timestamp,

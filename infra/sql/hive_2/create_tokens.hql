@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.tokens
+CREATE TABLE IF NOT EXISTS ethernet.tokens
 (
     `address`         string,
     `symbol`          string,

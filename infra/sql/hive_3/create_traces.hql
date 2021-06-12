@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.traces
+CREATE TABLE IF NOT EXISTS ethernet.traces
 (
     `transaction_hash`  string,
     `transaction_index` bigint,

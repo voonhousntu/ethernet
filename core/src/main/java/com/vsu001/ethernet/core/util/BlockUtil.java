@@ -37,9 +37,7 @@ public class BlockUtil {
 
   /**
    * Find missing contiguous sequence(s) of Long-type elements that are not in the list of Long-type
-   * elements.
-   * <p>
-   * This implementation is O(n).
+   * Intervals.
    *
    * @param intervals List of intervals.
    * @param start    Starting sentinel value or range-start-number.
@@ -54,6 +52,14 @@ public class BlockUtil {
   ) {
     // List to store the result
     List<List<Long>> result = new ArrayList<>();
+
+    // If intervals set is empty, return start and end
+    if (intervals.size() == 0) {
+      result.add(
+          new ArrayList<>(Arrays.asList(start, end))
+      );
+      return result;
+    }
 
     // ArrayList to store markers
     ArrayList<Marker> markers = new ArrayList<>();

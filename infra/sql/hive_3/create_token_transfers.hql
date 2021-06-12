@@ -1,4 +1,4 @@
-CREATE TABLE ethernet.token_transfers
+CREATE TABLE IF NOT EXISTS ethernet.token_transfers
 (
     `token_address`     string,
     `from_address`     string,

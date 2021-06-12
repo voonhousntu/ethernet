@@ -11,6 +11,9 @@ To run the applications in Docker, the following dependencies are required:
 - [docker-compose](https://linuxize.com/post/how-to-install-and-use-docker-compose-on-ubuntu-18-04/)
 - build-essential
 
+## Demo Guide
+The demonstration guide can be found [here](DEMO_GUIDE.md).
+
 ## Deployment Guide
 The deployment guide can be found [here](DEPLOYMENT_GUIDE.md).
 
