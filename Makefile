@@ -44,7 +44,7 @@ install-serving-dep:
 	venv/bin/pip3 install -r requirements.txt && \
 	cd ..
 
-start-rypc-server:
+start-rpyc-server:
 	screen -S rpyc_server -d -m serving/venv/bin/python3 serving/venv/bin/rpyc_classic.py \
 		--host 0.0.0.0 -p 18812
 
