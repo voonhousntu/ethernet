@@ -94,6 +94,25 @@ Please follow the guide which can be found
 
 
 ## 7. Build EtherNet-core (backend) and Python protos
+
+## 7.1. Modify the EtherNet-core configs
+Before compiling please ensure that the EtherNet-core configurations are configured correctly.
+This can be done by modifying the `core/src/main/resources/appliaction.yml` file.
+
+The key things to change are:
+1. spring.datasource.hivedb.url
+2. spring.neo4j.uri
+3. spring.data.neo4j (Leave it unchanged if you are following this deployment guide)
+4. ethernet.work-dir (Leave it unchanged if you are following this deployment guide)
+5. ethernet.rpyc-host
+6. ethernet.rpyc-port (Leave it unchanged if you are following this deployment guide)
+
+```shell
+nano core/src/main/resources/application.yml
+```
+
+
+## 7.2. Build the EtherNet-core jar
 Execute the following commands to build the `ethernet-core` backend.
 
 ```shell
@@ -134,6 +153,11 @@ deploy EtherNet-core with the following command.
 
 ```shell
 GOOGLE_APPLICATION_CREDENTIALS=./path/to/google_private_key.json java -jar core-0.0.1-SNAPSHOT.jar
+```
+
+To start the EtherNet-core in a screen, use the command below:
+```shell
+screen -s ethernet_core -dm GOOGLE_APPLICATION_CREDENTIALS=./path/to/google_private_key.json java -jar core-0.0.1-SNAPSHOT.jar
 ```
 
 ## 9. Run RPyC server
