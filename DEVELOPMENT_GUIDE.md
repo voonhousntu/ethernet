@@ -72,6 +72,12 @@ sudo nano /etc/hosts
 
 Note that you should switch out the addresses used below for your servers' private addresses.
 
+Note that you should also modify the `/etc/hosts` on your development machine to point to the same 
+ip address(es) should you want to access the Hadoop NameNode Web UI. 
+
+(This might be useful if you would like to traverse the hdfs via the Web UI without 
+using `hdfs dfs` via console)
+
 ```text
 172.21.148.207 namenode
 172.21.148.207 ddatanode
@@ -85,12 +91,12 @@ Note that hostnames referenced in the `docker-compose.yml` configuration as refe
 | Port  | Description                                         |
 |-------|-----------------------------------------------------|
 | 5432  | PostgreSQL listening port                           |
-| 7473  | Neo4j online WebUI (https) [Not Enabled]            |
-| 7474  | Neo4j online WebUI (http)                           |
+| 7473  | Neo4j online Web UI (https) [Not Enabled]            |
+| 7474  | Neo4j online Web UI (http)                           |
 | 7687  | Neo4j bolt listening port                           |
 | 9083  | Hive metastore thrift listening port                |
 | 10000 | Hive server2 thrift listening port                  |
-| 50070 | Hadoop NameNode WebUI listening port                |
+| 50070 | Hadoop NameNode Web UI listening port                |
 | 8020  | Hadoop NameNode metadata service IPC listening port |
 | 50075 | DataNode WebUI to access the status, logs, etc      |
 | 50010 | Custom DataNode HDFS protocol for data transfer     |

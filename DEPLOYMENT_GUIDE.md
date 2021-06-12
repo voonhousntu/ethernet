@@ -84,9 +84,6 @@ make init-hive
 
 
 ## 6. Add the required hostname mappings into the host-file
-For the following step, this should be done on the server hosting your project and the client 
-machine that is going to consume the EtherNet services.
-
 In short, modification of the `/etc/hosts` file needs to be done on two places.
 
 Please follow the guide which can be found 
@@ -113,7 +110,7 @@ nano core/src/main/resources/application.yml
 
 
 ## 7.2. Build the EtherNet-core jar
-Execute the following commands to build the `ethernet-core` backend.
+Execute the following commands to build the `EtherNet-core` backend.
 
 ```shell
 make build
