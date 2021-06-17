@@ -58,7 +58,7 @@ One can also read through the example without starting the Jupyter Notebook by n
 [demo_notebook.ipynb](sdk/python/demo_notebook.ipynb)
 
 
-## Demo Video
+## 2. Demo Video
 Click the image below to watch the Youtube demo video.
 
 [![Watch the video](https://img.youtube.com/vi/DFzIya3sDfM/maxresdefault.jpg)](https://youtu.be/DFzIya3sDfM)
