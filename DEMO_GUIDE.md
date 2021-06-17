@@ -1,4 +1,4 @@
-## Demo Guide
+# Demo Guide
 
 ## 1. Install Dependencies
 The demo guide requires user to switch their working directory to `ethernet/sdk`.
@@ -56,3 +56,9 @@ Navigate your way to `python/demo_notebook.ipynb` for the worked example on how 
 
 One can also read through the example without starting the Jupyter Notebook by navigating to:
 [demo_notebook.ipynb](sdk/python/demo_notebook.ipynb)
+
+
+## Demo Video
+Click the image below to watch the Youtube demo video.
+
+[![Watch the video](https://img.youtube.com/vi/DFzIya3sDfM/maxresdefault.jpg)](https://youtu.be/DFzIya3sDfM)
